@@ -62,7 +62,7 @@ install: build
 
 	# Add here commands to install the package into debian/nauty.
 #	$(MAKE) prefix=$(CURDIR)/debian/nauty/usr install
-	dh_install $(BINFILES)
+	dh_install $(BINFILES) /usr/bin
 
 # Build architecture-independent files here.
 binary-indep: build install
