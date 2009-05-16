@@ -11,12 +11,7 @@ version=3
 #http://www.example.com/downloads.php nauty-(.*)\.tar\.gz
 
 # Uncomment to examine a Webserver directory
-#http://www.example.com/pub/nauty-(.*)\.tar\.gz
-
-# Uncommment to examine a FTP server
-#ftp://ftp.example.com/pub/nauty-(.*)\.tar\.gz debian uupdate
-
-# Uncomment to find new files on sourceforge, for debscripts >= 2.9
-# http://sf.net/nauty/nauty-(.*)\.tar\.gz
+opts="uversionmangle=s/b(\d+)/~b$1/" \
+	http://cs.anu.edu.au/~bdm/nauty/nauty(\d)(\d.*)\.tar.gz
 
 
