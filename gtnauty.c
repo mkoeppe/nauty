@@ -4,10 +4,11 @@
    Aug  9, 2001 : Added fgroup_inv() and fcanonise_inv()
    Sep 15, 2004 : Completed prototypes
    Oct 16, 2004 : DEAFULTOPTIONS_GRAPH
+   Nov 17, 2005 : Added fcanonise_inv_sg()
 
 **************************************************************************/
 
-#include "gtools.h"   /* which includes naututil.h and stdio.h */
+#include "gtools.h"   /* which includes naututil.h, nausparse.h, stdio.h */
 
 static boolean issymm;
 static set *g0;
@@ -26,8 +27,8 @@ void REFINE(graph*,int*,int*,int,int*,permutation*,set*,int*,int,int);
 static void                         /* sort k longwords */
 lsort(long *x, int k)
 {
-        register int i,j,h;
-        register long iw;
+        int i,j,h;
+        long iw;
 
         j = k / 3;
         h = 1;
@@ -55,7 +56,7 @@ lsort(long *x, int k)
 /**************************************************************************/
 
 void
-fcanonise(graph *g, int m, int n, graph *h, char *fmt)
+fcanonise(graph *g, int m, int n, graph *h, char *fmt, boolean digraph)
 /*  canonise g under format fmt; result in h.
    fmt is either NULL (for no vertex classification) or is a string
    with char-valued colours for the vertices.  If it ends early, it
@@ -76,7 +77,7 @@ fcanonise(graph *g, int m, int n, graph *h, char *fmt)
 	DYNALLSTAT(set,active,active_sz);
 	DYNALLSTAT(setword,workspace,workspace_sz);
 #endif
-        register int i;
+        int i;
 	boolean endfmt;
         int numcells,code;
         statsblk stats;
@@ -147,7 +148,7 @@ fcanonise(graph *g, int m, int n, graph *h, char *fmt)
 	else
             refine(g,lab,ptn,0,&numcells,count,active,&code,m,n);
 
-        if (numcells >= n-1)          /* discrete or almost */
+        if (numcells == n || numcells == n-1 && !digraph) 
         {
             for (i = 0; i < n; ++i) count[i] = lab[i];
             updatecan(g,h,count,0,m,n);
@@ -157,6 +158,7 @@ fcanonise(graph *g, int m, int n, graph *h, char *fmt)
         {
             options.getcanon = TRUE;
             options.defaultptn = FALSE;
+	    options.digraph = digraph;
 #ifdef REFINE
 	    options.userrefproc = REFINE;
 #endif
@@ -173,7 +175,8 @@ fcanonise(graph *g, int m, int n, graph *h, char *fmt)
 void
 fcanonise_inv(graph *g, int m, int n, graph *h, char *fmt,
    void (*invarproc)(graph*,int*,int*,int,int,int,permutation*,int,
-    boolean,int,int), int mininvarlevel, int maxinvarlevel, int invararg)
+    boolean,int,int), int mininvarlevel, int maxinvarlevel,
+    int invararg, boolean digraph)
 /*  canonise g under format fmt; result in h.
    fmt is either NULL (for no vertex classification) or is a string
    with char-valued colours for the vertices.  If it ends early, it
@@ -196,7 +199,7 @@ fcanonise_inv(graph *g, int m, int n, graph *h, char *fmt,
 	DYNALLSTAT(set,active,active_sz);
 	DYNALLSTAT(setword,workspace,workspace_sz);
 #endif
-        register int i;
+        int i;
 	boolean endfmt;
         int numcells,code;
         statsblk stats;
@@ -267,7 +270,7 @@ fcanonise_inv(graph *g, int m, int n, graph *h, char *fmt,
 	else
             refine(g,lab,ptn,0,&numcells,count,active,&code,m,n);
 
-        if (numcells >= n-1)          /* discrete or almost */
+        if (numcells == n || !digraph && numcells >= n-1)
         {
             for (i = 0; i < n; ++i) count[i] = lab[i];
             updatecan(g,h,count,0,m,n);
@@ -276,6 +279,7 @@ fcanonise_inv(graph *g, int m, int n, graph *h, char *fmt,
         else
         {
             options.getcanon = TRUE;
+            options.digraph = digraph;
             options.defaultptn = FALSE;
 	    if (invarproc)
 	    {
@@ -291,6 +295,132 @@ fcanonise_inv(graph *g, int m, int n, graph *h, char *fmt,
             EMPTYSET(active,m);
             nauty(g,lab,ptn,active,orbits,&options,&stats,
                                                   workspace,4*m,m,n,h);
+	    gt_numorbits = stats.numorbits;
+        }
+}
+
+/**************************************************************************/
+
+void
+fcanonise_inv_sg(sparsegraph *g, int m, int n, sparsegraph *h, char *fmt,
+   void (*invarproc)(graph*,int*,int*,int,int,int,permutation*,int,
+    boolean,int,int), int mininvarlevel, int maxinvarlevel,
+    int invararg, boolean digraph)
+/*  canonise g under format fmt; result in h.
+   fmt is either NULL (for no vertex classification) or is a string
+   with char-valued colours for the vertices.  If it ends early, it
+   is assumed to continue with the colour 'z' indefinitely.
+   This is like fcanonise() except that a invariant and its arguments
+   can be specified.  Version for sparse graphs. */
+{
+#if MAXN
+        int lab[MAXN],ptn[MAXN],orbits[MAXN];
+        long x[MAXN];
+        permutation count[MAXN];
+        set active[MAXM];
+        setword workspace[4*MAXM];
+#else
+	DYNALLSTAT(int,lab,lab_sz);
+	DYNALLSTAT(int,ptn,ptn_sz);
+	DYNALLSTAT(int,orbits,orbits_sz);
+	DYNALLSTAT(long,x,x_sz);
+	DYNALLSTAT(permutation,count,count_sz);
+	DYNALLSTAT(set,active,active_sz);
+	DYNALLSTAT(setword,workspace,workspace_sz);
+#endif
+        int i;
+	boolean endfmt;
+        int numcells,code;
+        statsblk stats;
+        static DEFAULTOPTIONS_SPARSEGRAPH(options);
+
+#if MAXN
+	if (n > MAXN || m > MAXM)
+	{
+	    fprintf(stderr,">E fcanonise: m or n too large\n");
+	    ABORT(">E fcanonise");
+	}
+#else
+	DYNALLOC1(int,lab,lab_sz,n,"fcanonise");
+	DYNALLOC1(int,ptn,ptn_sz,n,"fcanonise");
+	DYNALLOC1(int,orbits,orbits_sz,n,"fcanonise");
+	DYNALLOC1(long,x,x_sz,n,"fcanonise");
+	DYNALLOC1(permutation,count,count_sz,n,"fcanonise");
+	DYNALLOC1(set,active,active_sz,m,"fcanonise");
+	DYNALLOC1(setword,workspace,workspace_sz,4*m,"fcanonise");
+#endif
+
+        EMPTYSET(active,m);
+        ADDELEMENT(active,0);
+        numcells = 1;
+
+	if (fmt != NULL)
+	{
+	    endfmt = FALSE;
+            for (i = 0; i < n; ++i)
+	    {
+		if (!endfmt && fmt[i] != '\0') 
+		    x[i] = ((long)fmt[i] << 22) | i;
+		else
+		{
+		    endfmt = TRUE;
+		    x[i] = ((long)'z' << 22) | i;
+		}
+	    }
+            lsort(x,n);
+
+            for (i = 0; i < n; ++i)
+            {
+                lab[i] = x[i] & 0x3fffffL;
+                if (i == n-1)
+                    ptn[i] = 0;
+                else if ((x[i+1] >> 22) != (x[i] >> 22))
+                {
+                    ++numcells;
+                    ADDELEMENT(active,i+1);
+                    ptn[i] = 0;
+                }
+                else
+                    ptn[i] = 1;
+            }
+	}
+	else
+	{
+	    for (i = 0; i < n; ++i)
+	    {
+		lab[i] = i;
+		ptn[i] = 1;
+	    }
+	    ptn[n-1] = 0;
+	}
+
+        refine_sg((graph*)g,lab,ptn,0,&numcells,count,active,&code,1,n);
+
+        if (numcells == n || !digraph && numcells == n-1)
+        {
+            for (i = 0; i < n; ++i) count[i] = lab[i];
+            updatecan_sg((graph*)g,(graph*)h,count,0,m,n);
+	    gt_numorbits = numcells;
+        }
+        else
+        {
+            options.getcanon = TRUE;
+            options.digraph = digraph;
+            options.defaultptn = FALSE;
+	    if (invarproc)
+	    {
+		options.invarproc = invarproc;
+		options.mininvarlevel = mininvarlevel;
+		options.maxinvarlevel = maxinvarlevel;
+		options.invararg = invararg;
+	    }
+#ifdef REFINE
+	    options.userrefproc = REFINE;
+#endif
+
+            EMPTYSET(active,m);
+            nauty((graph*)g,lab,ptn,active,orbits,&options,&stats,
+                                             workspace,4*m,m,n,(graph*)h);
 	    gt_numorbits = stats.numorbits;
         }
 }
@@ -319,7 +449,7 @@ fgroup(graph *g, int m, int n, char *fmt, int *orbits, int *numorbits)
 	DYNALLSTAT(set,active,active_sz);
 	DYNALLSTAT(setword,workspace,workspace_sz);
 #endif
-        register int i,j;
+        int i,j;
 	int orbrep;
 	boolean endfmt;
         int numcells,code;
@@ -455,7 +585,7 @@ fgroup_inv(graph *g, int m, int n, char *fmt, int *orbits, int *numorbits,
 	DYNALLSTAT(set,active,active_sz);
 	DYNALLSTAT(setword,workspace,workspace_sz);
 #endif
-        register int i,j;
+        int i,j;
 	int orbrep;
 	boolean endfmt;
         int numcells,code;
@@ -576,7 +706,7 @@ static void
 userlevel(int *lab, int *ptn, int level, int *orbits, statsblk *stats,
           int tv, int index, int tcellsize, int numcells, int cc, int n)
 {
-	register int i0,i;
+	int i0,i;
 
 	if (level != 2) return;
 
@@ -610,9 +740,9 @@ userlevel(int *lab, int *ptn, int level, int *orbits, statsblk *stats,
 int
 istransitive(graph *g, int m, int n, graph *h)
 {
-        register int i,inv;
-        register set *gw;
-        register short wt;
+        int i,inv;
+        set *gw;
+        short wt;
         int d,inv0,v,w;
         statsblk stats; 
         static DEFAULTOPTIONS_GRAPH(options);

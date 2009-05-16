@@ -1,5 +1,5 @@
 /*****************************************************************************
-* This is the header file for versions 2.2 of naututil.c and dreadnaut.c.    *
+* This is the header file for versions 2.4 of naututil.c and dreadnaut.c.    *
 * @configure_input@
 *****************************************************************************/
 
@@ -20,7 +20,7 @@ used, it is necessary to check they are correct.
 
 /*****************************************************************************
 *                                                                            *
-*   Copyright (1984-2002) Brendan McKay.  All rights reserved.               *
+*   Copyright (1984-2007) Brendan McKay.  All rights reserved.               *
 *   Subject to the waivers and disclaimers in nauty.h.                       *
 *                                                                            *
 *   CHANGE HISTORY                                                           *
@@ -93,6 +93,7 @@ used, it is necessary to check they are correct.
 *                   - revised for autoconf                                   *
 *       17-Nov-02 : added explicit "extern" where it was implicit before     *
 *       11-Apr-02 : added rangraph2()                                        *
+*       10-Sep-07 : Define CPUTIME=0.0 for hosts that don't provide it       *
 *                                                                            *
 *****************************************************************************/
 
@@ -220,6 +221,11 @@ extern long seed;               /* declared in naututil.c */
   1e-6 * (ruse.ru_utime.tv_usec + ruse.ru_stime.tv_usec))
 #endif
 #endif
+
+#ifndef CPUTIME
+#define CPUTIME 0.0
+#endif
+
 #endif /*NAUTY_CPU_DEFINED*/
 
 /*************************************************************************/

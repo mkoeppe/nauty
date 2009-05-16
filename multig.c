@@ -1,7 +1,8 @@
-/* multig.c version 1.0; B D McKay, Oct 25, 2004 */
+/* multig.c version 1.2; B D McKay, Apr 5, 2007 */
 
 #define USAGE \
-   "multig [-q] [-u|-T|-G|-A|-B] [-e#|-e#:#] [-m#] [-f#] [infile [outfile]]"
+"multig [-q] [-u|-T|-G|-A|-B] [-e#|-e#:#]\
+ [-m#] [-f#] [-D#|-r#|-l#] [infile [outfile]]"
 
 #define HELPTEXT \
 " Read undirected loop-free graphs and replace their edges with multiple\n\
@@ -12,11 +13,15 @@
     -e# | -e#:#  specify a value or range of the total number of edges\n\
                  counting multiplicities\n\
     -m# maximum edge multiplicity (minimum is 1)\n\
-	Either -e or -m with a finite maximum must be given\n\
-    -f#  Use the group that fixes the first # vertices setwise\n\
+    -D# upper bound on maximum degree\n\
+    -r# make regular of specified degree (incompatible with -l, -D, -e)\n\
+    -l# make regular multigraphs with multiloops, degree #\n\
+	         (incompatible with -r, -D, -e)\n\
+    Either -l, -r, -D, -e or -m with a finite maximum must be given\n\
+    -f# Use the group that fixes the first # vertices setwise\n\
     -T  use a simple text output format (nv ne {v1 v2 mult})\n\
     -G  like -T but includes group size as third item (if less than 10^10)\n\
-	  The group size does not include exchange of isolated vertices.\n\
+          The group size does not include exchange of isolated vertices.\n\
     -A  write as the upper triangle of an adjacency matrix, row by row,\n\
         including the diagonal, and preceded by the number of vertices\n\
     -B  write as an integer matrix preceded by the number of rows and\n\
@@ -40,29 +45,48 @@ typedef struct
 #define PRINTBIG(file,big) if (big.hi == 0) \
  fprintf(file,"%ld",big.lo); else fprintf(file,"%ld%09ld",big.hi,big.lo)
 
-static bigint nin,ngen,nout;
+static bigint nin,nout;
 FILE *outfile;
 
 #define MAXNV 128 
 #define MAXNE 1024
-static int v0[MAXNE],v1[MAXNE];
+static int v0[MAXNE+MAXNV],v1[MAXNE+MAXNV];
 static int edgeno[MAXNV][MAXNV];
+static int lastlev[MAXNE];
 
-#define MAXME ((MAXNE+WORDSIZE-1)/WORDSIZE)
-
-static int ix[MAXNE],nix;
+static int ix[MAXNE+MAXNV],nix;
 static boolean first;
 static permutation lastreject[MAXNV];
 static boolean lastrejok;
-static int rejectlevel;
 static unsigned long groupsize;
 static unsigned long newgroupsize;
 static boolean Gswitch,Tswitch,Aswitch,Bswitch;
 static int Brows;
 
-/* #define GROUPTEST */
+#define GROUPTEST_NOT 
 #ifdef GROUPTEST
 static long long totallab;
+#endif
+
+#define PATHCOUNTS_NOT
+#ifdef PATHCOUNTS
+static long long count0,count1,count2,count3,count4,count5;
+static long oldlo;
+#endif
+
+/* If OUTPROC is defined at compile time, and -u is not used, the
+ * procedure OUTPROC is called for each graph.  This must be linked
+ * by the compiler.  The arguments are
+ * f = open output file
+ * n = number of vertices
+ * ne = number of edges
+ * gp = group size ignoring isolated vertices (note: may have overflowed)
+ * v0[*], v1[*], ix[*] = integer arrays.  The edges are
+ *   v0[i]-v1[i] with multiplicity ix[i] for i=0..ne-1.   ix[i]>0 always.
+ */
+
+#ifdef OUTPROC
+extern void OUTPROC(FILE*,int,int,unsigned long,int*,int*,int*);
 #endif
 
 /**************************************************************************/
@@ -89,7 +113,7 @@ ismax(permutation *p, int n)
     {
         k = edgeno[p[v1[i]]][p[v0[i]]];
 
-	if (ix[k] > ix[i])
+        if (ix[k] > ix[i])
 	    return FALSE;
 	else if (ix[k] < ix[i])
 	    return TRUE;
@@ -105,7 +129,7 @@ void
 testmax(permutation *p, int n, int *abort)
 /* Called by allgroup2. */
 {
-    int i,j,k;
+    int i;
 
     if (first)
     {                       /* only the identity */
@@ -127,7 +151,7 @@ void
 printam(FILE *f, int n, int ne, int *ix)
 /* Write adjacency matrix formats */
 {
-    int i,j,k;
+    int i,j;
 
     if (Aswitch)
     {
@@ -159,12 +183,13 @@ printam(FILE *f, int n, int ne, int *ix)
 /**************************************************************************/
 
 static void
-trythisone(grouprec *group, int ne, int n)
+trythisone(grouprec *group,
+           boolean lswitch, int *deg, int maxdeg, int ne, int n)
+/* Try one solution, accept if minimal. */
 {
-    int i,k;
+    int i,ne2;
     boolean accept;
 
-    ADDBIG(ngen,1);
     nix = ne;
     newgroupsize = 1;
 
@@ -187,7 +212,6 @@ trythisone(grouprec *group, int ne, int n)
 
     if (accept)
     {
-
 #ifdef GROUPTEST
 	if (groupsize % newgroupsize != 0)
 			gt_abort("group size error\n");
@@ -198,18 +222,30 @@ trythisone(grouprec *group, int ne, int n)
 
 	if (outfile)
 	{
+	    ne2 = ne;
+	    if (lswitch)
+		for (i = 0; i < n; ++i)
+		    if (deg[i] < maxdeg)
+		    {
+			v0[ne2] = v1[ne2] = i;
+			ix[ne2] = (maxdeg-deg[i])/2;
+			++ne2;
+		    }
+#ifdef OUTPROC
+	    OUTPROC(outfile,n,ne2,newgroupsize,v0,v1,ix);
+#else
 	    if (Aswitch || Bswitch)
-		printam(outfile,n,ne,ix);
-
+		printam(outfile,n,ne2,ix);
 	    else
 	    {
-	        fprintf(outfile,"%d %ld",n,ne);
+	        fprintf(outfile,"%d %d",n,ne2);
 	        if (Gswitch) fprintf(outfile," %lu",newgroupsize);
 
-                for (i = 0; i < ne; ++i)
+                for (i = 0; i < ne2; ++i)
 	            fprintf(outfile," %d %d %d",v0[i],v1[i],ix[i]);
                 fprintf(outfile,"\n");
 	    }
+#endif
 	}
         return;
     }
@@ -220,16 +256,16 @@ trythisone(grouprec *group, int ne, int n)
 /**************************************************************************/
 
 static void
-scan(int level, int ne, int minedges, int maxedges, int sofar,
-	int maxmult, grouprec *group, int n)
-/* Main recursive scan; returns the level to return to. */
+scan(int level, int ne, long minedges, long maxedges, long sofar,
+	long maxmult, grouprec *group, int n)
+/* Recursive scan for default case */
 {
-    int k;
-    int min,max,left;
+    int left;
+    long min,max,k;
 
     if (level == ne)
     {
-	trythisone(group,ne,n);
+	trythisone(group,FALSE,NULL,0,ne,n);
 	return;
     }
 
@@ -251,50 +287,265 @@ scan(int level, int ne, int minedges, int maxedges, int sofar,
 /**************************************************************************/
 
 static void
+scan_md(int level, int ne, long minedges, long maxedges, long sofar,
+	long maxmult, grouprec *group, int n, int *deg, int maxdeg)
+/* Recursive scan, maxdeg version */
+{
+    int left;
+    int min,max,k;
+    int x1,x2;
+
+    if (level == ne)
+    {
+	trythisone(group,FALSE,deg,maxdeg,ne,n);
+	return;
+    }
+
+    x1 = v0[level];
+    x2 = v1[level];
+    left = ne - level - 1;
+    min = minedges - sofar - maxmult*left;
+    if (min < 1) min = 1;
+    max = maxedges - sofar - left;
+    if (max > maxmult) max = maxmult;
+    if (deg[x1] + max - 1 > maxdeg) max = maxdeg - deg[x1] + 1;
+    if (deg[x2] + max - 1 > maxdeg) max = maxdeg - deg[x2] + 1;
+
+    for (k = min; k <= max; ++k)
+    {
+        ix[level] = k;
+	deg[x1] += k-1; deg[x2] += k-1;
+	scan_md(level+1,ne,minedges,maxedges,sofar+k,maxmult,group,
+		n,deg,maxdeg);
+	deg[x1] -= k-1; deg[x2] -= k-1;
+    }
+
+    return;
+}
+
+/**************************************************************************/
+
+static void
+scan_lp(int level, int ne, long minedges, long maxedges, long sofar,
+	long maxmult, grouprec *group, int n, int *deg, int maxdeg)
+/* Recursive scan, regular-with-loops version. */
+{
+    int left;
+    long min,max,k;
+    int x1,x2;
+    boolean odd,even;
+
+    if (level == ne)
+    {
+	trythisone(group,TRUE,deg,maxdeg,ne,n);
+	return;
+    }
+
+    x1 = v0[level];
+    x2 = v1[level];
+    left = ne - level - 1;
+    min = minedges - sofar - maxmult*left;
+    if (min < 1) min = 1;
+    max = maxedges - sofar - left;
+    if (max > maxmult) max = maxmult;
+    if (deg[x1] + max - 1 > maxdeg) max = maxdeg - deg[x1] + 1;
+    if (deg[x2] + max - 1 > maxdeg) max = maxdeg - deg[x2] + 1;
+
+    odd = even = FALSE;
+    if (lastlev[x1] == level)
+    {
+	if (((maxdeg-deg[x1])&1) == 1) even = TRUE; else odd = TRUE;
+    }
+    if (lastlev[x2] == level)
+    {
+	if (((maxdeg-deg[x2])&1) == 1) even = TRUE; else odd = TRUE;
+    }
+    if (even && odd) return;
+
+    for (k = min; k <= max; ++k)
+    {
+	if (even && (k&1) == 1) continue;
+	if (odd && (k&1) == 0) continue;
+
+        ix[level] = k;
+	deg[x1] += k-1; deg[x2] += k-1;
+	scan_lp(level+1,ne,minedges,maxedges,sofar+k,maxmult,group,
+		n,deg,maxdeg);
+	deg[x1] -= k-1; deg[x2] -= k-1;
+    }
+
+    return;
+}
+
+/**************************************************************************/
+
+static void
+scan_reg(int level, int ne, long minedges, long maxedges, long sofar,
+	long maxmult, grouprec *group, int n, int *delta, int *def, int maxdeg)
+/* Recursive scan, regular version. */
+{
+    int left;
+    long min,max,k;
+    int x1,x2;
+
+    if (level == ne)
+    {
+	trythisone(group,FALSE,NULL,maxdeg,ne,n);
+	return;
+    }
+
+    x1 = v0[level];
+    x2 = v1[level];
+    left = ne - level - 1;
+    min = minedges - sofar - maxmult*left;
+    if (min < 1) min = 1;
+    max = maxedges - sofar - left;
+    if (max > maxmult) max = maxmult;
+    if (max > def[x1] + 1) max = def[x1] + 1;
+    if (max > def[x2] + 1) max = def[x2] + 1;
+
+    if (min < def[x2] + 1 - delta[x1]) min = def[x2] + 1 - delta[x1];
+    if (min < def[x1] + 1 - delta[x2]) min = def[x1] + 1 - delta[x2];
+
+    if (lastlev[x1] == level && min < def[x1] + 1) min = def[x1] + 1;
+    if (lastlev[x2] == level && min < def[x2] + 1) min = def[x2] + 1;
+
+    for (k = min; k <= max; ++k)
+    {
+        ix[level] = k;
+	delta[x1] += k-1 - def[x2];
+	delta[x2] += k-1 - def[x1];
+	def[x1] -= k-1;
+        def[x2] -= k-1;
+	scan_reg(level+1,ne,minedges,maxedges,sofar+k,maxmult,group,
+		n,delta,def,maxdeg);
+	def[x1] += k-1;
+        def[x2] += k-1;
+	delta[x1] -= k-1 - def[x2];
+	delta[x2] -= k-1 - def[x1];
+    }
+
+    return;
+}
+
+/**************************************************************************/
+
+static void
 multi(graph *g, int nfixed, long minedges, long maxedges, long maxmult,
-      int m, int n)
+      int maxdeg, boolean lswitch, int m, int n)
 {
     static DEFAULTOPTIONS_GRAPH(options);
-    statsblk(stats);
+    statsblk stats;
     setword workspace[100];
     grouprec *group;
-    long ne;
-    int i,j,k,j0,j1,deg;
+    int ne;
+    int i,j,k,j0,j1,thisdeg,maxd,x0,x1;
     set *gi;
-    int lab[MAXNV],ptn[MAXNV],orbits[MAXNV];
+    int lab[MAXNV],ptn[MAXNV],orbits[MAXNV],deg[MAXNV];
+    int delta[MAXNV],def[MAXNV];
     set active[(MAXNV+WORDSIZE-1)/WORDSIZE];
+    boolean isreg;
 
-    nauty_check(WORDSIZE,m,n,NAUTYVERSIONID);
+#ifdef PATHCOUNTS
+    ++count0;
+#endif
 
     j0 = -1;  /* last vertex with degree 0 */
     j1 = n;   /* first vertex with degree > 0 */
  
     ne = 0;
+    maxd = 0;
     for (i = 0, gi = g; i < n; ++i, gi += m)
     {
-	deg = 0;
-	for (j = 0; j < m; ++j) deg += POPCOUNT(gi[j]);
-	if (deg == 0) lab[++j0] = i;
-	else          lab[--j1] = i;
-	ne += deg;
+	thisdeg = 0;
+	for (j = 0; j < m; ++j) thisdeg += POPCOUNT(gi[j]);
+	deg[i] = thisdeg;
+	if (thisdeg > maxd) maxd = thisdeg;
+	if (thisdeg == 0) lab[++j0] = i;
+	else              lab[--j1] = i;
+	ne += thisdeg;
     }
     ne /= 2;
 
-    if (ne == 0 && minedges <= 0)
+    if (maxdeg >= 0 && maxd > maxdeg) return;
+
+#ifdef PATHCOUNTS
+    ++count1;
+#endif
+
+    if (ne == 0 && minedges <= 0 && (!lswitch || lswitch && (maxdeg&1) == 0))
     {
-	trythisone(NULL,0,n);
+	trythisone(NULL,lswitch,deg,maxdeg,0,n);
 	return;
     }
+
+#ifdef PATHCOUNTS
+    ++count2;
+#endif
+
+    if (Aswitch || Bswitch)
+	for (i = 0; i < n; ++i)
+	for (j = 0; j < n; ++j)
+	    edgeno[i][j] = -1;
+
+    k = 0;
+    for (i = 0, gi = g; i < n; ++i, gi += m)
+    {
+        for (j = i; (j = nextelement(gi,m,j)) >= 0; )
+	{
+	    v0[k] = i;
+	    v1[k] = j;
+	    edgeno[i][j] = edgeno[j][i] = k;
+	    lastlev[i] = lastlev[j] = k;
+	    ++k;
+	}
+    }
+
+    isreg = !lswitch && (maxdeg >= 0 && 2*minedges == n*(long)maxdeg);
+            /* Case of regular multigraphs */
+
+    if (isreg)  /* regular case */
+    /* Condition: def(v) <= total def of neighbours */
+    {
+	for (i = 0; i < n; ++i)
+        {
+	    def[i] = maxdeg - deg[i];
+	    delta[i] = -def[i];
+	}
+
+	for (i = 0; i < k; ++i)
+	{
+	    x0 = v0[i]; x1 = v1[i];
+	    delta[x0] += def[x1];
+	    delta[x1] += def[x0];
+	}
+
+	for (i = 0; i < n; ++i) if (delta[i] < 0) return;
+    }
+
+    if ((isreg || lswitch) && (maxdeg & n & 1) == 1) return;
+    if (isreg && j0 >= 0 && maxdeg > 0) return;
+    if (lswitch && j0 >= 0 && (maxdeg&1) == 1) return;
+
+#ifdef PATHCOUNTS
+    ++count3;
+#endif
 
     if (maxedges == NOLIMIT) maxedges = ne*maxmult;
     if (maxmult == NOLIMIT) maxmult = maxedges - ne + 1;
     if (maxedges < ne || ne*maxmult < minedges) return;
+
+#ifdef PATHCOUNTS
+    ++count4;
+#endif
 
     if (n > MAXNV || ne > MAXNE)
     {
 	fprintf(stderr,">E multig: MAXNV or MAXNE exceeded\n");
 	exit(1);
     }
+
+    nauty_check(WORDSIZE,m,n,NAUTYVERSIONID);
 
     for (i = 0; i < n; ++i) ptn[i] = 1;
     ptn[n-1] = 0;
@@ -326,55 +577,44 @@ multi(graph *g, int nfixed, long minedges, long maxedges, long maxmult,
     group = groupptr(FALSE);
     makecosetreps(group);
 
-    if (Aswitch || Bswitch)
-	for (i = 0; i < n; ++i)
-	for (j = 0; j < n; ++j)
-	    edgeno[i][j] = -1;
-
-    k = 0;
-    for (i = 0, gi = g; i < n; ++i, gi += m)
-    {
-        for (j = i; (j = nextelement(gi,m,j)) >= 0; )
-	{
-	    v0[k] = i;
-	    v1[k] = j;
-	    edgeno[i][j] = edgeno[j][i] = k;
-	    ++k;
-	}
-    }
-
     lastrejok = FALSE;
 
-    scan(0,ne,minedges,maxedges,0,maxmult,group,n);
+    if (isreg)
+	scan_reg(0,ne,minedges,maxedges,0,maxmult,group,n,delta,def,maxdeg);
+    else if (lswitch)
+        scan_lp(0,ne,minedges,maxedges,0,maxmult,group,n,deg,maxdeg);
+    else if (maxdeg >= 0)
+        scan_md(0,ne,minedges,maxedges,0,maxmult,group,n,deg,maxdeg);
+    else
+        scan(0,ne,minedges,maxedges,0,maxmult,group,n);
 }
 
 /**************************************************************************/
 
+int
 main(int argc, char *argv[])
 {
 	graph *g;
 	int m,n,codetype;
-	int argnum,j,outcode,nfixed;
-	char *arg,sw,*fmt;
+	int argnum,j,nfixed,maxdeg,regdeg,ldeg;
+	char *arg,sw;
 	boolean badargs;
-	boolean fswitch,uswitch,eswitch,qswitch,mswitch;
+	boolean fswitch,uswitch,eswitch,qswitch,mswitch,Dswitch;
+	boolean lswitch,rswitch;
 	long minedges,maxedges,maxmult;
 	double t;
 	char *infilename,*outfilename;
 	FILE *infile;
-#if MAXN
-	graph h[MAXN*MAXM];
-#else
-	DYNALLSTAT(graph,h,h_sz);
-#endif
+        char msg[201];
+	int msglen;
 
 	HELP;
 
 	nauty_check(WORDSIZE,1,1,NAUTYVERSIONID);
 
-	fswitch = Tswitch = Gswitch = FALSE;
+	rswitch = fswitch = Tswitch = Gswitch = FALSE;
 	uswitch = eswitch = mswitch = qswitch = FALSE;
-	Aswitch = Bswitch = FALSE;
+	lswitch = Aswitch = Bswitch = Dswitch = FALSE;
 	infilename = outfilename = NULL;
 
 	argnum = 0;
@@ -396,6 +636,9 @@ main(int argc, char *argv[])
 		    else SWBOOLEAN('A',Aswitch)
 		    else SWBOOLEAN('B',Bswitch)
 		    else SWINT('f',fswitch,nfixed,"multig -f")
+		    else SWINT('D',Dswitch,maxdeg,"multig -D")
+		    else SWINT('r',rswitch,regdeg,"multig -r")
+		    else SWINT('l',lswitch,ldeg,"multig -l")
 		    else SWRANGE('e',":-",eswitch,minedges,maxedges,"multig -e")
 		    else badargs = TRUE;
 		}
@@ -423,6 +666,12 @@ main(int argc, char *argv[])
 	if (!Tswitch && !Gswitch && !Aswitch && !Bswitch && !uswitch)
 	    gt_abort(">E multig: must use -A, -B, -T, -G or -u\n");
 
+	if (rswitch && (Dswitch || eswitch))
+	    gt_abort(">E multig: -r is incompatible with -D and -e\n");
+
+	if (lswitch && (rswitch || Dswitch || eswitch))
+	    gt_abort(">E multig: -l is incompatible with -r, -D and -e\n");
+
 	if (!eswitch)
 	{
 	    minedges = 0;
@@ -435,28 +684,61 @@ main(int argc, char *argv[])
 	    gt_abort(">E multig: -B requires -f# with #>0\n");
 	if (fswitch) Brows = nfixed;
 
-	if (maxedges >= NOLIMIT && maxmult >= NOLIMIT)
-	    gt_abort(">E multig: either -e or -m must impose a real limit\n");
+	if (maxedges >= NOLIMIT && maxmult >= NOLIMIT
+                      && !Dswitch && !rswitch && !lswitch)
+	    gt_abort(
+          ">E multig: either -D or -e or -m or -r must impose a real limit\n");
 
 	if (!qswitch)
 	{
-	    fprintf(stderr,">A multig");
+            msg[0] = '\0';
+	    CATMSG0(">A multig");
 	    if (eswitch || mswitch || uswitch || fswitch && nfixed > 0
-                    || Tswitch || Gswitch || Aswitch || Bswitch)
-		fprintf(stderr," -");
-	    if (mswitch) fprintf(stderr,"m%ld",maxmult);
-	    if (uswitch) fprintf(stderr,"u");
-	    if (Tswitch) fprintf(stderr,"T");
-	    if (Tswitch) fprintf(stderr,"G");
-	    if (Tswitch) fprintf(stderr,"A");
-	    if (Tswitch) fprintf(stderr,"B");
-	    if (fswitch) fprintf(stderr,"f%d",nfixed);
+                  || lswitch || rswitch || Dswitch || Tswitch
+		  || Gswitch || Aswitch || Bswitch)
+		CATMSG0(" -");
+	    if (mswitch) CATMSG1("m%ld",maxmult);
+	    if (uswitch) CATMSG0("u");
+	    if (Tswitch) CATMSG0("T");
+	    if (Gswitch) CATMSG0("G");
+	    if (Aswitch) CATMSG0("A");
+	    if (Bswitch) CATMSG0("B");
+	    if (fswitch) CATMSG1("f%d",nfixed);
 	    if (eswitch)
-		fprintf(stderr,"e%d:%d",minedges,maxedges);
-	    if (argnum > 0) fprintf(stderr," %s",infilename);
-	    if (argnum > 1) fprintf(stderr," %s",outfilename);
-	    fprintf(stderr,"\n");
+		CATMSG2("e%ld:%ld",minedges,maxedges);
+	    if (Dswitch) CATMSG1("D%d",maxdeg);
+	    if (rswitch) CATMSG1("r%d",regdeg);
+	    if (lswitch) CATMSG1("l%d",ldeg);
+	    msglen = strlen(msg);
+	    if (argnum > 0) msglen += strlen(infilename);
+	    if (argnum > 1) msglen += strlen(outfilename);
+	    if (msglen >= 196)
+	    {
+		fputs(msg,stderr);
+	        if (argnum > 0) fprintf(stderr," %s",infilename);
+	        if (argnum > 1) fprintf(stderr," %s",outfilename);
+	        fprintf(stderr,"\n");
+	    }
+	    else
+	    {
+		if (argnum > 0) CATMSG1(" %s",infilename);
+		if (argnum > 1) CATMSG1(" %s",outfilename);
+		CATMSG0("\n");
+		fputs(msg,stderr);
+	    }
 	    fflush(stderr);
+	}
+
+	if (rswitch)
+	{
+	    eswitch = Dswitch = TRUE;
+	    maxdeg = regdeg;
+	}
+
+	if (lswitch)
+	{
+	    eswitch = Dswitch = TRUE;
+	    maxdeg = ldeg;
 	}
 
 	if (infilename && infilename[0] == '-') infilename = NULL;
@@ -480,14 +762,33 @@ main(int argc, char *argv[])
 	    }
 	}
 
-	ZEROBIG(nin); ZEROBIG(ngen); ZEROBIG(nout);
+	ZEROBIG(nin); ZEROBIG(nout);
 
 	t = CPUTIME;
 	while (TRUE)
 	{
 	    if ((g = readg(infile,NULL,0,&m,&n)) == NULL) break;
 	    ADDBIG(nin,1);
-	    multi(g,nfixed,minedges,maxedges,maxmult,m,n);
+#ifdef PATHCOUNTS
+	    oldlo = nout.lo;
+#endif
+	    if (rswitch)
+	    {
+		minedges = ((long)n * (long)regdeg + 1) / 2;
+		maxedges = ((long)n * (long)regdeg) / 2;
+	    }
+	    if (lswitch)
+	    {
+		maxedges = ((long)n * (long)ldeg) / 2;
+		if ((ldeg & 1) == 1) minedges = (n + 1) / 2;
+		else                 minedges = 0;
+	    }
+
+	    multi(g,nfixed,minedges,maxedges,maxmult,
+                  (Dswitch?maxdeg:-1),lswitch,m,n);
+#ifdef PATHCOUNTS
+	    if (nout.lo != oldlo) ++count5;
+#endif
 	    FREES(g);
 	}
 	t = CPUTIME - t;
@@ -497,9 +798,6 @@ main(int argc, char *argv[])
 	    fprintf(stderr,">Z ");
 	    PRINTBIG(stderr,nin);
             fprintf(stderr," graphs read from %s",infilename);
-	 /* fprintf(stderr,"; ");
-	    PRINTBIG(stderr,ngen);
-            fprintf(stderr,"; %lu multigraphs tested",ngen); */
 	    fprintf(stderr,"; ");
 	    PRINTBIG(stderr,nout);
             if (!uswitch)
@@ -511,6 +809,11 @@ main(int argc, char *argv[])
 
 #ifdef GROUPTEST
 	fprintf(stderr,"Group test = %lld\n",totallab);
+#endif
+
+#ifdef PATHCOUNTS
+	fprintf(stderr,"Counts: %lld %lld %lld %lld %lld %lld\n",
+	        count0,count1,count2,count3,count4,count5);
 #endif
 
 	exit(0);

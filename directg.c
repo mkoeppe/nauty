@@ -1,6 +1,7 @@
-/* directg.c version 1.0; B D McKay, Oct 17, 2004 */
+/* directg.c version 1.2; B D McKay, Jul 29, 2007 */
 
-#define USAGE "directg [-q] [-u|-T|-G] [-o] [-e#|-e#:#] [infile [outfile]]"
+#define USAGE \
+  "directg [-q] [-u|-T|-G] [-o] [-f#] [-e#|-e#:#] [infile [outfile]]"
 
 #define HELPTEXT \
 " Read undirected graphs and orient their edges in all possible ways.\n\
@@ -10,10 +11,11 @@
 \n\
    -e# | -e#:#  specify a value or range of the total number of arcs\n\
     -o     orient each edge in only one direction, never both\n\
+   -f#  Use only the subgroup that fixes the first # vertices setwise\n\
 \n\
     -T  use a simple text output format (nv ne edges) instead of digraph6\n\
     -G  like -T but includes group size as third item (if less than 10^10)\n\
-	  The group size does not include exchange of isolated vertices.\n\
+          The group size does not include exchange of isolated vertices.\n\
     -u  no output, just count them\n\
     -q  suppress auxiliary information\n"
 
@@ -54,6 +56,29 @@ static int rejectlevel;
 static unsigned long groupsize;
 static unsigned long newgroupsize;
 static boolean Gswitch;
+
+/* DEGPRUNE feature 
+ *
+ * If DEGPRUNE is defined it must have a value equal to the name of a 
+ * procedure to be supplied by the user and linked to this program.
+ * The prototype must be
+ *     int DEGPRUNE(int *indeg, int outdeg*, int v, int n)
+ * Here n is the number of vertices altogether, and v (0..n-1) is the
+ * number of one vertex.  At this point in the program, some directed
+ * edges have been inserted, and the indegrees and outdegrees have the
+ * values given in indeg[] and outdeg[].  Moreover, it is known that
+ * no further edges will be added to or from v, so indeg[v] and outdeg[v]
+ * are final.  If DEGPRUNE returns a non-zero value, this branch of the
+ * search will be abandoned.
+ * Before any graph is output, DEGPRUNE will have been called for every
+ * vertex, but it cannot be assumed that DEGPRUNE will be called in order
+ * of vertex number.
+ */
+
+#ifdef DEGPRUNE
+static int lastlev[MAXNV],indeg[MAXNV],outdeg[MAXNV];
+extern int DEGPRUNE(int*,int*,int,int);
+#endif
 
 /* #define GROUPTEST */
 #ifdef GROUPTEST
@@ -198,6 +223,12 @@ scan(int level, int ne, int minarcs, int maxarcs, int sofar,
 /* Main recursive scan; returns the level to return to. */
 {
     int k,retlev;
+#ifdef DEGPRUNE
+    int w0,w1;
+
+    w0 = v0[level];
+    w1 = v1[level];
+#endif
 
     if (level == ne)
     {
@@ -210,14 +241,34 @@ scan(int level, int ne, int minarcs, int maxarcs, int sofar,
         k = 2*level;
 	ADDELEMENT(x,k);
 	ix[sofar] = k;
+#ifdef DEGPRUNE
+	++outdeg[w0]; ++indeg[w1];
+	if (lastlev[w0] == level && DEGPRUNE(indeg,outdeg,w0,n)
+	 || lastlev[w1] == level && DEGPRUNE(indeg,outdeg,w1,n))
+            retlev = level;
+	else
+#endif
 	retlev = scan(level+1,ne,minarcs,maxarcs,sofar+1,oriented,group,n);
 	DELELEMENT(x,k);
+#ifdef DEGPRUNE
+	--outdeg[w0]; --indeg[w1];
+#endif
         if (retlev < level) return retlev;
 	++k;
 	ADDELEMENT(x,k);
 	ix[sofar] = k;
+#ifdef DEGPRUNE
+	++outdeg[w1]; ++indeg[w0];
+	if (lastlev[w0] == level && DEGPRUNE(indeg,outdeg,w0,n)
+	 || lastlev[w1] == level && DEGPRUNE(indeg,outdeg,w1,n))
+            retlev = level;
+	else
+#endif
 	retlev = scan(level+1,ne,minarcs,maxarcs,sofar+1,oriented,group,n);
 	DELELEMENT(x,k);
+#ifdef DEGPRUNE
+	--outdeg[w1]; --indeg[w0];
+#endif
         if (retlev < level) return retlev;
     }
 
@@ -228,9 +279,21 @@ scan(int level, int ne, int minarcs, int maxarcs, int sofar,
 	ADDELEMENT(x,k+1);
 	ix[sofar] = k;
 	ix[sofar+1] = k+1;
+#ifdef DEGPRUNE
+	++indeg[w0]; ++indeg[w1];
+	++outdeg[w0]; ++outdeg[w1];
+	if (lastlev[w0] == level && DEGPRUNE(indeg,outdeg,w0,n)
+	 || lastlev[w1] == level && DEGPRUNE(indeg,outdeg,w1,n))
+            retlev = level;
+	else
+#endif
 	retlev = scan(level+1,ne,minarcs,maxarcs,sofar+2,oriented,group,n);
 	DELELEMENT(x,k+1);
 	DELELEMENT(x,k);
+#ifdef DEGPRUNE
+	--indeg[w0]; --indeg[w1];
+	--outdeg[w0]; --outdeg[w1];
+#endif
         if (retlev < level) return retlev;
     }
 
@@ -240,10 +303,11 @@ scan(int level, int ne, int minarcs, int maxarcs, int sofar,
 /**************************************************************************/
 
 static void
-direct(graph *g, long minarcs, long maxarcs, boolean oriented, int m, int n)
+direct(graph *g, int nfixed,
+       long minarcs, long maxarcs, boolean oriented, int m, int n)
 {
     static DEFAULTOPTIONS_GRAPH(options);
-    statsblk(stats);
+    statsblk stats;
     setword workspace[100];
     grouprec *group;
     long ne;
@@ -304,6 +368,15 @@ direct(graph *g, long minarcs, long maxarcs, boolean oriented, int m, int n)
 	ptn[i] = 0;
     }
 
+    for (i = j0+1; i < n; ++i)
+        if (lab[i] < nfixed) break;
+
+    if (i != j0+1 && i != n)
+    {
+        ptn[i-1] = 0;
+        ADDELEMENT(active,i);
+    }
+
     options.defaultptn = FALSE;
     options.userautomproc = groupautomproc;
     options.userlevelproc = grouplevelproc;
@@ -318,6 +391,12 @@ direct(graph *g, long minarcs, long maxarcs, boolean oriented, int m, int n)
     group = groupptr(FALSE);
     makecosetreps(group);
 
+#ifdef DEGPRUNE
+    for (i = 0; i < n; ++i) indeg[i] = outdeg[i] = 0;
+    for (i = 0; i <= j0; ++i)
+	if (DEGPRUNE(indeg,outdeg,lab[i],n)) return;
+#endif
+
     k = 0;
     for (i = 0, gi = g; i < n; ++i, gi += m)
     {
@@ -325,6 +404,9 @@ direct(graph *g, long minarcs, long maxarcs, boolean oriented, int m, int n)
 	{
 	    v0[k] = i;
 	    v1[k] = j;
+#ifdef DEGPRUNE
+	    lastlev[i] = lastlev[j] = k;
+#endif
 	    edgeno[i][j] = 2*k;
 	    edgeno[j][i] = 2*k+1;
 	    ++k;
@@ -342,14 +424,16 @@ main(int argc, char *argv[])
 {
 	graph *g;
 	int m,n,codetype;
-	int argnum,j,outcode;
+	int argnum,j,outcode,nfixed;
 	char *arg,sw,*fmt;
 	boolean badargs;
-	boolean Tswitch,uswitch,eswitch,qswitch,oswitch;
+	boolean Tswitch,uswitch,eswitch,qswitch,oswitch,fswitch;
 	long minarcs,maxarcs;
 	double t;
 	char *infilename,*outfilename;
 	FILE *infile;
+	char msg[201];
+        int msglen;
 #if MAXN
 	graph h[MAXN*MAXM];
 #else
@@ -360,7 +444,7 @@ main(int argc, char *argv[])
 
 	nauty_check(WORDSIZE,1,1,NAUTYVERSIONID);
 
-	Tswitch = Gswitch = FALSE;
+	Tswitch = Gswitch = fswitch = FALSE;
 	uswitch = eswitch = oswitch = qswitch = FALSE;
 	infilename = outfilename = NULL;
 
@@ -380,6 +464,7 @@ main(int argc, char *argv[])
 		    else SWBOOLEAN('u',uswitch)
 		    else SWBOOLEAN('T',Tswitch)
 		    else SWBOOLEAN('G',Gswitch)
+		    else SWINT('f',fswitch,nfixed,"directg -f")
 		    else SWRANGE('e',":-",eswitch,minarcs,maxarcs,"directg -e")
 		    else badargs = TRUE;
 		}
@@ -413,20 +498,36 @@ main(int argc, char *argv[])
 	    maxarcs = NOLIMIT;
 	}
 
+	if (!fswitch) nfixed = 0;
+
 	if (!qswitch)
 	{
-	    fprintf(stderr,">A directg");
-	    if (eswitch || oswitch || uswitch)
-		fprintf(stderr," -");
-	    if (oswitch) fprintf(stderr,"o");
-	    if (uswitch) fprintf(stderr,"u");
-	    if (Tswitch) fprintf(stderr,"T");
-	    if (eswitch)
-		fprintf(stderr,"e%d:%d",minarcs,maxarcs);
-	    if (argnum > 0) fprintf(stderr," %s",infilename);
-	    if (argnum > 1) fprintf(stderr," %s",outfilename);
-	    fprintf(stderr,"\n");
-	    fflush(stderr);
+	    msg[0] = '\0';
+            CATMSG0(">A directg");
+	    if (eswitch || oswitch || uswitch || fswitch) CATMSG0(" -");
+	    if (oswitch) CATMSG0("o");
+	    if (uswitch) CATMSG0("u");
+	    if (Tswitch) CATMSG0("T");
+	    if (fswitch) CATMSG1("f%d",nfixed);
+	    if (eswitch) CATMSG2("e%d:%d",minarcs,maxarcs);
+	    msglen = strlen(msg);
+            if (argnum > 0) msglen += strlen(infilename);
+            if (argnum > 1) msglen += strlen(outfilename);
+	    if (msglen >= 196)
+            {
+                fputs(msg,stderr);
+                if (argnum > 0) fprintf(stderr," %s",infilename);
+                if (argnum > 1) fprintf(stderr," %s",outfilename);
+                fprintf(stderr,"\n");
+            }
+            else
+            {
+                if (argnum > 0) CATMSG1(" %s",infilename);
+                if (argnum > 1) CATMSG1(" %s",outfilename);
+                CATMSG0("\n");
+                fputs(msg,stderr);
+            }
+            fflush(stderr);
 	}
 
 	if (infilename && infilename[0] == '-') infilename = NULL;
@@ -457,7 +558,7 @@ main(int argc, char *argv[])
 	{
 	    if ((g = readg(infile,NULL,0,&m,&n)) == NULL) break;
 	    ADDBIG(nin,1);
-	    direct(g,minarcs,maxarcs,oswitch,m,n);
+	    direct(g,nfixed,minarcs,maxarcs,oswitch,m,n);
 	    FREES(g);
 	}
 	t = CPUTIME - t;

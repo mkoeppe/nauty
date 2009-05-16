@@ -1,8 +1,7 @@
-/* shortg.c  version 1.4; B D McKay, August 20, 2002. */
+/* shortg.c  version 1.8; B D McKay, Oct 14, 2007. */
 
-/* TODO:  temporary file placement, search for sort program */
-
-#define USAGE "shortg [-qvkdu] [-fxxx] [infile [outfile]]"
+#define USAGE \
+  "shortg [-qvkdu] [-i# -I#:# -K#] [-fxxx] [-Tdir] [infile [outfile]]"
 
 #define HELPTEXT \
 "  Remove isomorphs from a file of graphs.\n\
@@ -20,8 +19,8 @@
         format of the first input graph.\n\
     -k  output graphs have the same labelling and format as the inputs.\n\
         Otherwise, output graphs have canonical labelling.\n\
-	-s and -g are ineffective if -k is given.  If none of -sgk are\n\
-	given, the output format is determined by the header or, if there\n\
+        -s and -g are ineffective if -k is given.  If none of -sgk are\n\
+        given, the output format is determined by the header or, if there\n\
         is none, by the format of the first input graph.\n\
 \n\
     -v  write to stderr a list of which input graphs correspond to which\n\
@@ -47,16 +46,24 @@
          (2) if two graphs are labelled using the same string xxx,\n\
         the output graphs are identical iff there is an\n\
         associated-character-preserving isomorphism between them.\n\
+    -i#  select an invariant (1 = twopaths, 2 = adjtriang(K), 3 = triples,\n\
+        4 = quadruples, 5 = celltrips, 6 = cellquads, 7 = cellquins,\n\
+        8 = distances(K), 9 = indsets(K), 10 = cliques(K), 11 = cellcliq(K),\n\
+       12 = cellind(K), 13 = adjacencies, 14 = cellfano, 15 = cellfano2)\n\
+    -I#:#  select mininvarlevel and maxinvarlevel (default 1:1)\n\
+    -K#   select invararg (default 3)\n\
 \n\
-    -u  Write no output, just report how many graphs it would have.\n\
+    -u  Write no output, just report how many graphs it would have output.\n\
         In this case, outfile is not permitted.\n\
-\n\
+    -Tdir  Specify that directory \"dir\" will be used for temporary disk\n\
+        space by the sort subprocess.  The default is usually /tmp.\n\
     -q  Suppress auxiliary output\n"
 
 
 /*************************************************************************/
 
 #include "gtools.h" 
+#include "nautinv.h"
 
 #if (HAVE_PIPE==0) || (HAVE_WAIT==0)
  #error Forget it, either pipe() or wait() are not available
@@ -85,10 +92,40 @@ FILE *fdopen(int, const char*);
 #define VSORTCOMMAND1  SORTPROG,SORTPROG
 #define VSORTCOMMAND2  SORTPROG,SORTPROG,"+0","-1","+2"
 
+#define SORTCOMMANDT  SORTPROG,SORTPROG,"-T",tempdir,"-u","+0","-1"
+#define VSORTCOMMANDT1  SORTPROG,SORTPROG,"-T",tempdir
+#define VSORTCOMMANDT2  SORTPROG,SORTPROG,"-T",tempdir,"+0","-1","+2"
+
+static struct invarrec
+{
+    void (*entrypoint)(graph*,int*,int*,int,int,int,permutation*,
+                      int,boolean,int,int);
+    char *name;
+} invarproc[]
+    = {{NULL, "none"},
+       {twopaths,    "twopaths"},
+       {adjtriang,   "adjtriang"},
+       {triples,     "triples"},
+       {quadruples,  "quadruples"},
+       {celltrips,   "celltrips"},
+       {cellquads,   "cellquads"},
+       {cellquins,   "cellquins"},
+       {distances,   "distances"},
+       {indsets,     "indsets"},
+       {cliques,     "cliques"},
+       {cellcliq,    "cellcliq"},
+       {cellind,     "cellind"},
+       {adjacencies, "adjacencies"},
+       {cellfano,    "cellfano"},
+       {cellfano2,   "cellfano2"}};
+
+#define NUMINVARS ((int)(sizeof(invarproc)/sizeof(struct invarrec)))
+
 /**************************************************************************/
 
 static pid_t
-beginsort(FILE **sortin, FILE **sortout, boolean vdswitch, boolean keep)
+beginsort(FILE **sortin, FILE **sortout, char *tempdir,
+          boolean vdswitch, boolean keep)
 /* begin sort process, open streams for i/o to it, and return its pid */
 {
         int pid;
@@ -110,16 +147,29 @@ beginsort(FILE **sortin, FILE **sortout, boolean vdswitch, boolean keep)
         }
         else                   /* child */
         {
+            SET_C_COLLATION;
+
             close(inpipe[1]);
             close(outpipe[0]);
             if (dup2(inpipe[0],0) < 0 || dup2(outpipe[1],1) < 0)
                 gt_abort(">E shortg: dup2 failed\n");
 
-            if (vdswitch)
-                if (keep) execlp(VSORTCOMMAND2,(char*)NULL);
-                else      execlp(VSORTCOMMAND1,(char*)NULL);
-            else
-                execlp(SORTCOMMAND,(char*)NULL);
+	    if (tempdir == NULL)
+	    {
+                if (vdswitch)
+                    if (keep) execlp(VSORTCOMMAND2,NULL);
+                    else      execlp(VSORTCOMMAND1,NULL);
+                else
+                    execlp(SORTCOMMAND,NULL);
+	    }
+	    else
+	    {
+                if (vdswitch)
+                    if (keep) execlp(VSORTCOMMANDT2,NULL);
+                    else      execlp(VSORTCOMMANDT1,NULL);
+                else
+                    execlp(SORTCOMMANDT,NULL);
+	    }
             gt_abort(">E shortg: can't start sort process\n");
         }
 
@@ -129,13 +179,13 @@ beginsort(FILE **sortin, FILE **sortout, boolean vdswitch, boolean keep)
 /**************************************************************************/
 
 static void
-tosort(FILE *f, char *cdstr, char *dstr, long index)
+tosort(FILE *f, char *cdstr, char *dstr, unsigned long index)
 /* write one graph to sort process 
    cdstr = canonical string 
    dstr = optional original string
    index = optional index number */
 {
-        register int i;
+        int i;
 	char buff[20];
 
         for (i = 0; cdstr[i] != '\n'; ++i) {}
@@ -152,7 +202,7 @@ tosort(FILE *f, char *cdstr, char *dstr, long index)
 
         if (index > 0)
         {
-            sprintf(buff,"\t%09ld\n",index);
+            sprintf(buff,"\t%09lu\n",index);
             writeline(f,buff);
         }
         else
@@ -162,10 +212,10 @@ tosort(FILE *f, char *cdstr, char *dstr, long index)
 /**************************************************************************/
 
 static boolean
-fromsort(FILE *f, char **cdstr, char **dstr, long *index)
+fromsort(FILE *f, char **cdstr, char **dstr, unsigned long *index)
 /* read one graph from sort process */
 {
-        register int j;
+        int j;
         char *s;
 
 	if ((s = getline(f)) == NULL) return FALSE;
@@ -184,7 +234,7 @@ fromsort(FILE *f, char **cdstr, char **dstr, long *index)
 
         if (s[j] == '\t')
         {
-            if (sscanf(&s[j+1],"%ld",index) != 1)
+            if (sscanf(&s[j+1],"%lu",index) != 1)
                 gt_abort(">E shortg: index field corrupted\n");
         }
         else
@@ -202,17 +252,20 @@ main(int argc, char *argv[])
         char *infilename,*outfilename;
         FILE *infile,*outfile;
         FILE *sortin,*sortout;
-        int status;
+        int status,loops;
         char *dstr,*cdstr,*prevdstr,*prevcdstr;
         char sw,*fmt;
         boolean badargs,quiet,vswitch,dswitch,keep,format,uswitch;
+	boolean iswitch,Iswitch,Kswitch,Tswitch;
 	boolean sswitch,gswitch;
-        long numread,prevnumread,numwritten,classsize;
+        unsigned long numread,prevnumread,numwritten,classsize;
         int m,n,i,argnum,line;
 	int outcode,codetype;
+	int inv,mininvarlevel,maxinvarlevel,invararg;
+        long minil,maxil;
         pid_t sortpid;
 	graph *g;
-        char *arg;
+        char *arg,*tempdir;
 #if MAXN
 	graph h[MAXN*MAXM];
 #else
@@ -225,7 +278,9 @@ main(int argc, char *argv[])
 
         infilename = outfilename = NULL;
         dswitch = format = quiet = vswitch = keep = uswitch = FALSE;
-	sswitch = gswitch = FALSE;
+	sswitch = gswitch = Tswitch = FALSE;
+	iswitch = Iswitch = Kswitch = FALSE;
+	inv = 0;
 
      /* parse argument list */
 
@@ -248,10 +303,19 @@ main(int argc, char *argv[])
 		    else SWBOOLEAN('u',uswitch)
 		    else SWBOOLEAN('s',sswitch)
 		    else SWBOOLEAN('g',gswitch)
+                    else SWINT('i',iswitch,inv,"shortg -i")
+                    else SWINT('K',Kswitch,invararg,"shortg -K")
+                    else SWRANGE('I',":-",Iswitch,minil,maxil,"shortg -I")
 		    else if (sw == 'f')
 		    {
 		        format = TRUE;
 		        fmt = arg;
+		        break;
+		    }
+		    else if (sw == 'T')
+		    {
+		        Tswitch = TRUE;
+		        tempdir = arg;
 		        break;
 		    }
 		    else badargs = TRUE;
@@ -275,7 +339,27 @@ main(int argc, char *argv[])
         if (sswitch && gswitch)
             gt_abort(">E shortg: -s and -g are incompatible\n");
 
+	if (Tswitch && *tempdir == '\0')
+	    gt_abort(">E shortg: -T needs a non-empty argument\n");
+
         if (argnum == 1 && !uswitch) outfilename = infilename;
+
+        if (iswitch && (inv > 15))
+            gt_abort(">E shortg: -i value must be 0..15\n");
+
+        if (iswitch && inv == 0) iswitch = FALSE;
+
+        if (iswitch)
+        {
+            if (Iswitch)
+            {
+                mininvarlevel = minil;
+                maxinvarlevel = maxil;
+            }
+            else
+                mininvarlevel = maxinvarlevel = 1;
+            if (!Kswitch) invararg = 3;
+        }
 
 	if (badargs)
         {
@@ -287,8 +371,8 @@ main(int argc, char *argv[])
 	if (!quiet)
 	{
 	    fprintf(stderr,">A shortg");
-	    if (uswitch || keep || vswitch || format
-			|| sswitch || gswitch)
+	    if (uswitch || keep || vswitch || format || Tswitch
+			|| sswitch || gswitch || iswitch)
 	    fprintf(stderr," -");
             if (sswitch) fprintf(stderr,"s");
             if (gswitch) fprintf(stderr,"g");
@@ -296,7 +380,12 @@ main(int argc, char *argv[])
 	    if (vswitch) fprintf(stderr,"v");
 	    if (dswitch) fprintf(stderr,"d");
 	    if (uswitch) fprintf(stderr,"u");
+            if (iswitch)
+                fprintf(stderr,"i=%s[%d:%d,%d]",invarproc[inv].name,
+                        mininvarlevel,maxinvarlevel,invararg);
 	    if (format) fprintf(stderr,"f%s",fmt);
+	    if (format && Tswitch) fprintf(stderr," -");
+	    if (Tswitch) fprintf(stderr,"T%s",tempdir);
 	    if (argnum > 0) fprintf(stderr," %s",infilename);
 	    if (argnum > 1) fprintf(stderr," %s",outfilename);
 	    fprintf(stderr,"\n");
@@ -318,7 +407,8 @@ main(int argc, char *argv[])
 
      /* begin sort in a subprocess */
 
-        sortpid = beginsort(&sortin,&sortout,dswitch||vswitch,keep);
+        sortpid = beginsort(&sortin,&sortout,(Tswitch?tempdir:NULL),
+						dswitch||vswitch,keep);
 
      /* feed input graphs, possibly relabelled, to sort process */
 
@@ -329,10 +419,13 @@ main(int argc, char *argv[])
 	    if ((g = readg(infile,NULL,0,&m,&n)) == NULL) break;
 	    dstr = readg_line;
             ++numread;
+	    loops = loopcount(g,m,n);
 #if !MAXN
 	    DYNALLOC2(graph,h,h_sz,n,m,"shortg");
 #endif
-	    fcanonise(g,m,n,h,format ? fmt : NULL);
+	    fcanonise_inv(g,m,n,h,format?fmt:NULL,
+		invarproc[inv].entrypoint,mininvarlevel,maxinvarlevel,
+		invararg, loops>0);
 	    if (outcode == SPARSE6) cdstr = ntos6(h,m,n);
 	    else                    cdstr = ntog6(h,m,n);
 
@@ -367,7 +460,7 @@ main(int argc, char *argv[])
 
         if (!quiet)
             fprintf(stderr,
-                    ">Z %6ld graphs read from %s\n",numread,infilename);
+                    ">Z %6lu graphs read from %s\n",numread,infilename);
 
      /* collect output from sort process and write to output file */
 
@@ -403,7 +496,7 @@ main(int argc, char *argv[])
 			if (vswitch)
 			{
 			    fprintf(stderr,"\n");
-                    	    fprintf(stderr,"%3ld : %3ld %3ld",
+                    	    fprintf(stderr,"%3lu : %3lu %3lu",
 				numwritten,prevnumread,numread);
                     	    line = 1;
 			}
@@ -426,7 +519,7 @@ main(int argc, char *argv[])
                                 line = 0;
                                 fprintf(stderr,"\n     ");
                             }
-                            fprintf(stderr," %3ld",numread);
+                            fprintf(stderr," %3lu",numread);
                             ++line;
 			}
 		    }
@@ -452,7 +545,7 @@ main(int argc, char *argv[])
 		        writeline(outfile,"\n");
 		    }
                     fprintf(stderr,"\n");
-                    fprintf(stderr,"%3ld : %3ld",numwritten,numread);
+                    fprintf(stderr,"%3lu : %3lu",numwritten,numread);
                     line = 1;
                 }
                 else
@@ -462,7 +555,7 @@ main(int argc, char *argv[])
                         line = 0;
                         fprintf(stderr,"\n     ");
                     }
-                    fprintf(stderr," %3ld",numread);
+                    fprintf(stderr," %3lu",numread);
                     ++line;
                 }
 		if (prevcdstr) FREES(prevcdstr);
@@ -489,10 +582,10 @@ main(int argc, char *argv[])
         if (!quiet)
 	{
 	    if (uswitch)
-		fprintf(stderr,">Z %6ld graphs produced\n",numwritten);
+		fprintf(stderr,">Z %6lu graphs produced\n",numwritten);
 	    else
                 fprintf(stderr,
-                        ">Z %6ld graphs written to %s\n",numwritten,outfilename);
+                      ">Z %6lu graphs written to %s\n",numwritten,outfilename);
 	}
 
      /* check that the subprocess exitted properly */

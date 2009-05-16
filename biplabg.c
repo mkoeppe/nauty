@@ -22,7 +22,7 @@ static boolean
 biplabel(graph *g, int m, int n, graph *h)
 /* h := bipartite labelling of g; else return FALSE */
 {
-	register int i,j;
+	int i,j;
 #if MAXN
 	int colour[MAXN];
 	permutation lab[MAXN];

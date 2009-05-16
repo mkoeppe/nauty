@@ -1,4 +1,4 @@
-/* NRswitchg.c  version 1.1; B D McKay, Feb 2000. */
+/* NRswitchg.c  nauty version 2.4; B D McKay, Dec 2005 */
 
 #define USAGE "NRswitchg [-lq] [infile [outfile]]"
 
@@ -178,7 +178,7 @@ main(int argc, char *argv[])
 #if !MAXN
 		    DYNALLOC2(graph,h,h_sz,n,m,"compl");
 #endif
-	 	    fcanonise(gq,m,n,h,NULL);
+	 	    fcanonise(gq,m,n,h,NULL,FALSE);
 		    gq = h;
 	        }
 	        if (outcode == SPARSE6) writes6(outfile,gq,m,n);

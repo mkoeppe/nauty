@@ -1,4 +1,4 @@
-/* deledgeg.c  version 1.0; B D McKay, Aug 1999. */
+/* deledgeg.c  version 1.1; B D McKay, Dec 2005. */
 
 #define USAGE "deledgeg [-lq] [-d#] [infile [outfile]]"
 
@@ -159,7 +159,7 @@ main(int argc, char *argv[])
 #if !MAXN
 		        DYNALLOC2(graph,h,h_sz,n,m,"deledgeg");
 #endif
-	 	        fcanonise(g,m,n,h,NULL);
+	 	        fcanonise(g,m,n,h,NULL,FALSE);  /* FIXME (loops) */
 		        gq = h;
 	            }
 	            if (outcode == SPARSE6) writes6(outfile,gq,m,n);

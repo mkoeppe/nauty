@@ -1,5 +1,5 @@
 /* sumlines.c - total the numbers appearing in various input lines. */
-/* B. D. McKay.   May 19, 2003. */
+/* B. D. McKay.   Jan 17, 2006. */
 
 #ifndef GMP
 #define GMP 1  /* Non-zero if gmp multi-precise integers are allowed.
@@ -75,7 +75,7 @@
    same values of the %s and %c controls present.  Otherwise a warning
    message is written for each duplicate match.
 
-   The sequence P=# where # is an integer value defined the base for the
+   The sequence P=# where # is an integer value defines the base for the
    %p directive.  There can be no spaces in the sequence "P=#".  The
    default base is 2.
 
@@ -104,9 +104,9 @@
          this field appears as a single character '*'.
    %#  - matches an unsigned integer.  For each format containing this
          control, a report is made of any breaks or duplicates in the
-         sequence of matching numbers.  (So this is useful for checking
-         a sequence of case numbers.)  At most one %# may appear in each
-         format.
+         sequence of matching numbers.  (So this is useful for checking a
+	 sequence of case numbers.)  At most one %# may appear in each format.
+   %l  - matches a list of arbitrarily many (%d sized) integers
 
   At least one FINAL format must match in each file or a warning is given
   (unless -w is used, in which case no warning is given).
@@ -146,6 +146,8 @@ typedef long long integer;
 #define VOUT "%.4f"
 #endif
 
+static char *dout,*fout,*vout;
+
 static integer maxint;   /* set by find_maxint */
 
 #define INCR(x,inc) \
@@ -157,10 +159,17 @@ typedef int boolean;
 #define FALSE 0
 #define TRUE  1
 
+typedef struct
+{
+    int nvals;
+    integer *val;
+} integerlist;
+
 typedef union
 {
     double f;
     integer d;
+    integerlist *l;
 #if GMP
     mpz_t *m;
 #endif
@@ -172,11 +181,12 @@ typedef union
 #define X 3    /* Code for "integer, take maximum" */
 #define V 4    /* Code for "real, take average" */
 #define P 5    /* Code for "integer, modulo some base" */
+#define LD 6   /* Code for "list of integer" */
 
 #define MAXLINELEN 100000   /* Maximum input line size
 		 	      (longer lines are broken in bits) */
 #define MAXVALUES 16  /* Maximum  total number of 
-                             %d,%x,%p,%m,%v or %f items in a format */
+                             %d,%x,%p,%m,%v,%f or %l items in a format */
 
 #define MAXFORMATS 1000
 
@@ -204,6 +214,8 @@ static integer lastseq[MAXFORMATS];
 static mpz_t mp_value[MAXVALUES];
 #endif
 
+static integerlist il[MAXVALUES];
+
 #define A 0
 #define L 1
 #define R 2
@@ -221,7 +233,7 @@ static mpz_t mp_value[MAXVALUES];
 #endif
 
 #ifndef GLOB_NOMATCH
-#define GLOB_NOMATCH 0  /* Some versions don't a special return for this */
+#define GLOB_NOMATCH 0 /* Some versions don't have a special return for this */
 #endif
 
 #define GLOB_FLAGS (GLOB_ERR|GLOB_NOSORT|GLOB_BRACE|GLOB_TILDE)
@@ -306,7 +318,7 @@ static void
 writeline(char *outf, number *val, unsigned long count)
 /* Write an output line with the given format and values */
 {
-	int n;
+	int i,n;
 
 	n = 0;
 
@@ -318,11 +330,20 @@ writeline(char *outf, number *val, unsigned long count)
 		if (*outf == '%' || *outf == '#')
 		    putchar(*outf);
 		else if (*outf == 'd' || *outf == 'x' || *outf == 'p')
-		    printf(DOUT,val[n++].d);
+		    printf(dout,val[n++].d);
 		else if (*outf == 'f')
-		    printf(FOUT,val[n++].f);
+		    printf(fout,val[n++].f);
 		else if (*outf == 'v')
-		    printf(VOUT,val[n++].f/count);
+		    printf(vout,val[n++].f/count);
+		else if (*outf == 'l')
+		{
+		    for (i = 0; i < val[n].l->nvals; ++i)
+		    {
+			if (i > 0) printf(" ");
+			printf(dout,val[n].l->val[i]);
+		    }
+		    ++n;
+	    	}
 #if GMP
 		else if (*outf == 'm')
 		    mpz_out_str(NULL,10,*(val[n++].m));
@@ -330,7 +351,7 @@ writeline(char *outf, number *val, unsigned long count)
 		else
 		{
 		    fprintf(stderr,">E unknown output format %%%c\n",*outf);
-		    exit(2);
+		    exit(1);
 		}
 	    }
 	    else
@@ -516,7 +537,7 @@ add_one(countnode **to_root, char *fmt, integer pmod, int nval,
 /* Add one match to the node with the given format, creating it if it is new.
    The tree is then splayed to ensure good efficiency. */
 {
-    int i,cmp,len;
+    int i,j,cmp,len;
     countnode *p,*ppar,*new_node;
     integer w;
 
@@ -538,6 +559,30 @@ add_one(countnode **to_root, char *fmt, integer pmod, int nval,
 		else if (valtype[i] == P)
 		    {w = val[i].d % pmod; INCR(p->total[i].d,w);
 		      p->total[i].d %= pmod;}
+		else if (valtype[i] == LD)
+		{
+		    if (p->total[i].l->nvals < val[i].l->nvals)
+		    {
+			if ((p->total[i].l->val
+			   = (integer*)realloc(p->total[i].l->val,
+				          sizeof(integer)*val[i].l->nvals))
+				== NULL)
+			{
+			    fprintf(stderr,"Malloc failed\n");
+			    exit(1);
+			}
+		    }
+		    for (j = 0; j < p->total[i].l->nvals &&
+			        j < val[i].l->nvals; ++j)
+			INCR(p->total[i].l->val[j],val[i].l->val[j]);
+		    if (p->total[i].l->nvals < val[i].l->nvals)
+		    {
+			for (j = p->total[i].l->nvals;
+				   j < val[i].l->nvals; ++j)
+			    p->total[i].l->val[j] = val[i].l->val[j];
+			p->total[i].l->nvals = val[i].l->nvals;
+		    }
+		}
 #if GMP
 		else if (valtype[i] == M) 
 		    mpz_add(*(p->total[i].m),*(p->total[i].m),*(val[i].m));
@@ -590,6 +635,25 @@ add_one(countnode **to_root, char *fmt, integer pmod, int nval,
 	}
 	else
 #endif
+	if (valtype[i] == LD)
+	{
+	    if ((new_node->total[i].l
+			= (integerlist*)malloc(sizeof(integerlist))) == NULL)
+	    {  
+	        fprintf(stderr,"Malloc failed\n");
+		exit(1);
+	    }
+	    if ((new_node->total[i].l->val
+		 = (integer*)malloc(sizeof(integer)*val[i].l->nvals)) == NULL)
+	    {  
+	        fprintf(stderr,"Malloc failed\n");
+		exit(1);
+	    }
+	    new_node->total[i].l->nvals = val[i].l->nvals;
+            for (j = 0; j < val[i].l->nvals; ++j)
+		new_node->total[i].l->val[j] = val[i].l->val[j];
+	}
+	else
 	    new_node->total[i] = val[i];
     }
 
@@ -629,8 +693,8 @@ scanline(char *s, char *f, number *val, int *valtype,
    Integers matching %# are put into *seqno, with an error if there
    are more than one, and -1 if there are none.
    If the format doesn't match, -1 is returned.
-   WARNING: the gmp values are pointers to static data, so they
-   need to be copied if the values array is copied.
+   WARNING: the gmp and ilist values are pointers to static data,
+   so they need to be copied if the values array is copied.
    See the comments at the start of the program for more information.
 */
 {
@@ -639,8 +703,11 @@ scanline(char *s, char *f, number *val, int *valtype,
 	boolean doass,neednonsp,neg,oflow,badgmp;
 	integer ival;
 	double dval,digval;
-	char ends;
+	char ends,*saves;
 	static boolean gmp_warning = FALSE;
+	integer *ilist;
+	size_t ilist_sz;
+	int nilist;
 #if GMP
 	char mp_line[MAXLINELEN+1],*mp;
 #endif
@@ -678,7 +745,7 @@ scanline(char *s, char *f, number *val, int *valtype,
 		{
                     if (!doass)
                     {
-                        fprintf(stderr,"Bad format item %%*\n");
+                        fprintf(stderr,"Bad format item %*\n");
                         exit(1);
                     }
 		    while (*s != '\0')
@@ -764,6 +831,69 @@ scanline(char *s, char *f, number *val, int *valtype,
 		    else
 			*outf++ = '*';
 		    ++f;
+		}
+		else if (*f == 'l')
+		{
+		    nilist = 0;
+		    if ((ilist = (integer*)malloc(200*sizeof(integer)))
+				== NULL)
+		    {
+			fprintf(stderr,"Malloc failed\n");
+			exit(1);
+		    }
+		    ilist_sz = 200;
+		    for (;;)
+		    {
+			saves = s;
+			while (*s == ' ' || *s == '\t') ++s;
+			if (!isdigit(*s) && *s != '-' && *s != '+')
+			{
+			    s = saves;
+			    break;
+			}
+		        neg = (*s == '-');
+		        if (*s == '-' || *s == '+') ++s;
+		        ival = 0;
+		        while (isdigit(*s))
+		        {
+			    digit =  *s++ - '0';
+			    if (ival > (maxint-digit)/10)
+			        oflow = TRUE;
+			    else
+			        ival = ival*10 + digit;
+		        }
+			if (neg) ival = -ival;
+		        if (nilist == ilist_sz)
+		        {
+			    if ((ilist
+			        = (integer*)realloc((void*)ilist,
+				           (ilist_sz+500)*sizeof(integer)))
+				    == NULL)
+			    {
+			        fprintf(stderr,"Malloc failed\n");
+			        exit(1);
+			    }
+			    ilist_sz += 500;
+		        }
+			ilist[nilist++] = ival;
+		    }
+		    if (doass)
+		    {
+			valtype[n] = LD;
+			val[n].l = &il[n];
+			val[n].l->nvals = nilist;
+			if (val[n].l->val) free(val[n].l->val);
+			val[n].l->val = ilist;
+			++n;
+			*outf++ = '%';
+			*outf++ = 'l';
+		    }
+		    else
+		    {
+			free(ilist);
+                        *outf++ = '*';
+		    }
+                    ++f;
 		}
 #if GMP
 		else if (*f == 'm')
@@ -973,7 +1103,7 @@ read_formats(char *filename, int *numformatsp, boolean mustexist)
 	    return;
 	}
 
-	flagname[51] = line[MAXLINELEN+2] = '\0';
+	line[MAXLINELEN+2] = '\0';
 
 	for (;;)
 	{
@@ -1002,7 +1132,12 @@ read_formats(char *filename, int *numformatsp, boolean mustexist)
 		if (c == '\n' || c == EOF) break;
 
 		ungetc(c,f);
+
+	     /* There appear to be some issues with the [ flag in fscanf,
+	      * as to whether a null is appended.  We'll take no chances. */
+		for (i = 0; i < 52; ++i) flagname[i] = '\0';
 		fscanf(f,"%50[A-Za-z0-9=]",flagname);
+
 		if      (strcmp(flagname,"DEFAULT") == 0)  {}
 		else if (strcmp(flagname,"FINAL") == 0)    flags |= FINAL;
 		else if (strcmp(flagname,"ERROR") == 0)    flags |= ERROR;
@@ -1045,7 +1180,7 @@ read_formats(char *filename, int *numformatsp, boolean mustexist)
 		}
 		else
 		{
-		    fprintf(stderr,">E Unknown flag %s in %s\n",
+		    fprintf(stderr,">E Unknown flag \"%s\" in %s\n",
 			           flagname,filename);
 		    exit(1);
 		}
@@ -1230,6 +1365,10 @@ main(int argc, char *argv[])
 	glob_stdin_v[0] = "-";
 	glob_stdin_v[1] = NULL;
 
+	dout = DOUT;
+	fout = FOUT;
+	vout = VOUT;
+
 	for (; firstarg < argc; ++firstarg)
 	{
 	    if (argv[firstarg][0] == '-' && argv[firstarg][1] == 'f')
@@ -1255,6 +1394,12 @@ main(int argc, char *argv[])
 		readfiles = FALSE;
 	    else if (strcmp(argv[firstarg],"-n") == 0)
 		printcounts = FALSE;
+	    else if (strcmp(argv[firstarg],"-V") == 0)
+		vout = argv[++firstarg];
+	    else if (strcmp(argv[firstarg],"-F") == 0)
+		fout = argv[++firstarg];
+	    else if (strcmp(argv[firstarg],"-D") == 0)
+		dout = argv[++firstarg];
 	    else
 	        break;
 	}
@@ -1262,6 +1407,11 @@ main(int argc, char *argv[])
 #if GMP
 	for (i = 0; i < MAXVALUES; ++i) mpz_init(mp_value[i]);
 #endif
+	for (i = 0; i < MAXVALUES; ++i) 
+	{
+	    il[i].nvals = 0;
+	    il[i].val = NULL;
+	}
 
 	if (readfiles) read_local_formats(&numformats);
 	if (readfiles) read_env_formats(&numformats);
@@ -1354,21 +1504,21 @@ main(int argc, char *argv[])
 			        if (seq == lastseq[i])
 			        {   
                                     printf(" ");
-                                    printf(DOUT,seq);
+                                    printf(dout,seq);
                                     printf(" is repeated.\n");
                                 }
 			        else if (seq != lastseq[i]+2)
 			        {
 				    printf("s ");
-				    printf(DOUT,lastseq[i]+1);
+				    printf(dout,lastseq[i]+1);
 				    printf("-");
-				    printf(DOUT,seq-1);
+				    printf(dout,seq-1);
 				    printf(" are missing.\n");
 			        }
 			        else
                                 {
-                                    printf(" ");
-                                    printf(DOUT,seq-1);
+                                    printf("  ");
+                                    printf(dout,seq-1);
 			            printf(" is missing.\n");
                                 }
 			    }

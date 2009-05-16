@@ -21,8 +21,8 @@ void
 compl(graph *g, int m, int n, graph *h)
 /* h := complement of g */
 {
-	register int i,j;
-	register setword *gi,*hi;
+	int i,j;
+	setword *gi,*hi;
 #if MAXN
 	set all[MAXM];
 #else
@@ -178,7 +178,7 @@ main(int argc, char *argv[])
 #if !MAXN
 		DYNALLOC2(graph,h,h_sz,n,m,"complg");
 #endif
-	 	fcanonise(gq,m,n,h,NULL);
+	 	fcanonise(gq,m,n,h,NULL,FALSE);
 		gq = h;
 	    }
 	    if (outcode == SPARSE6) writes6(outfile,gq,m,n);

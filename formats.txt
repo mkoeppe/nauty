@@ -1,6 +1,7 @@
 Description of graph6 and sparse6 encodings
 -------------------------------------------
 Brendan McKay, bdm@cs.anu.edu.au
+Updated May 2005.
 
 General principles:
 
@@ -34,21 +35,25 @@ Bit vectors:
       
 Small nonnegative integers:
  
-  Let n be an integer in the range 0-262143 (262143 = 2^18-1).
+  Let n be an integer in the range 0-68719476735 (2^36-1).
 
   If 0 <= n <= 62, define N(n) to be the single byte n+63.
-  If n >= 63, define N(n) to be the four bytes 126 R(x), where
-    x is the bigendian 18-bit binary form of n.
+  If 63 <= n <= 258047, define N(n) to be the four bytes
+      126 R(x), where x is the bigendian 18-bit binary form of n.
+  If 258048 <= n <= 68719476735, define N(n) to be the eight bytes
+      126 126 R(x), where x is the bigendian 36-bit binary form of n.
 
   Examples:  N(30) = 93
              N(12345) = N(000011 000000 111001) = 126 69 63 120
+             N(460175067) = N(000000 011011 011011 011011 011011 011011)
+                          = 126 126 63 90 90 90 90 90
 
 
 Description of graph6 format.
 ----------------------------
 
 Data type:  
-   simple undirected graphs of order 0 to 262143.
+   simple undirected graphs of order 0 to 68719476735.
 
 Optional Header: 
    >>graph6<<     (without end of line!)
@@ -76,7 +81,7 @@ Description of sparse6 format.
 ------------------------------
 
 Data type:
-   Undirected graphs of order 0 to 262143.
+   Undirected graphs of order 0 to 68719476735.
    Loops and multiple edges are permitted.
 
 Optional Header:
@@ -102,10 +107,7 @@ General structure:
 
 Number of vertices n:
 
-  For n <= 62, there is one byte 63+n.
-  For 63 <= n <= 262143, there are four bytes 63+63,63+x,63+y,63+z
-    where xyz is the bigendian 18-bit binary form of n.
-
+  1, 4, or 8 bytes N(n) as above.
   This is the same as graph6 format.
 
 List of edges:
@@ -122,8 +124,8 @@ List of edges:
   1. If (n,k) = (2,1), (4,2), (8,4) or (16,5), and vertex
      n-2 has an edge but n-1 doesn't have an edge, and
      there are k+1 or more bits to pad, then pad with one
-     0 and enough 1s to complete the multiple of 6.
-  2. Otherwise, pad with enough 1s to complete the
+     0-bit and enough 1-bits to complete the multiple of 6.
+  2. Otherwise, pad with enough 1-bits to complete the
      multiple of 6.
   These rules are to match the gtools procedures, and to avoid
   the padding from looking like an extra loop in unusual cases.

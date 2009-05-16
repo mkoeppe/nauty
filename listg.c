@@ -1,4 +1,4 @@
-/* listg.c  version 1.2; B D McKay, Nov 2000 */
+/* listg.c  version 1.4; B D McKay, June 2007 */
 
 #define USAGE "listg [-fp#:#l#o#Ftq] [-a|-A|-c|-d|-e|-M|-s] [infile [outfile]]"
 
@@ -28,14 +28,20 @@
 \n\
     -a, -A, -c, -d, -M, -W and -e are incompatible.\n"
 
-/*************************************************************************/
+#define MAPLE_MATRIX 1  /* 1 for Matrix(..), 0 for array(..) */
+
+/*************************************************************************
+
+    June 26, 2007 : Fix error in putve() reported by Evan Heidtmann
+
+*************************************************************************/
 
 #include "gtools.h"
 #define LABELORG 0   /* number of first vertex (any integer >= 0) */
 #define LINELEN CONSOLWIDTH   /* max characters per line (0 = no limit) */
 
 static FILE *infile,*outfile;
-static long nin;
+static unsigned long nin;
 extern int labelorg;
 
 /*****************************************************************************
@@ -53,11 +59,8 @@ extern int labelorg;
 *****************************************************************************/
 
 void
-putsetx(f,set1,curlenp,linelength,m,compress,start)
-FILE *f;
-set *set1;
-int linelength,m,*curlenp;
-boolean compress;
+putsetx(FILE *f, set *set1, int *curlenp, int linelength, int m,
+        boolean compress, int start)
 {
         int slen,j1,j2;
         char s[40];
@@ -113,11 +116,7 @@ boolean compress;
 *****************************************************************************/
 
 void
-putgraphx(f,g,linelength,triang,m,n)
-FILE *f;
-graph *g;
-int linelength,m,n;
-boolean triang;
+putgraphx(FILE *f, graph *g, int linelength, boolean triang, int m, int n)
 {
         int i,curlen;
         set *pg;
@@ -134,10 +133,9 @@ boolean triang;
 /***************************************************************************/
 
 void
-putedges(f,g,linelength,m,n)   /* write list of edges */
-FILE *f;
-graph *g;
-int linelength,m,n;
+putedges(FILE *f, graph *g, boolean ptn, int linelength, int m, int n)
+/* Write list of edges, preceded by the numbers of vertices and
+   edges and optionally by "1" if "ptn" is TRUE.  Use labelorg */
 {
 	int i,j,curlen,ne;
 	char s[20];
@@ -150,7 +148,9 @@ int linelength,m,n;
 		++ne;
 	}
 
-	fprintf(f,"%d %d\n",n,ne);
+	if (ptn) fprintf(f,"%d %d 1\n",n,ne);
+	else     fprintf(f,"%d %d\n",n,ne);
+
 	curlen = 0;
         for (i = 0, pg = g; i < n; ++i, pg += m)
 	{
@@ -179,10 +179,8 @@ int linelength,m,n;
 /***************************************************************************/
 
 void
-putcgraph(f,g,linelength,m,n)  /* write compressed form */
-FILE *f;
-graph *g;
-int linelength,m,n;
+putcgraph(FILE *f, graph *g, int linelength, int m, int n)
+/* write compressed form, using labelorg */
 {
         int i,curlen;
 	int semicolons;
@@ -220,33 +218,28 @@ int linelength,m,n;
 /**************************************************************************/
 
 static void
-putve(f,id,g,m,n)    /* Write the numbers of vertices and edges */
-FILE *f;
-long id;
-graph *g;
-int m,n;
+putve(FILE *f, unsigned long id, graph *g, int m, int n)
+/* Write the numbers of vertices and edges */
 {
-	long ne;
+	unsigned long ne;
 	setword x,*pg;
 
 	ne = 0;
 	for (pg = g + m*(long)n; --pg >= g;)
 	    if ((x = *pg) != 0) ne += POPCOUNT(x);
 
-        fprintf(f,"Graph %ld has %d vertices and %ld edges.\n",id,n,ne);
+        fprintf(f,"Graph %lu has %d vertices and %lu edges.\n",id,n,ne/2);
 }
 
 /**************************************************************************/
 
 static void
-putam(f,g,linelength,space,triang,m,n)   /* write adjacency matrix */
-FILE *f;
-graph *g;
-int linelength,m,n;
-boolean space,triang;
+putam(FILE *f, graph *g, int linelength, boolean space,
+	boolean triang, int m, int n)
+/* write adjacency matrix */
 {
- 	register set *gi;
-	register int i,j;
+ 	set *gi;
+	int i,j;
 	boolean first;
 
 	for (i = 0, gi = (set*)g; i < n - (triang!=0); ++i, gi += m)
@@ -299,7 +292,11 @@ putMaple(FILE *outfile, graph *g, int linelength, int m, int n, long index)
 	set *gi;
 	boolean first;
 
+#if MAPLE_MATRIX
+	fprintf(outfile,"f%ld := Matrix(%d,%d,[\n",index,n,n);
+#else
 	fprintf(outfile,"f%ld := array(1..%d,1..%d,[\n",index,n,n);
+#endif
 
 	for (i = 0, gi = (set*)g; i < n; ++i, gi += m)
         {
@@ -320,20 +317,19 @@ putMaple(FILE *outfile, graph *g, int linelength, int m, int n, long index)
 /**************************************************************************/
 /**************************************************************************/
 
-main(argc,argv)
-int argc;
-char *argv[];
+main(int argc, char *argv[])
 {
 	graph *g;
 	int m,n,codetype;
 	int argnum,j;
 	char *arg,sw;
 	boolean badargs;
-	long maxin,pval1,pval2;
+	unsigned long maxin;
+	long pval1,pval2;
 	boolean fswitch,pswitch,cswitch,dswitch;
 	boolean aswitch,lswitch,oswitch,Fswitch;
 	boolean Aswitch,eswitch,tswitch,qswitch;
-	boolean sswitch,Mswitch,Wswitch;
+	boolean sswitch,Mswitch,Wswitch,Eswitch;
 	int linelength;
 	char *infilename,*outfilename;
 
@@ -342,7 +338,7 @@ char *argv[];
 	fswitch = pswitch = cswitch = dswitch = FALSE;
 	aswitch = lswitch = oswitch = Fswitch = FALSE;
 	Aswitch = eswitch = tswitch = qswitch = FALSE;
-	sswitch = Mswitch = Wswitch = FALSE;
+	sswitch = Mswitch = Wswitch = Eswitch = FALSE;
 	infilename = outfilename = NULL;
 	linelength = LINELEN;
 	labelorg = 0;
@@ -363,6 +359,7 @@ char *argv[];
 		    else SWBOOLEAN('c',cswitch)
 		    else SWBOOLEAN('d',dswitch)
 		    else SWBOOLEAN('e',eswitch)
+		    else SWBOOLEAN('E',Eswitch)
 		    else SWBOOLEAN('f',fswitch)
 		    else SWBOOLEAN('F',Fswitch)
 		    else SWBOOLEAN('t',tswitch)
@@ -388,8 +385,9 @@ char *argv[];
 	if (labelorg < 0) gt_abort(">E listg: negative origin forbidden.\n");
 
 	if ((aswitch!=0) + (Aswitch!=0) + (eswitch!=0) + (Mswitch!=0) +
-	    (Wswitch != 0) + (sswitch!=0) + (dswitch!=0) + (cswitch!=0) > 1)
-	    gt_abort(">E listg: -aAMWecds are incompatible\n");
+	    (Wswitch!=0) + (sswitch!=0) + (dswitch!=0) + (cswitch!=0) +
+	    (Eswitch!=0) > 1)
+	    gt_abort(">E listg: -aAMWeEcds are incompatible\n");
 
 	if (badargs)
 	{
@@ -437,7 +435,7 @@ char *argv[];
 		    fprintf(outfile,"%d\n",n);
 		else
 		{
-		    fprintf(outfile,"\n!Graph %ld.\n",pval1+nin-1);
+		    fprintf(outfile,"\n!Graph %lu.\n",pval1+nin-1);
 		    fprintf(outfile,"n=%d $=%d g\n",n,labelorg);
 		}
 		putgraphx(outfile,g,linelength,tswitch,m,n);
@@ -453,14 +451,14 @@ char *argv[];
             {
 		if (qswitch)
 		{
-		    if (!eswitch) fprintf(outfile,"%d\n",n);
+		    if (!eswitch && !Eswitch) fprintf(outfile,"%d\n",n);
 		}
-                else fprintf(outfile,"\nGraph %ld, order %d.\n",
+                else fprintf(outfile,"\nGraph %lu, order %d.\n",
 				     pval1+nin-1,n);
 	        if (aswitch|Aswitch)
 		    putam(outfile,g,linelength,Aswitch,tswitch,m,n);
-		else if (eswitch)
-		    putedges(outfile,g,linelength,m,n);
+		else if (eswitch || Eswitch)
+		    putedges(outfile,g,Eswitch,linelength,m,n);
 	        else
 	            putgraphx(outfile,g,linelength,tswitch,m,n);
             }

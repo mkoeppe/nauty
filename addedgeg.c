@@ -1,4 +1,4 @@
-/* addedgeg.c  version 1.1; B D McKay, Sep 2004. */
+/* addedgeg.c   nauty version 2.4; B D McKay, Dec 2005. */
 
 #define USAGE "addedgeg [-lq] [-D#] [-btfF] [infile [outfile]]"
 
@@ -255,7 +255,7 @@ main(int argc, char *argv[])
 #if !MAXN
 		        DYNALLOC2(graph,h,h_sz,n,m,"addedgeg");
 #endif
-	 	        fcanonise(g,m,n,h,NULL);
+	 	        fcanonise(g,m,n,h,NULL,FALSE);  /*FIXME (loops)*/
 		        gq = h;
 	            }
 	            if (outcode == SPARSE6) writes6(outfile,gq,m,n);

@@ -17,7 +17,7 @@
     n=#   set number of vertices (no default)\n\
           The = is optional.\n\
     m     Matrix to follow (01 any spacing or no spacing)\n\
-	  An 'm' is also assumed if 0 or 1 is encountered.\n\
+          An 'm' is also assumed if 0 or 1 is encountered.\n\
     M     Complement of matrix to follow (as m)\n\
     t     Upper triangle of matrix to follow, row by row\n\
            excluding the diagonal. (01 in any or no spacing)\n\
