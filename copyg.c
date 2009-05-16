@@ -27,9 +27,7 @@
 #include "gtools.h"
 
 
-main(argc,argv)
-int argc;
-char *argv[];
+main(int argc, char *argv[])
 {
         graph *g;
 	int m,n,codetype;

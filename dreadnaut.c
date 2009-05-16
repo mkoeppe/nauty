@@ -1,9 +1,9 @@
 /*****************************************************************************
 *                                                                            *
-* This is the main file for dreadnaut() version 2.2, which is a test-bed     *
-*   for nauty() version 2.2.                                                 *
+* This is the main file for dreadnaut() version 2.4, which is a test-bed     *
+*   for nauty() version 2.4.                                                 *
 *                                                                            *
-*   Copyright (1984-2004) Brendan McKay.  All rights reserved.               *
+*   Copyright (1984-2007) Brendan McKay.  All rights reserved.               *
 *   Subject to the waivers and disclaimers in nauty.h.                       *
 *                                                                            *
 *   CHANGE HISTORY                                                           *
@@ -76,6 +76,7 @@
 *        1-Sep-02 - Undid the previous change                                *
 *       17-Nov-03 - Changed INFINITY to NAUTY_INFINITY                       *
 *       15-Nov-04 - Completed all prototypes                                 *
+*       23-Nov-06 - no usertcellproc() any more in version 2.4               *
 *                                                                            *
 *****************************************************************************/
 
@@ -128,7 +129,7 @@ static boolean firstpath;       /* used in usernode() */
 #define U_NODE  1               /* masks for u values */
 #define U_AUTOM 2
 #define U_LEVEL 4
-#define U_TCELL 8
+#define U_TCELL 8     /* At version 2.4, usertcellproc() is gone */
 #define U_REF  16
 
 #ifndef  NODEPROC
@@ -147,13 +148,6 @@ extern void AUTOMPROC(int,permutation*,int*,int,int,int);
 #define LEVELPROC userlevel
 #else
 extern void LEVELPROC(int*,int*,int,int*,statsblk*,int,int,int,int,int,int);
-#endif
-
-#ifndef  TCELLPROC
-#define TCELLPROC NULL
-#else
-extern void TCELLPROC(graph*,int*,int*,int,int,set*,int*,int*,int,int,
-              int(*)(graph*,int*,int*,int,int,int,int),int,int);
 #endif
 
 #ifndef  REFPROC
@@ -223,7 +217,8 @@ main(int argc, char *argv[])
         int oldorg;
         char *s1,*s2,*invarprocname;
         int c,d;
-        register long li;
+        long li;
+	unsigned uli;
         set *gp;
         double timebefore,timeafter;
         char filename[200];
@@ -274,11 +269,7 @@ main(int argc, char *argv[])
         invarprocname = "none";
         if (prompt)
         {
-#ifdef BIGNAUTY
-            fprintf(PROMPTFILE,"Dreadnaut version %s [BIG].\n",NAUTYVERSION);
-#else
             fprintf(PROMPTFILE,"Dreadnaut version %s.\n",NAUTYVERSION);
-#endif
             fprintf(PROMPTFILE,"> ");
         }
 
@@ -746,14 +737,14 @@ main(int argc, char *argv[])
                     }
                     fprintf(OUTFILE,"; %d gen%s",
                             SS(stats.numgenerators,"","s"));
-                    fprintf(OUTFILE,"; %ld node%s",SS(stats.numnodes,"","s"));
+                    fprintf(OUTFILE,"; %lu node%s",SS(stats.numnodes,"","s"));
                     if (stats.numbadleaves)
-                        fprintf(OUTFILE," (%ld bad lea%s)",
+                        fprintf(OUTFILE," (%lu bad lea%s)",
                                 SS(stats.numbadleaves,"f","ves"));
                     fprintf(OUTFILE,"; maxlev=%d\n", stats.maxlevel);
-                    fprintf(OUTFILE,"tctotal=%ld",stats.tctotal);
+                    fprintf(OUTFILE,"tctotal=%lu",stats.tctotal);
                     if (options.getcanon)
-                        fprintf(OUTFILE,"; canupdates=%ld",stats.canupdates);
+                        fprintf(OUTFILE,"; canupdates=%lu",stats.canupdates);
 #ifdef  CPUTIME
                     fprintf(OUTFILE,multiplicity == 1 ?
 			      "; cpu time = %.2f seconds\n" :
@@ -765,7 +756,7 @@ main(int argc, char *argv[])
                     if (options.invarproc != NULL &&
                                            options.maxinvarlevel != 0)
                     {
-                        fprintf(OUTFILE,"invarproc \"%s\" succeeded %ld/%ld",
+                        fprintf(OUTFILE,"invarproc \"%s\" succeeded %lu/%lu",
                             invarprocname,stats.invsuccesses,stats.invapplics);
                         if (stats.invarsuclevel > 0)
                             fprintf(OUTFILE," beginning at level %d.\n",
@@ -827,8 +818,8 @@ main(int argc, char *argv[])
                 else                 options.userautomproc = NULL;
                 if (umask & U_LEVEL) options.userlevelproc = LEVELPROC;
                 else                 options.userlevelproc = NULL;
-                if (umask & U_TCELL) options.usertcellproc = TCELLPROC;
-                else                 options.usertcellproc = NULL;
+                if (umask & U_TCELL)
+		    fprintf(ERRFILE,"usertcellproc() gone at version 2.4\n\n");
                 if (umask & U_REF)   options.userrefproc = REFPROC;
                 else                 options.userrefproc = NULL;
                 break;
@@ -985,13 +976,13 @@ main(int argc, char *argv[])
                     fprintf(OUTFILE," g=undef");
                 else
                 {
-                    li = 0;
+                    uli = 0;
                     for (i = 0, gp = g; i < n; ++i, gp += m)
-                        li += setsize(gp,m);
+                        uli += setsize(gp,m);
                     if (options.digraph)
-                        fprintf(OUTFILE," arcs=%ld",li);
+                        fprintf(OUTFILE," arcs=%lu",uli);
                     else
-                        fprintf(OUTFILE," edges=%ld",li/2);
+                        fprintf(OUTFILE," edges=%lu",uli/2);
                 }
                 fprintf(OUTFILE," options=(%cc%ca%cm%cp%cd",
                             PM(options.getcanon),PM(options_writeautoms),
@@ -1107,7 +1098,7 @@ H("Syntax for f :  f=[2 3|4:9|10]  (rest in extra cell at right)")
 H("               -f same as f=[], f=# same as f=[#]")
 H("Syntax for r :  r 2:4 1 5;    (rest appended in order)")
 H("Syntax for R :  R 2:4 1 5;   or  -R 0 3 6:10;")
-H("Arguments for u : 1=node,2=autom,4=level,8=tcell,16=ref (add them)")
+H("Arguments for u : 1=node,2=autom,4=level,16=ref (add them)")
 H("Accurate times for easy graphs: M=# selects number of times to run.")
 }
 
@@ -1124,7 +1115,7 @@ static void
 usernode(graph *g, int *lab, int *ptn, int level, int numcells,
          int tc, int code, int m, int n)
 {
-        register int i;
+        int i;
 
         for (i = 0; i < level; ++i) PUTC('.',OUTFILE);
         if (numcells == n)
@@ -1168,6 +1159,6 @@ userlevel(int *lab, int *ptn, int level, int *orbits, statsblk *stats,
       fprintf(OUTFILE,
             "**userlevelproc:  level=%d tv=%d index=%d tcellsize=%d cc=%d\n",
             level,tv+labelorg,index,tcellsize,cc);
-      fprintf(OUTFILE,"    nodes=%ld cells=%d orbits=%d generators=%d\n",
+      fprintf(OUTFILE,"    nodes=%lu cells=%d orbits=%d generators=%d\n",
             stats->numnodes,numcells,stats->numorbits,stats->numgenerators);
 }

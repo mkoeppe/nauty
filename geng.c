@@ -1,10 +1,10 @@
-/* TODO:  insert new timings,  LOOKAHEAD RIGIDITY TEST! */
+/* TODO:  insert new timings */
 
-/* geng.c  version 1.9; B D McKay, May 7 2004. */
-/* n>28 bug patched, Sep 19, 2007. */
+/* geng.c  version 2.2; B D McKay, September 19, 2007. */
 
 #define USAGE \
-"geng [-cCmtfbd#D#] [-uygsnh] [-lvq] [-x#X#] n [mine[:maxe]] [res/mod] [file]"
+"geng [-cCmtfbd#D#] [-uygsnh] [-lvq] \n\
+              [-x#X#] n [mine[:maxe]] [res/mod] [file]"
 
 #define HELPTEXT \
 " Generate all graphs of a specified class.\n\
@@ -55,7 +55,9 @@
 			the partitioning may not be valid.  In this case
 			(-x,-X with constant value), the usual relationships 
 			between modulo classes are obeyed; for example 
-			C(3,4) = C(3,8) union C(7,8).  
+			C(3,4) = C(3,8) union C(7,8).  This is not true
+                        if 3/8 and 7/8 are done with -x or -X values
+                        different from those used for 3/4.
 
 	     file = a name for the output file (stdout if missing or "-")
 
@@ -172,7 +174,7 @@ SUMMARY
 
    If the C preprocessor variable SUMMARY is defined at compile time, the
    procedure SUMMARY(bigint nout, double cpu) is called just before
-   the program exists.  The purpose is to allow reporting of statistics
+   the program exits.  The purpose is to allow reporting of statistics
    collected by PRUNE or OUTPROC.  The values nout and cpu are the output
    count and cpu time reported on the >Z line.
    Output should be written to stderr.
@@ -193,7 +195,8 @@ CALLING FROM A PROGRAM
    the program you need to define an argument list argv[] consistent with
    the usual one; don't forget that argv[0] is the command name and not
    the first argument.  The value of argc is the number of strings in
-   argv[]; that is, one more than the number of arguments.
+   argv[]; that is, one more than the number of arguments.  See the
+   sample program callgeng.c.
 
 **************************************************************************
 
@@ -364,6 +367,11 @@ cost of a small increase in cpu time.
 	      Nov 16, 2000 : Used fuction prototypes.
 	      Jul 31, 2001 : Added PREPRUNE
 	       May 7, 2004 : Complete all function prototypes
+	      Nov 24, 2004 : Force -m for very large sizes
+	                     Add -bf automatically if generating trees
+              Apr 1, 2007  : Write >A in one fputs() to try to reduce
+			     mixing of outputs in multi-process pipes.
+              Sep 19, 2007 : Force -m for n > 28 regardless of word size.
 
 **************************************************************************/
 
@@ -543,10 +551,13 @@ static int maxebf[] =    /* max edges for -bf */
 #endif
 
 #ifdef OUTPROC
-extern void OUTPROC(FILE*,graph*,n);
+extern void OUTPROC(FILE*,graph*,int);
 #endif
 #ifdef PRUNE
 extern int PRUNE(graph*,int,int);
+#endif
+#ifdef PREPRUNE
+extern int PREPRUNE(graph*,int,int);
 #endif
 #ifdef SUMMARY
 extern void SUMMARY(bigint,double);
@@ -560,8 +571,8 @@ writeny(FILE *f, graph *g, int n)
 {
         static char ybit[] = {32,16,8,4,2,1};
         char s[(MAXN*(MAXN-1)/2 + 5)/6 + 4];
-        register int i,j,k;
-        register char y,*sp;
+        int i,j,k;
+        char y,*sp;
 
         sp = s;
         *(sp++) = 0x40 | n;
@@ -640,8 +651,8 @@ static boolean
 isconnected(graph *g, int n)
 /* test if g is connected */
 {
-        register setword seen,expanded,toexpand;
-        register int i;
+        setword seen,expanded,toexpand;
+        int i;
 
         seen = bit[0];
         expanded = 0;
@@ -662,8 +673,8 @@ static boolean
 isbiconnected(graph *g, int n)
 /* test if g is biconnected */
 {
-        register int sp,v,w;
-        register setword sw;
+        int sp,v,w;
+        setword sw;
         setword visited;
         int numvis,num[MAXN],lp[MAXN],stack[MAXN];
  
@@ -711,8 +722,8 @@ static void
 gcomplement(graph *g, graph *gc, int n)
 /* Take the complement of g and put it in gc */
 {
-	register int i;
-	register setword all;
+	int i;
+	setword all;
 
 	all = ~(setword)BITMASK(n-1);
 	for (i = 0; i < n; ++i)
@@ -726,8 +737,8 @@ distinvar(graph *g, int *invar, int n)
 /* make distance invariant
    return FALSE if n-1 not maximal else return TRUE */
 {
-        register int w;
-        register setword workset,frontier;
+        int w;
+        setword workset,frontier;
         setword sofar;
         int inv,d,v;
 
@@ -760,9 +771,9 @@ static void
 makexgraph(graph *g, xword *h, int n)
 /* make x-format graph from nauty format graph */
 {
-        register setword gi;
-        register int i,j;
-	register xword hi;
+        setword gi;
+        int i,j;
+	xword hi;
 
         for (i = 0; i < n; ++i)
         {
@@ -784,7 +795,7 @@ static void
 make0graph(graph *g, xword *h, int n)
 /* make x-format graph without edges */
 {
-	register int i;
+	int i;
 
 	for (i = 0; i < n; ++i) h[i] = 0;
 }
@@ -795,10 +806,10 @@ static void
 makebgraph(graph *g, xword *h, int n)
 /* make x-format graph of different colour graph */
 {
-        register setword seen1,seen2,expanded,w;
+        setword seen1,seen2,expanded,w;
         setword restv;
-	register xword xseen1,xseen2;
-        register int i;
+	xword xseen1,xseen2;
+        int i;
 
         restv = 0;
         for (i = 0; i < n; ++i) restv |= bit[i];
@@ -863,9 +874,9 @@ static void
 makeb6graph(graph *g, xword *h, int n)
 /* make x-format bipartite girth 6 graph */
 {
-        register setword w,x;
-	register xword hi;
-        register int i,j;
+        setword w,x;
+	xword hi;
+        int i,j;
 
 	makebgraph(g,h,n);
 
@@ -897,9 +908,9 @@ static void
 makesgraph(graph *g, xword *h, int n)
 /* make x-format square graph */
 {
-        register setword w,x;
-	register xword hi;
-        register int i,j;
+        setword w,x;
+	xword hi;
+        int i,j;
 
         for (i = 0; i < n; ++i)
         {
@@ -929,9 +940,9 @@ static void
 makeg5graph(graph *g, xword *h, int n)
 /* make x-format girth-5 graph */
 {
-        register setword w,x; 
-	register xword hi;
-        register int i,j;
+        setword w,x; 
+	xword hi;
+        int i,j;
  
         for (i = 0; i < n; ++i)
         { 
@@ -961,14 +972,14 @@ static void
 makeleveldata(boolean restricted)
 /* make the level data for each level */
 {
-        register long h;
+        long h;
         int n,nn;
         long ncj;
         leveldata *d;
 	xword *xcard,*xinv;
 	xword *xset,xw,tttn,nxsets;
 	xword cw;
-	register xword i,j;
+	xword i,j;
 
         for (n = 1; n < maxn; ++n)
         {
@@ -1071,7 +1082,7 @@ userautomproc(int count, permutation *p, int *orbits,
 /* form orbits on powerset of VG
    called by nauty;  operates on data[n] */
 {
-	register xword i,j1,j2,moved,pi,pxi;
+	xword i,j1,j2,moved,pi,pxi;
         xword lo,hi;
         xword *xorb,*xinv,*xset,w;
 
@@ -1118,7 +1129,7 @@ userautomprocb(int count, permutation *p, int *orbits,
 /* form orbits on powerset of VG
    called by nauty;  operates on data[n] */
 {
-	register xword j1,j2,moved,pi,pxi,lo,hi,x;
+	xword j1,j2,moved,pi,pxi,lo,hi,x;
         xword i,*xorb,*xx,w,xlim,xlb;
 
         xorb = data[n].xorb;
@@ -1195,8 +1206,8 @@ static void
 refinex(graph *g, int *lab, int *ptn, int level, int *numcells,
      permutation *count, set *active, boolean goodret, int *code, int m, int n)
 {
-        register int i,c1,c2,labc1;
-        register setword x,lact;
+        int i,c1,c2,labc1;
+        setword x,lact;
         int split1,split2,cell1,cell2;
         int cnt,bmin,bmax;
         set *gptr;
@@ -1349,7 +1360,7 @@ static boolean
 accept1(graph *g, int n, xword x, graph *gx, int *deg, boolean *rigid)
 /* decide if n in theta(g+x) -  version for n+1 < maxn */
 {
-        register int i;
+        int i;
         int lab[MAXN],ptn[MAXN],orbits[MAXN];
         permutation count[MAXN];
         graph h[MAXN];
@@ -1446,8 +1457,8 @@ accept1b(graph *g, int n, xword x, graph *gx, int *deg, boolean *rigid,
          void (*makeh)(graph*,xword*,int))
 /* decide if n in theta(g+x)  --  version for n+1 < maxn */
 {
-        register int i,v;
-	register xword z,hv,bitv,ixx;
+        int i,v;
+	xword z,hv,bitv,ixx;
         int lab[MAXN],ptn[MAXN],orbits[MAXN];
         permutation count[MAXN];
         graph gc[MAXN];
@@ -1563,7 +1574,7 @@ static boolean
 accept2(graph *g, int n, xword x, graph *gx, int *deg, boolean nuniq)
 /* decide if n in theta(g+x)  --  version for n+1 == maxn */
 {
-        register int i;
+        int i;
         int lab[MAXN],ptn[MAXN],orbits[MAXN];
         int degx[MAXN],invar[MAXN];
         setword vmax,gv;
@@ -1770,7 +1781,7 @@ static void
 xbnds(int n, int ne, int dmax)
 /* find bounds on extension degree;  store answer in data[*].*  */
 {
-        register int xlb,xub,d,nn,m,xc;
+        int xlb,xub,d,nn,m,xc;
 
         xlb = n == 1 ? 0 : (dmax > (2*ne + n - 2)/(n - 1) ?
                             dmax : (2*ne + n - 2)/(n - 1));
@@ -1812,7 +1823,7 @@ spaextend(graph *g, int n, int *deg, int ne, boolean rigid,
           int xlb, int xub, void (*makeh)(graph*,xword*,int))
 /* extend from n to n+1 -- version for restricted graphs */
 {
-        register xword x,d,dlow;
+        xword x,d,dlow;
         xword xlim,*xorb;
         int xc,nx,i,j,dmax,dcrit,xlbx,xubx;
         graph gx[MAXN];
@@ -1928,7 +1939,7 @@ static void
 genextend(graph *g, int n, int *deg, int ne, boolean rigid, int xlb, int xub)
 /* extend from n to n+1 -- version for general graphs */
 {
-        register xword x,d,dlow;
+        xword x,d,dlow;
         xword *xset,*xcard,*xorb;
 	xword i,imin,imax;
         int nx,xc,j,dmax,dcrit;
@@ -2056,6 +2067,7 @@ main(int argc, char *argv[])
 	int splitlevinc;
 	xword testxword;
         double t1,t2;
+	char msg[201];
 
 	HELP;
 	nauty_check(WORDSIZE,1,MAXN,NAUTYVERSIONID);
@@ -2289,6 +2301,7 @@ PLUGIN_INIT
 
 	if (!gotX) splitlevinc = 0;
 
+/*
 	if (!quiet)
 	{
 	    fprintf(stderr,">A %s -%s%s%s%s%s%s",argv[0],
@@ -2303,6 +2316,32 @@ PLUGIN_INIT
 	    if (maxe > mine) fprintf(stderr,"-%d",maxe);
 	    if (mod > 1) fprintf(stderr," class=%d/%d",res,mod);
 	    fprintf(stderr,"\n");
+	    fflush(stderr);
+	}
+*/
+
+	if (!quiet)
+	{
+	    msg[0] = '\0';
+	    if (strlen(argv[0]) > 75)
+		fprintf(stderr,">A %s",argv[0]);
+	    else
+		CATMSG1(">A %s",argv[0]);
+	   
+	    CATMSG6(" -%s%s%s%s%s%s",
+		connec2      ? "C" : connec1 ? "c" : "",
+		trianglefree ? "t" : "",
+		squarefree   ? "f" : "",
+		bipartite    ? "b" : "",
+                canonise     ? "l" : "",
+		savemem      ? "m" : "");
+	    if (mod > 1)
+		CATMSG2("X%dx%d",splitlevinc,multiplicity);
+	    CATMSG4("d%dD%d n=%d e=%d",mindeg,maxdeg,maxn,mine);
+	    if (maxe > mine) CATMSG1("-%d",maxe);
+	    if (mod > 1) CATMSG2(" class=%d/%d",res,mod);
+	    CATMSG0("\n");
+	    fputs(msg,stderr);
 	    fflush(stderr);
 	}
 
@@ -2337,7 +2376,11 @@ PLUGIN_INIT
         }
         else
         {
-	    if (maxn+4 > 8*sizeof(xword)) savemem = sparse = TRUE;
+	    if (maxn > 28 || maxn+4 > 8*sizeof(xword))
+                savemem = sparse = TRUE;
+	    if (maxn == maxe+1 && connec)
+                bipartite = squarefree = sparse = TRUE;  /* trees */
+
             makeleveldata(sparse);
 
 	    if (maxn >= 14 && mod > 1)     splitlevel = maxn - 4;

@@ -5,6 +5,22 @@
 
 /**************************************************************************/
 
+int
+loopcount(graph *g, int m, int n)
+/* Number of loops */
+{
+    set *gi;
+    int i,nl;
+
+    nl = 0;
+    for (i = 0, gi = g; i < n; ++i, gi += m)
+	if (ISELEMENT(gi,i)) ++nl;
+
+    return nl;
+}
+
+/**************************************************************************/
+
 long
 pathcount1(graph *g, int start, setword body, setword last)
 /* Number of paths in g starting at start, lying within body and
@@ -67,6 +83,61 @@ cyclecount(graph *g, int m, int n)
     gt_abort("cycle counting is only implemented for n <= WORDSIZE");
     return 0;
 }
+
+/**************************************************************************/
+
+long
+numtriangles1(graph *g, int n)
+/* The number of triangles in g */
+{
+    int i,j;
+    setword gi,w;
+    long total;
+
+    total = 0;
+    for (i = 0; i < n-2; ++i)
+    {
+	gi = g[i] & BITMASK(i);
+	while (gi)
+	{
+	    TAKEBIT(j,gi);
+	    w = g[j] & gi;
+	    if (w) total += POPCOUNT(w);
+	}
+    }
+
+    return total;
+}
+
+/**************************************************************************/
+
+long
+numtriangles(graph *g, int m, int n)
+/* The number of triangles in g */
+{
+    int i,j,k,kw;
+    setword *gi,*gj,w;
+    long total;
+
+    if (m == 1) return numtriangles1(g,n);
+
+    total = 0;
+    for (i = 0, gi = g; i < n-2; ++i, gi += m)
+        for (j = i; (j = nextelement(gi,m,j)) > 0; )
+	{
+	    gj = GRAPHROW(g,j,m);
+	    kw = SETWD(j);
+	    w = gi[kw] & gj[kw] & BITMASK(SETBT(j));
+	    if (w) total += POPCOUNT(w);
+	    for (k = kw+1; k < m; ++k)
+	    {
+		w = gi[k] & gj[k];
+		if (w) total += POPCOUNT(w);
+	    }
+	}
+
+    return total;
+}    
 
 /**************************************************************************/
 
@@ -335,3 +406,5 @@ conncontent(graph *g, int m, int n)
 
     return v1 - v2;
 }
+
+

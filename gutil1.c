@@ -68,8 +68,8 @@ boolean
 isconnected1(graph *g, int n)
 /* test if g is connected (m=1) */
 {
-        register setword seen,expanded,toexpand;
-        register int i;
+        setword seen,expanded,toexpand;
+        int i;
 
         seen = bit[0];
         expanded = 0;
@@ -189,8 +189,8 @@ boolean
 isbiconnected1(graph *g, int n)
 /* Test if g is biconnected; version for m=1. */
 {
-        register int sp,v,w;
-        register setword sw;
+        int sp,v,w;
+        setword sw;
 	int numvis;
         setword visited;
         int num[WORDSIZE],lp[WORDSIZE],stack[WORDSIZE];
@@ -238,7 +238,7 @@ boolean
 isbiconnected(graph *g, int m, int n)
 /* test if g is biconnected */
 {
-        register int sp,v,vc;
+        int sp,v,vc;
 	int numvis;
 	set *gv;
 #if MAXN

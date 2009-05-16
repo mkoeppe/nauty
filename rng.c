@@ -55,7 +55,7 @@ void ran_array(aa,n)    /* put n new random numbers in aa */
   int n;      /* array length (must be at least KK) */
 #endif
 {
-  register int i,j;
+  int i,j;
   for (j=0;j<KK;j++) aa[j]=ran_x[j];
   for (;j<n;j++) aa[j]=mod_diff(aa[j-KK],aa[j-LL]);
   for (i=0;i<LL;i++,j++) ran_x[i]=mod_diff(aa[j-KK],aa[j-LL]);
@@ -80,9 +80,9 @@ void ran_start(seed)    /* do this before using ran_array */
   long seed;            /* selector for different streams */
 #endif
 {
-  register int t,j;
+  int t,j;
   long x[KK+KK-1];              /* the preparation buffer */
-  register long ss=(seed+2)&(MM-2);
+  long ss=(seed+2)&(MM-2);
   for (j=0;j<KK;j++) {
     x[j]=ss;                      /* bootstrap the buffer */
     ss<<=1; if (ss>=MM) ss-=MM-2; /* cyclic shift 29 bits */
@@ -125,7 +125,7 @@ ran_arr_cycle(void)
 
   ran_array(ran_arr_buf,QUALITY);
 
-  ran_arr_buf[100]=-1;
+  ran_arr_buf[KK]=-1;
   ran_arr_ptr=ran_arr_buf+1;
   return ran_arr_buf[0];
 }

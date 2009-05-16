@@ -1,4 +1,4 @@
-/* showg.c  version 1.2; B D McKay, Oct 2000.
+/* showg.c  version 1.5; B D McKay, September 2007.
    Formerly called readg.c.
  
    This is a stand-alone edition of listg.c that does not
@@ -37,6 +37,10 @@
 /*
  Version 1.1: Fixed sparse6 input for powers of 2.  May 9, 1998.
  Version 1.3: Declared errno according to ISO C.  August 22, 1998.
+ Version 1.4: Change name of getline() so that broken compilers
+                which define the GNU function without being asked
+		don't cause a conflict.   June 16, 2006.
+ Version 1.5: Use function prototypes.  Avoid errno.  Sep 19, 2007.
 */
 
 /*************************************************************************/
@@ -51,13 +55,15 @@
 #define G6LEN(n)  (((n)*((n)-1)/2+5)/6+(n<=SMALLN?1:4))
 		/* Exact length of graph6 code except for \n\0 */
 
-#if defined(__unix) || defined(__unix__) || defined(unix) || \
+/* Remove errno: too hard to get portable without configuration
+ * #if defined(__unix) || defined(__unix__) || defined(unix) || \
     defined(__ppc__)
 #include <errno.h>
 #else
 int errno = 0;
 #endif
 #define ABORT(msg) {if (errno != 0) perror(msg); exit(1);}
+*/
 
 extern long ftell(FILE*);
 
@@ -186,11 +192,10 @@ static long ogf_linelen;
 /************************************************************************/
 
 static void
-gt_abort(msg)     /* Write message and halt. */
-char *msg;
+gt_abort(char *msg)     /* Write message and halt. */
 {
 	if (msg) fprintf(stderr,msg);
-	ABORT(">E gtools");
+	exit(1);
 }
 
 /*****************************************************************************
@@ -204,12 +209,10 @@ char *msg;
 *****************************************************************************/
 
 static int
-itos(i,s)
-register int i;
-register char *s;
+itos(int i, char *s)
 {
-        register int digit,j,k;
-        register char c;
+        int digit,j,k;
+        char c;
         int ans;
 
         if (i < 0)
@@ -258,12 +261,10 @@ register char *s;
 *****************************************************************************/
 
 static int
-nextelement(set1,m,pos)
-register set *set1;
-int m,pos;
+nextelement(set *set1, int m, int pos)
 {
-        register setword setwd;
-        register int w;
+        setword setwd;
+        int w;
 
         if (pos < 0)
         {
@@ -315,10 +316,7 @@ opengraphfile(filename,codetype,assumefixed,position)
 **********************************************************************/
 
 static FILE*
-opengraphfile(filename,codetype,assumefixed,position)
-char *filename;
-int *codetype,assumefixed;
-long position;
+opengraphfile(char *filename, int *codetype, int assumefixed, long position)
 {
 	FILE *f;
 	int c,firstc;
@@ -453,20 +451,20 @@ long position;
 /*********************************************************************/
 
 static char*
-getline(f)     /* read a line with error checking */
-FILE *f;       /* includes \n (if present) and \0.
-                  Immediate EOF causes NULL return. */
+showg_getline(FILE *f)     /* read a line with error checking */
+       /* includes \n (if present) and \0.
+        Immediate EOF causes NULL return. */
 {
 	DYNALLSTAT(char,s,s_sz);
 	int c;
 	long i;
 
-	DYNALLOC1(char,s,s_sz,500,"getline");
+	DYNALLOC1(char,s,s_sz,500,"showg_getline");
 
 	i = 0;
 	while ((c = getc(f)) != EOF && c != '\n')
 	{
-	    if (i == s_sz-2) DYNREALLOC(char,s,s_sz,s_sz+1000,"getline");
+	    if (i == s_sz-2) DYNREALLOC(char,s,s_sz,s_sz+1000,"showg_getline");
 	    s[i++] = c;
 	}
 
@@ -480,8 +478,8 @@ FILE *f;       /* includes \n (if present) and \0.
 /****************************************************************************/
 
 static int
-graphsize(s)
-char *s;         /* Get size of graph out of graph6 or sparse6 string. */
+graphsize(char *s)
+/* Get size of graph out of graph6 or sparse6 string. */
 {
 	char *p;
 	int n;
@@ -502,10 +500,9 @@ char *s;         /* Get size of graph out of graph6 or sparse6 string. */
 /****************************************************************************/
 
 static void
-stringtograph(s,g,m)
-char *s;          /* Convert string (graph6 or sparse6 format) to graph. */
-graph *g;         /* Assumes g is big enough to hold it.                 */
-int m;
+stringtograph(char *s, graph *g, int m)
+        /* Convert string (graph6 or sparse6 format) to graph. */
+       /* Assumes g is big enough to hold it.                 */
 {
 	char *p;
 	int n,i,j,k,v,x,nb;
@@ -598,17 +595,18 @@ int m;
 /***********************************************************************/
 
 static graph*                 /* read graph into nauty format */
-readg(f,g,reqm,pm,pn)  /* graph6 and sparse6 formats are supported */
-FILE *f;      /* an open file */
-graph *g;     /* place to put the answer (NULL for dynamic allocation) */
-int reqm;     /* the requested value of m (0 => compute from n) */
-int *pm;      /* the actual value of m */
-int *pn;      /* the value of n */
+readg(FILE *f, graph *g, int reqm, int *pm, int *pn)
+    /* graph6 and sparse6 formats are supported */
+    /* f = an open file */
+    /* g = place to put the answer (NULL for dynamic allocation) */
+    /* reqm = the requested value of m (0 => compute from n) */
+    /* pm = the actual value of m */
+    /* pn = the value of n */
 {
 	char *s,*p,*readg_line;
 	int m,n,readg_code;
 
-	if ((readg_line = getline(f)) == NULL) return NULL;
+	if ((readg_line = showg_getline(f)) == NULL) return NULL;
 
 	s = readg_line;
 	if (s[0] == ':')
@@ -659,9 +657,7 @@ int *pn;      /* the value of n */
 /**************************************************************************/
 
 static int
-longvalue(ps,l)
-char **ps;
-long *l;
+longvalue(char **ps, long *l)
 {
 	boolean neg,pos;
 	long sofar,last;
@@ -706,10 +702,7 @@ long *l;
 /*************************************************************************/
 
 static void
-arg_int(ps,val,id)
-char **ps;
-int *val;
-char *id;
+arg_int(char **ps, int *val, char *id)
 {
 	int code;
 	long longval;
@@ -731,10 +724,7 @@ char *id;
 /************************************************************************/
 
 static void
-arg_range(ps,val1,val2,id)
-char **ps;
-long *val1,*val2;
-char *id;
+arg_range(char **ps, long *val1, long *val2, char *id)
 {
 	int code;
 	char *s;
@@ -808,12 +798,9 @@ extern int labelorg;
 *                                                                            *
 *****************************************************************************/
 
-void
-putsetx(f,set1,curlenp,linelength,m,compress,start)
-FILE *f;
-set *set1;
-int linelength,m,*curlenp;
-boolean compress;
+static void
+putsetx(FILE *f, set *set1, int *curlenp, int linelength, int m,
+        boolean compress, int start)
 {
         int slen,j1,j2;
         char s[40];
@@ -868,12 +855,8 @@ boolean compress;
 *                                                                            *
 *****************************************************************************/
 
-void
-putgraphx(f,g,linelength,triang,m,n)
-FILE *f;
-graph *g;
-int linelength,m,n;
-boolean triang;
+static void
+putgraphx(FILE *f, graph *g, int linelength, boolean triang, int m, int n)
 {
         int i,curlen;
         set *pg;
@@ -889,11 +872,9 @@ boolean triang;
 
 /***************************************************************************/
 
-void
-putedges(f,g,linelength,m,n)   /* write list of edges */
-FILE *f;
-graph *g;
-int linelength,m,n;
+static void
+putedges(FILE *f, graph *g, int linelength, int m, int n)
+ /* write list of edges */
 {
 	int i,j,curlen,ne;
 	char s[20];
@@ -934,11 +915,9 @@ int linelength,m,n;
 
 /***************************************************************************/
 
-void
-putcgraph(f,g,linelength,m,n)  /* write compressed form */
-FILE *f;
-graph *g;
-int linelength,m,n;
+static void
+putcgraph(FILE *f, graph *g, int linelength, int m, int n)
+ /* write compressed form */
 {
         int i,curlen;
 	int semicolons;
@@ -976,14 +955,11 @@ int linelength,m,n;
 /**************************************************************************/
 
 static void
-putam(f,g,linelength,space,triang,m,n)   /* write adjacency matrix */
-FILE *f;
-graph *g;
-int linelength,m,n;
-boolean space,triang;
+putam(FILE *f, graph *g, int linelength, boolean space, boolean triang,
+      int m, int n)   /* write adjacency matrix */
 {
- 	register set *gi;
-	register int i,j;
+ 	set *gi;
+	int i,j;
 	boolean first;
 
 	for (i = 0, gi = (set*)g; i < n - (triang!=0); ++i, gi += m)
@@ -1003,9 +979,7 @@ boolean space,triang;
 /**************************************************************************/
 /**************************************************************************/
 
-main(argc,argv)
-int argc;
-char *argv[];
+main(int argc, char *argv[])
 {
 	graph *g;
 	int m,n,codetype;
@@ -1019,7 +993,8 @@ char *argv[];
 	int linelength;
 	char *infilename,*outfilename;
 
-	if (argc > 1 && strcmp(argv[1],"-help") == 0)
+	if (argc > 1 && (strcmp(argv[1],"-help") == 0
+                       || (strcmp(argv[1],"--help") == 0)))
 	{
 	    printf("Usage: %s\n\n%s",USAGE,HELPTEXT);
 	    exit(0);

@@ -43,17 +43,43 @@ if test x"$user_cflags" = x"" ; then
          AC_TRY_CFLAGS([-O2],[CFLAGS="$CFLAGS -O2"],[CFLAGS="$CFLAGS -O"]);
      fi
   fi
-     
+ 
+  if test "$CC" = "gcc" ; then
+      gccver=`gcc --version 2>/dev/null || echo 0.0.0`
+  else
+      gccver=0.0.0
+  fi
+
   case "$host" in
    *pentium*solaris*)
 	;;
-   *pentium3*|*i686*|*athlon*)
+   *pentium4*)
+	AC_TRY_CFLAGS([-march=pentium4],[CFLAGS="$CFLAGS -march=pentium4"]);;
+   *pentium3*|*i686*|*athlon*|x86*)
 	AC_TRY_CFLAGS([-march=i686],[CFLAGS="$CFLAGS -march=i686"]);;
    *pentium2*|*i586*)
 	AC_TRY_CFLAGS([-march=i586],[CFLAGS="$CFLAGS -march=i586"]);;
    *powerpc*)
-	AC_TRY_CFLAGS([-mpowerpc],[CFLAGS="$CFLAGS -mpowerpc"])
-	AC_TRY_CFLAGS([-fast],[MORECFLAGS="$MORECFLAGS -fast"]);;
+        machtype=`/usr/bin/machine 2>/dev/null || echo unknown`
+        case "$machtype" in
+	  ppc740?)
+	     AC_TRY_CFLAGS([-mcpu=7400],[CFLAGS="$CFLAGS -mcpu=7400"])
+	     AC_TRY_CFLAGS([-mtune=7400],[CFLAGS="$CFLAGS -mtune=7400"]);;
+	  ppc745?)
+	     AC_TRY_CFLAGS([-mcpu=7450],[CFLAGS="$CFLAGS -mcpu=7450"])
+	     AC_TRY_CFLAGS([-mtune=7450],[CFLAGS="$CFLAGS -mtune=7450"])
+             case "$gccver" in
+               *\ 4.[[0-9]].[[0-9]]\ *)
+	           AC_TRY_CFLAGS([$CFLAGS -fast],
+			[MORECFLAGS="$MORECFLAGS -fast"]);;
+             esac;;
+	  ppc970)
+	     AC_TRY_CFLAGS([-mcpu=g5],[CFLAGS="$CFLAGS -mcpu=g5"])
+	     AC_TRY_CFLAGS([-mtune=g5],[CFLAGS="$CFLAGS -mtune=g5"])
+	     AC_TRY_CFLAGS([-fast],[CFLAGS="$MORECFLAGS -fast"]);;
+          *)
+	     AC_TRY_CFLAGS([-mpowerpc],[CFLAGS="$CFLAGS -mpowerpc"]);;
+        esac;;
    *osf*)
 	AC_TRY_CFLAGS([-fast],[CFLAGS="$CFLAGS -fast"]);;
    *sparcv8*|*sparcv9*)
@@ -68,6 +94,10 @@ if test x"$user_cflags" = x"" ; then
 fi
 
 echo CFLAGS=$CFLAGS
+echo MORECFLAGS=$MORECFLAGS
+
+dnl Checks relevant to Cygwin and other Windows things
+AC_EXEEXT
 
 dnl Checks for header files.
 dnl AC_HEADER_STDC
@@ -113,9 +143,22 @@ AC_EGREP_HEADER([(^|[^a-zA-Z_0-9])popen[^a-zA-Z_0-9]],stdio.h,
 AC_SUBST(popen_dec)
 AC_MSG_RESULT($popen_dec)
 
+AC_MSG_CHECKING(if putenv is declared in stdlib.h)
+AC_EGREP_HEADER([(^|[^a-zA-Z_0-9])putenv[^a-zA-Z_0-9]],stdlib.h,
+  putenv_dec=1,putenv_dec=0)
+AC_SUBST(putenv_dec)
+AC_MSG_RESULT($putenv_dec)
+
+AC_MSG_CHECKING(if setenv is declared in stdlib.h)
+AC_EGREP_HEADER([(^|[^a-zA-Z_0-9])setenv[^a-zA-Z_0-9]],stdlib.h,
+  setenv_dec=1,setenv_dec=0)
+AC_SUBST(setenv_dec)
+AC_MSG_RESULT($setenv_dec)
+
 AC_MSG_CHECKING(if INFINITY is declared in math.h)
 AC_EGREP_CPP(yes,
-[#include <math.h>
+[#include <stdio.h>
+#include <math.h>
 #ifdef INFINITY
   yes
 #endif
@@ -131,7 +174,7 @@ AC_SUBST(ac_cv_sizeof_long)
 AC_CHECK_SIZEOF(long long,0)
 AC_SUBST(ac_cv_sizeof_long_long)
 lok=0
-testprogs="dreadtest dreadtestB dreadtestS dreadtestS1 dreadtest4K"
+testprogs="dreadtest dreadtestS dreadtestS1 dreadtest4K"
 testprogs="$testprogs dreadtest1 dreadtestW1"
 AC_SUBST(MORECFLAGS)
 
@@ -171,8 +214,21 @@ AC_CHECK_FUNC(wait,have_wait=1,have_wait=0)
 AC_SUBST(have_wait)
 AC_CHECK_FUNC(popen,have_popen=1,have_popen=0)
 AC_SUBST(have_popen)
+AC_CHECK_FUNC(putenv,have_putenv=1,have_putenv=0)
+AC_SUBST(have_putenv)
+AC_CHECK_FUNC(setenv,have_setenv=1,have_setenv=0)
+AC_SUBST(have_setenv)
+
+AC_CHECK_FUNC(getc_unlocked,have_getc_unlocked=1,have_getc_unlocked=0)
+AC_CHECK_FUNC(flockfile,have_flockfile=1,have_flockfile=0)
+if test $have_getc_unlocked -a $have_flockfile; then
+    stdio_nolock=1
+else
+    stdio_nolock=0
+fi
+AC_SUBST(stdio_nolock)
 
 AC_CHECK_PROGS(sort_prog,gsort sort,no_sort_found)
 
-AC_OUTPUT(makefile nauty.h:nauty-h.in
+AC_OUTPUT(makefile:makefile.in nauty.h:nauty-h.in
     naututil.h:naututil-h.in gtools.h:gtools-h.in)

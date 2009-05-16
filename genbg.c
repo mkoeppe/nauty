@@ -1,10 +1,10 @@
-/* genbg.c : version 1.4; B D McKay, Sep 15, 2003. */
+/* genbg.c : version 1.5; B D McKay, Apr 11, 2007. */
 
 /* TODO: consider colour swaps */
 
 #define USAGE \
-"genbg [-c -ugsn -vq -lzF] [-Z#] [-d#|-d#:#] [-D#|-D#:#] n1 n2 \
-[mine[:maxe]] [res/mod] [file]"
+"genbg [-c -ugsn -vq -lzF] [-Z#] [-d#|-d#:#] [-D#|-D#:#] n1 n2 \n\
+                [mine[:maxe]] [res/mod] [file]"
 
 #define HELPTEXT \
 " Find all bicoloured graphs of a specified class.\n\
@@ -28,7 +28,7 @@
           two parts, for example: -D5:6\n\
   -d#   : specify a lower bound for the minimum degree.\n\
           Again, you can specify it separately for the two parts: -d1:2\n\
-  -N    : use nauty format for output\n\
+  -n    : use nauty format for output\n\
   -g    : use graph6 format for output (default)\n\
   -s    : use sparse6 format for output\n\
   -a    : use Greechie diagram format for output\n\
@@ -116,12 +116,13 @@ INSTRUMENT feature.
 **************************************************************************
 
     Author:   B. D. McKay, Oct 1994.     bdm@cs.anu.edu.au
-              Copyright  B. McKay (1994-2003).  All rights reserved.
+              Copyright  B. McKay (1994-2007).  All rights reserved.
               This software is subject to the conditions and waivers
               detailed in the file nauty.h.
     1 May 2003 : fixed PRUNE feature
    13 Sep 2003 : added Greechie output, all outprocs have n1,n2
     9 Oct 2003 : changed -l to respect partition
+   11 Apr 2007 : make >A line more atomic
 
 **************************************************************************/
 
@@ -248,6 +249,10 @@ static long a1calls,a1nauty,a1succs;
 static long a2calls,a2nauty,a2uniq,a2succs;
 #endif
 
+#ifdef SPLITTEST
+static unsigned long splitcases = 0;
+#endif
+
 /************************************************************************/
 
 void
@@ -256,8 +261,8 @@ writeny(FILE *f, graph *g, int n1, int n2)
 {
         static char ybit[] = {32,16,8,4,2,1};
         char s[(MAXN*(MAXN-1)/2 + 5)/6 + 4];
-        register int i,j,k;
-        register char y,*sp;
+        int i,j,k;
+        char y,*sp;
 	int n;
 
 	n = n1 + n2;
@@ -367,7 +372,7 @@ writenauty(FILE *f, graph *g, int n1, int n2)
 /* write graph g (n1+n2 vertices) to file f in nauty format */
 {
         long buffer[MAXN+1];
-        register int i;
+        int i;
 	int n;
 
 	n = n1 + n2;
@@ -436,8 +441,8 @@ static boolean
 isconnected(graph *g, int n)
 /* test if g is connected */
 {
-        register setword seen,expanded,toexpand;
-        register int i;
+        setword seen,expanded,toexpand;
+        int i;
 
         seen = bit[0];
         expanded = 0;
@@ -460,8 +465,8 @@ distinvar(graph *g, int *invar, int n1, int n2)
     exit immediately FALSE if n-1 not maximal else exit TRUE
     Note: only invar[n1..n1+n2-1] set */
 {
-        register int w,n;
-        register setword workset,frontier;
+        int w,n;
+        setword workset,frontier;
         setword sofar;
         int inv,d,v;
 
@@ -495,7 +500,7 @@ static void
 makeleveldata(void)
 /* make the level data for each level */
 {
-        register int i,j,h;
+        int i,j,h;
         int nn,nxsets,tttn;
         long ncj;
         leveldata *d;
@@ -592,10 +597,10 @@ userautomproc(int count, permutation *p, int *orbits, int numorbits,
    Form orbits on powerset of VG
    Operates on data[n-n1] */
 {
-        register int i,j1,j2;
-        register int moved,pxi,pi;
+        int i,j1,j2;
+        int moved,pxi,pi;
         int w,lo,hi;
-        register int *xorb;
+        int *xorb;
 
         xorb = data[n-n1].xorb;
         lo = data[n-n1].lo;
@@ -646,8 +651,8 @@ refinex(graph *g, int *lab, int *ptn, int level, int *numcells,
         permutation *count, set *active, boolean goodret,
         int *code, int m, int n)
 {
-        register int i,c1,c2,labc1;
-        register setword x;
+        int i,c1,c2,labc1;
+        setword x;
         int split1,split2,cell1,cell2;
         int cnt,bmin,bmax;
         set *gptr;
@@ -817,7 +822,7 @@ static boolean
 accept1(graph *g, int n2, int x, graph *gx, int *deg, boolean *rigid)
  /* decide if n2 in theta(g+x) -- version for n2+1 < maxn2 */
 {
-        register int i,n;
+        int i,n;
         int lab[MAXN],ptn[MAXN],orbits[MAXN];
         permutation count[MAXN];
         graph h[MAXN];
@@ -930,7 +935,7 @@ static boolean
 accept2(graph *g, int n2, int x, graph *gx, int *deg, boolean nuniq)
 /* decide if n in theta(g+x) -- version for n+1 == maxn */
 {
-        register int i,n;
+        int i,n;
         int lab[MAXN],ptn[MAXN],orbits[MAXN];
         int degx[MAXN],invar[MAXN];
         setword vmax,gv;
@@ -1144,7 +1149,7 @@ xbnds(int n2, int ne, int dmax)
 /* find bounds on degree for vertex n2
    Store answer in data[*].*  */
 {
-        register int xlb,xub,m;
+        int xlb,xub,m;
 
         xlb = n2 == 0 ? (connec ? 1 : 0) : dmax;
 	if (xlb < mindeg2) xlb = mindeg2;
@@ -1167,7 +1172,7 @@ static void
 genextend(graph *g, int n2, int *deg, int ne, boolean rigid, int xlb, int xub)
 /* extend from n2 to n2+1 */
 {
-        register int x,y,d;
+        int x,y,d;
         int *xorb,xc;
         int nx,i,j,imin,imax,dmax;
         int xlbx,xubx,n;
@@ -1266,7 +1271,13 @@ genextend(graph *g, int n2, int *deg, int ne, boolean rigid, int xlb, int xub)
                 if (nx == nprune)
                 {
                     if (curres == 0) curres = mod;
+#if SPLITTEST
+		    --curres;
+		    ++splitcases;
+		    continue;
+#else
                     if (--curres != 0) continue;
+#endif
                 }
                 if (accept2(g,n2,x,gx,deg,xc > dmax))
                     if (!connec || isconnected(gx,n+1))
@@ -1292,7 +1303,13 @@ genextend(graph *g, int n2, int *deg, int ne, boolean rigid, int xlb, int xub)
                 if (nx == nprune)
                 {
                     if (curres == 0) curres = mod;
+#if SPLITTEST
+		    --curres;
+		    ++splitcases;
+		    continue;
+#else
                     if (--curres != 0) continue;
+#endif
                 }
 
 		if (simple)
@@ -1342,15 +1359,17 @@ main(int argc, char *argv[])
 {
         char *arg;
         long ltemp;
-        boolean badargs,gotD,gote,gotf,gotmr,gotZ,gotd;
+        boolean badargs,gotD,gote,gotf,gotmr,gotZ,gotd,gotX;
 	long Dval1,Dval2;
 	long dval1,dval2;
         int i,j,imin,imax,argnum,sw;
+        int splitlevinc;
         graph g[MAXN1];
         int deg[MAXN1];
         bigint nout;
         double t1,t2;
 	char *outfilename;
+	char msg[201];
 
         HELP;
         nauty_check(WORDSIZE,1,MAXN,NAUTYVERSIONID);
@@ -1382,6 +1401,7 @@ main(int argc, char *argv[])
 	gotD = FALSE;
 	gotd = FALSE;
 	gotZ = FALSE;
+	gotX = splitlevinc;
 	outfilename = NULL;
 
         maxdeg1 = maxdeg2 = MAXN;
@@ -1410,6 +1430,7 @@ main(int argc, char *argv[])
                     else SWBOOLEAN('g',graph6)
                     else SWBOOLEAN('s',sparse6)
 		    else SWINT('Z',gotZ,maxcommon,"genbg -Z")
+		    else SWINT('X',gotX,splitlevinc,"geng -X")
                     else SWRANGE('D',":-",gotD,Dval1,Dval2,"genbg -D")
                     else SWRANGE('d',":-",gotd,dval1,dval2,"genbg -d")
 #ifdef PLUGIN_SWITCHES
@@ -1556,13 +1577,6 @@ PLUGIN_SWITCHES
 PLUGIN_INIT
 #endif
 
-#if 0
-	if (gotd)    /* TEMP */
-	{
-	    gt_abort("genbg -d is not implemented\n");
-	}
-#endif
-
         for (i = 0; i <= maxe; ++i) ZEROBIG(ecount[i]);
 
         if (nooutput)
@@ -1580,6 +1594,7 @@ PLUGIN_INIT
             gt_abort(NULL);
         }
 
+/*
 	if (!quiet)
         {
             fprintf(stderr,">A %s n=%d+%d e=%d:%d d=%d:%d D=%d:%d ",
@@ -1592,6 +1607,27 @@ PLUGIN_INIT
 	    if (mod > 1) fprintf(stderr," class=%d/%d",res,mod);
 	    fprintf(stderr,"\n");
  	}
+*/
+
+	if (!quiet)
+	{
+	    msg[0] = '\0';
+	    if (strlen(argv[0]) > 75)
+                fprintf(stderr,">A %s",argv[0]);
+            else
+                CATMSG1(">A %s",argv[0]);
+	    CATMSG4(" n=%d+%d e=%d:%d",n1,maxn2,mine,maxe);
+	    CATMSG4(" d=%d:%d D=%d:%d ",mindeg1,mindeg2,maxdeg1,maxdeg2);
+	    if (simple) CATMSG0("z");
+            if (footfree) CATMSG0("F");
+            if (connec) CATMSG0("c");
+            if (maxcommon >= 0) CATMSG1("Z%d",maxcommon);
+	    if (cutfree) CATMSG0("L");
+            if (mod > 1) CATMSG2(" class=%d/%d",res,mod);
+            CATMSG0("\n");
+	    fputs(msg,stderr);
+            fflush(stderr);
+        }
 
         class1size = n1;
 
@@ -1619,6 +1655,13 @@ PLUGIN_INIT
             else if (maxn2 >= 6) nprune = maxn2 - 2;
             else if (maxn2 >= 3) nprune = maxn2 - 1;
             else                 nprune = maxn2;
+
+	    if (gotX)
+	    {
+		nprune += splitlevinc;
+		if (nprune > maxn2) nprune = maxn2;
+		if (nprune < 0) nprune = 0;
+	    }
 
             xbnds(0,0,0);
             imin = xstart[data[0].xlb];
@@ -1659,12 +1702,17 @@ PLUGIN_INIT
         fprintf(stderr,"\n");
 #endif
 
+#if SPLITTEST
+	fprintf(stderr,">Z %lu splitting cases at level %d; cpu=%3.2f sec\n",
+		splitcases,nprune,t2-t1);
+#else
 	if (!quiet)
 	{
             fprintf(stderr,">Z ");
 	    PRINTBIG(stderr,nout);
 	    fprintf(stderr," graphs generated in %3.2f sec\n",t2-t1);
 	}
+#endif
 
         exit(0);
 }

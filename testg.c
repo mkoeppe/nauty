@@ -2,6 +2,7 @@
    both pickg (select by property) and countg (count by property).
    Version of Nov 19, 2003. */
 /* TODO - write a header if input has one */
+/* TODO - USERDEF should be long, not int */
 
 #define USAGE \
   "[pickg|countg] [-fp#:#q -V] [--keys] [-constraints -v] [ifile [ofile]]"
@@ -16,7 +17,7 @@
   Miscellaneous switches:\n\
      -p# -p#:#   Specify range of input lines (first is 1)\n\
      -f          With -p, assume input lines of fixed length\n\
-		        (only used with a file in graph6 format)\n\
+                        (only used with a file in graph6 format)\n\
      -v          Negate all constraints\n\
      -V          List properties of every input matching constraints.\n\
      -q          Suppress informative output.\n\
@@ -34,6 +35,7 @@
      -r   regular                -b   bipartite\n\
      -z#  radius                 -Z#  diameter\n\
      -g#  girth (0=acyclic)      -Y#  total number of cycles\n\
+     -T#  number of triangles\n\
      -E   Eulerian (all degrees are even, connectivity not required)\n\
      -a#  group size  -o# orbits  -F# fixed points  -t vertex-transitive\n\
      -c#  connectivity (only implemented for 0,1,2).\n\
@@ -144,7 +146,9 @@ static struct constraint_st    /* Table of Constraints */
    {'j',0,FALSE,FALSE,CMASK(I_i),-NOLIMIT,NOLIMIT,"minnoncn",INTTYPE,0},
 #define I_J 19
    {'J',0,FALSE,FALSE,CMASK(I_i),-NOLIMIT,NOLIMIT,"maxnoncn",INTTYPE,0},
-#define I_Q 20
+#define I_T 20
+   {'T',0,FALSE,FALSE,0,-NOLIMIT,NOLIMIT,"triang",INTTYPE,0},
+#define I_Q 21
 #ifdef USERDEF
    {'Q',0,FALSE,FALSE,0,-NOLIMIT,NOLIMIT,USERDEFNAME,INTTYPE,0}
 #else
@@ -398,7 +402,7 @@ groupstats(graph *g, int m, int n, group_node *sz,
 	DYNALLSTAT(set,active,active_sz);
 	DYNALLSTAT(setword,workspace,workspace_sz);
 #endif
-        register int i;
+        int i;
 	int fixed;
         int numcells,code;
         statsblk stats;
@@ -532,6 +536,11 @@ compute(graph *g, int m, int n, int code)
 	    case I_Y:
 		VAL(I_Y) = cyclecount(g,m,n);
 		COMPUTED(I_Y) = TRUE;
+		break;
+
+	    case I_T:
+		VAL(I_T) = numtriangles(g,m,n);
+		COMPUTED(I_T) = TRUE;
 		break;
 
 	    case I_i:

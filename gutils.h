@@ -12,9 +12,12 @@ boolean isconnected1(graph*,int);
 boolean isconnected(graph*,int,int);
 boolean issubconnected(graph*,set*,int,int); 
 
+int loopcount(graph*,int,int);
 long pathcount1(graph*,int,setword,setword);
 long cyclecount1(graph*,int);
 long cyclecount(graph*,int,int);
 void commonnbrs(graph*,int*,int*,int*,int*,int,int);
 void contract1(graph*,graph*,int,int,int);
 int cstarcontent(graph*,int,int);
+long numtriangles1(graph*,int);
+long numtriangles(graph*,int,int);
