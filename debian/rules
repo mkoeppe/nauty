@@ -9,9 +9,6 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-BINFILES=copyg listg labelg dretog amtog geng complg shortg showg NRswitchg \
-	biplabg addedgeg deledgeg countg pickg genrang newedgeg catg genbg \
-	directg multig dreadnaut dreadnautB
 
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
@@ -49,9 +46,6 @@ clean:
 
 	# Add here commands to clean up after the build process.
 	$(MAKE) -f makefile.basic clean
-	rm -f $(BINFILES)
-	rm -f config.sub config.guess
-
 	dh_clean 
 
 install: build
