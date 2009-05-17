@@ -1,0 +1,19 @@
+.TH NEWEDGEG "1" "May 2009" "nauty 2.4" "User Commands"
+.SH NAME
+newedgeg \- For each pair of non\-adjacent edges, output the graph obtained
+.SH SYNOPSIS
+.B newedgeg
+[\fI-lq\fR] [\fIinfile \fR[\fIoutfile\fR]]
+.SH DESCRIPTION
+.IP
+For each pair of non\-adjacent edges, output the graph obtained
+.IP
+by subdividing the edges and joining the new vertices.
+.IP
+The output file has a header if and only if the input file does.
+.TP
+\fB\-l\fR
+Canonically label outputs
+.TP
+\fB\-q\fR
+Suppress auxiliary information

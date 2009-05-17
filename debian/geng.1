@@ -1,0 +1,74 @@
+.TH GENG "1" "May 2009" "nauty 2.4" "User Commands"
+.SH NAME
+geng \- [\-x#X#] n [mine[:maxe]] [res/mod] [file]
+.SH SYNOPSIS
+.B geng
+[\fI-cCmtfbd#D#\fR] [\fI-uygsnh\fR] [\fI-lvq\fR]
+.SH DESCRIPTION
+.IP
+[\-x#X#] n [mine[:maxe]] [res/mod] [file]
+.IP
+Generate all graphs of a specified class.
+.TP
+n
+: the number of vertices (1..32)
+.IP
+mine:maxe : a range for the number of edges
+.IP
+#:0 means '# or more' except in the case 0:0
+.IP
+res/mod : only generate subset res out of subsets 0..mod\-1
+.TP
+\fB\-c\fR
+: only write connected graphs
+.TP
+\fB\-C\fR
+: only write biconnected graphs
+.TP
+\fB\-t\fR
+: only generate triangle\-free graphs
+.TP
+\fB\-f\fR
+: only generate 4\-cycle\-free graphs
+.TP
+\fB\-b\fR
+: only generate bipartite graphs
+.IP
+(\fB\-t\fR, \fB\-f\fR and \fB\-b\fR can be used in any combination)
+.TP
+\fB\-m\fR
+: save memory at the expense of time (only makes a
+.IP
+difference in the absence of \fB\-b\fR, \fB\-t\fR, \fB\-f\fR and n <= 28).
+.TP
+\fB\-d\fR#
+: a lower bound for the minimum degree
+.TP
+\fB\-D\fR#
+: a upper bound for the maximum degree
+.TP
+\fB\-v\fR
+: display counts by number of edges
+.TP
+\fB\-l\fR
+: canonically label output graphs
+.TP
+\fB\-u\fR
+: do not output any graphs, just generate and count them
+.TP
+\fB\-g\fR
+: use graph6 output (default)
+.TP
+\fB\-s\fR
+: use sparse6 output
+.TP
+\fB\-y\fR
+: use the obsolete y\-format instead of graph6 format
+.TP
+\fB\-h\fR
+: for graph6 or sparse6 format, write a header too
+.TP
+\fB\-q\fR
+: suppress auxiliary output (except from \fB\-v\fR)
+.IP
+See program text for much more information.

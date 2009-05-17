@@ -1,0 +1,49 @@
+.TH DREADNAUT "1" "May 2009" "Nauty 2.4" "User Commands"
+.SH NAME
+Dreadnaut \- command line interface to nauty graph isomorphism library
+.SH SYNOPSIS
+.B dreadnaut
+
+Dreadnaut is interactive, and takes no command line arguments.
+Commands to read and write graphs, and compute isomorphisms, can be
+given on standard input, either from a script or from the keyboard.
+To exit, type ^D
+
+.SH COMMANDS
+
+.nf
++- a : write automs        v : write degrees    *=# : select invariant:
+    b : write canong      w=# : set worksize
+ +- c : canonise            x : run nauty         -1 = user-defined
+ +- d : digraph or loops  y=# : set tc_level       0 = none
+    e : edit graph          z : write hashcode     1 = twopaths
+ -f, f=#, f=[...] : set colours                    2 = adjtriang(K=0,1)
+    g : read graph        $=# : set origin         3 = triples
+  h,H : help               $$ : restore origin     4 = quadruples
+    i : refine              ? : type options       5 = celltrips
+    I : refine using invar  _ : compl  __ : conv   6 = cellquads
+    j : relabel randomly    % : Mathon doubling    7 = cellquins
+ k=# # : set invar levels   & : type colouring     8 = distances(K)
+  K=# : set invar param    && : + quotient matrix  9 = indsets(K)
+  l=# : set line length   >ff : write to file     10 = cliques(K)
+ +- m : write markers    >>ff : append to file    11 = cellcliq(K)
+  n=# : set order          -> : revert to stdout  12 = cellind(K)
+    o : write orbits      <ff : read from file    13 = adjacencies
+ +- p : set autom format    @ : save canong       14 = cellfano
+    q : quit                # : canong = savedg?  15 = cellfano2
+  r,R : relabel/subgraph   ## : + write mapping
+  s=# : random g (p=1/#)  "..." : copy comment
+  t,T : type graph          ! : ignore line      
+
+Commands for g and e :
+    There is always a "current vertex" v, initially first vertex.
+    # : add edge v=#       ; : increment v (exit if over limit)
+   -# : delete edge v=#   #: : set v := #
+    ? : list nbhs of v     . : exit
+ Syntax for f :  f=[2 3|4:9|10]  (rest in extra cell at right)
+                -f same as f=[], f=# same as f=[#]
+ Syntax for r :  r 2:4 1 5;    (rest appended in order)
+ Syntax for R :  R 2:4 1 5;   or  -R 0 3 6:10;
+ Arguments for u : 1=node,2=autom,4=level,16=ref (add them)
+ Accurate times for easy graphs: M=# selects number of times to run.
+.fi

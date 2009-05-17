@@ -1,0 +1,64 @@
+.TH LISTG "1" "May 2009" "nauty 2.4" "User Commands"
+.SH NAME
+listg \- Write graphs in human\-readable format.
+.SH SYNOPSIS
+.B listg
+[\fI-fp#:#l#o#Ftq\fR] [\fI-a|-A|-c|-d|-e|-M|-s\fR] [\fIinfile \fR[\fIoutfile\fR]]
+.SH DESCRIPTION
+.IP
+Write graphs in human\-readable format.
+.TP
+\fB\-f\fR
+: assume inputs have same size (only used from a file
+.IP
+and only if \fB\-p\fR is given)
+.HP
+\fB\-p\fR#, \fB\-p\fR#:#, \fB\-p\fR#\-# : only display one graph or a sequence of
+.TP
+graphs.
+The first graph is number 1.  A second number
+.IP
+which is empty or zero means infinity.
+.TP
+\fB\-a\fR
+: write as adjacency matrix, not as list of adjacencies
+.TP
+\fB\-A\fR
+: same as \fB\-a\fR with a space between entries
+.HP
+\fB\-l\fR# : specify screen width limit (default 78, 0 means no limit)
+.IP
+This is not currently implemented with \fB\-a\fR or \fB\-A\fR.
+.HP
+\fB\-o\fR# : specify number of first vertex (default is 0).
+.TP
+\fB\-d\fR
+: write output to satisfy dreadnaut
+.TP
+\fB\-c\fR
+: write ascii form with minimal line\-breaks
+.TP
+\fB\-e\fR
+: write a list of edges, preceded by the order and the
+.IP
+number of edges
+.TP
+\fB\-M\fR
+: write in Magma format
+.TP
+\fB\-W\fR
+: write matrix in Maple format
+.TP
+\fB\-t\fR
+: write upper triangle only (affects \fB\-a\fR, \fB\-A\fR, \fB\-d\fR and default)
+.TP
+\fB\-s\fR
+: write only the numbers of vertices and edges
+.TP
+\fB\-F\fR
+: write a form\-feed after each graph except the last
+.TP
+\fB\-q\fR
+: suppress auxiliary output
+.HP
+\fB\-a\fR, \fB\-A\fR, \fB\-c\fR, \fB\-d\fR, \fB\-M\fR, \fB\-W\fR and \fB\-e\fR are incompatible.

@@ -1,0 +1,36 @@
+.TH DIRECTG "1" "May 2009" "nauty 2.4" "User Commands"
+.SH NAME
+directg \- Read undirected graphs and orient their edges in all possible ways.
+.SH SYNOPSIS
+.B directg
+[\fI-q\fR] [\fI-u|-T|-G\fR] [\fI-o\fR] [\fI-f#\fR] [\fI-e#|-e#:#\fR] [\fIinfile \fR[\fIoutfile\fR]]
+.SH DESCRIPTION
+.IP
+Read undirected graphs and orient their edges in all possible ways.
+.IP
+Edges can be oriented in either or both directions (3 possibilities).
+Isomorphic directed graphs derived from the same input are suppressed.
+If the input graphs are non\-isomorphic then the output graphs are also.
+.TP
+\fB\-e\fR# | \fB\-e\fR#:#
+specify a value or range of the total number of arcs
+.TP
+\fB\-o\fR
+orient each edge in only one direction, never both
+.TP
+\fB\-f\fR#
+Use only the subgroup that fixes the first # vertices setwise
+.TP
+\fB\-T\fR
+use a simple text output format (nv ne edges) instead of digraph6
+.TP
+\fB\-G\fR
+like \fB\-T\fR but includes group size as third item (if less than 10^10)
+.IP
+The group size does not include exchange of isolated vertices.
+.TP
+\fB\-u\fR
+no output, just count them
+.TP
+\fB\-q\fR
+suppress auxiliary information

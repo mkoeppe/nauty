@@ -1,0 +1,17 @@
+.TH NRSWITCHG "1" "May 2009" "nauty 2.4" "User Commands"
+.SH NAME
+NRswitchg \- For each v, complement the edges from N(v) to V(G)\-N(v)\-v.
+.SH SYNOPSIS
+.B NRswitchg
+[\fI-lq\fR] [\fIinfile \fR[\fIoutfile\fR]]
+.SH DESCRIPTION
+.IP
+For each v, complement the edges from N(v) to V(G)\-N(v)\-v.
+.IP
+The output file has a header if and only if the input file does.
+.TP
+\fB\-l\fR
+Canonically label outputs.
+.TP
+\fB\-q\fR
+Suppress auxiliary information.

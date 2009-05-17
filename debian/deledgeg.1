@@ -1,0 +1,19 @@
+.TH DELEDGEG "1" "May 2009" "nauty 2.4" "User Commands"
+.SH NAME
+deledgeg \- For each edge e, output G\-e
+.SH SYNOPSIS
+.B deledgeg
+[\fI-lq\fR] [\fI-d#\fR] [\fIinfile \fR[\fIoutfile\fR]]
+.SH DESCRIPTION
+.IP
+For each edge e, output G\-e
+.IP
+The output file has a header if and only if the input file does.
+.TP
+\fB\-l\fR
+Canonically label outputs
+.HP
+\fB\-d\fR# Specify a lower bound on the minimum degree of the output
+.TP
+\fB\-q\fR
+Suppress auxiliary information

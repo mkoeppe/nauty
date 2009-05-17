@@ -1,0 +1,18 @@
+.TH BIPLABG "1" "May 2009" "nauty 2.4" "User Commands"
+.SH NAME
+biplabg \- Label bipartite graphs so that the colour classes are contiguous.
+.SH SYNOPSIS
+.B biplabg
+[\fI-q\fR] [\fIinfile \fR[\fIoutfile\fR]]
+.SH DESCRIPTION
+.IP
+Label bipartite graphs so that the colour classes are contiguous.
+.IP
+The first vertex of each component is assigned the first colour.
+Vertices in each colour class have the same relative order as before.
+Non\-bipartite graphs are rejected.
+.IP
+The output file has a header if and only if the input file does.
+.TP
+\fB\-q\fR
+Suppress auxiliary information.

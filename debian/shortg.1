@@ -1,0 +1,95 @@
+.TH SHORTG "1" "May 2009" "nauty 2.4" "User Commands"
+.SH NAME
+shortg \- Remove isomorphs from a file of graphs.
+.SH SYNOPSIS
+.B shortg
+[\fI-qvkdu\fR] [\fI-i# -I#:# -K#\fR] [\fI-fxxx\fR] [\fI-Tdir\fR] [\fIinfile \fR[\fIoutfile\fR]]
+.SH DESCRIPTION
+.IP
+Remove isomorphs from a file of graphs.
+.IP
+If outfile is omitted, it is taken to be the same as infile
+If both infile and outfile are omitted, input will be taken
+.IP
+from stdin and written to stdout
+.IP
+The output file has a header if and only if the input file does.
+.TP
+\fB\-s\fR
+force output to sparse6 format
+.TP
+\fB\-g\fR
+force output to graph6 format
+If neither \fB\-s\fR or \fB\-g\fR are given, the output format is
+determined by the header or, if there is none, by the
+format of the first input graph.
+.TP
+\fB\-k\fR
+output graphs have the same labelling and format as the inputs.
+Otherwise, output graphs have canonical labelling.
+\fB\-s\fR and \fB\-g\fR are ineffective if \fB\-k\fR is given.  If none of \fB\-sgk\fR are
+given, the output format is determined by the header or, if there
+is none, by the format of the first input graph.
+.TP
+\fB\-v\fR
+write to stderr a list of which input graphs correspond to which
+output graphs. The input and output graphs are both numbered
+beginning at 1.  A line like
+.IP
+23 : 30 154 78
+.IP
+means that inputs 30, 154 and 78 were isomorphic, and produced
+output 23.
+.TP
+\fB\-d\fR
+include in the output only those inputs which are isomorphic
+to another input.  If \fB\-k\fR is specified, all such inputs are
+included in their original labelling.  Without \fB\-k\fR, only one
+member of each nontrivial isomorphism class is written,
+with canonical labelling.
+.TP
+\fB\-fxxx\fR
+Specify a partition of the point set.  xxx is any
+.TP
+string of ASCII characters except nul.
+This string is
+.IP
+considered extended to infinity on the right with the
+character 'z'.  One character is associated with each point,
+in the order given.  The labelling used obeys these rules:
+.IP
+(1) the new order of the points is such that the associated
+.IP
+characters are in ASCII ascending order
+.IP
+(2) if two graphs are labelled using the same string xxx,
+.IP
+the output graphs are identical iff there is an
+associated\-character\-preserving isomorphism between them.
+.TP
+\fB\-i\fR#
+select an invariant (1 = twopaths, 2 = adjtriang(K), 3 = triples,
+.IP
+4 = quadruples, 5 = celltrips, 6 = cellquads, 7 = cellquins,
+8 = distances(K), 9 = indsets(K), 10 = cliques(K), 11 = cellcliq(K),
+.IP
+12 = cellind(K), 13 = adjacencies, 14 = cellfano, 15 = cellfano2)
+.TP
+\fB\-I\fR#:#
+select mininvarlevel and maxinvarlevel (default 1:1)
+.TP
+\fB\-K\fR#
+select invararg (default 3)
+.TP
+\fB\-u\fR
+Write no output, just report how many graphs it would have output.
+In this case, outfile is not permitted.
+.TP
+\fB\-Tdir\fR
+Specify that directory "dir" will be used for temporary disk
+.TP
+space by the sort subprocess.
+The default is usually /tmp.
+.TP
+\fB\-q\fR
+Suppress auxiliary output
