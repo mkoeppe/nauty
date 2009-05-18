@@ -1,24 +1,52 @@
-This package was debianized by David Bremner <bremner@unb.ca> on
-Thu, 24 Jan 2008 10:17:54 +0100.
+% The format of this file is (loosely) based on
+%      http://wiki.debian.org/Proposals/CopyrightFormat
 
-It was downloaded from <url://example.com>
+Original source download from: http://cs.anu.edu.au/~bdm/nauty/
 
-Upstream Author(s): 
+Author : Brendan McKay <bdm@cs.anu.edu.au>
 
-    <put author's name and email here>
-    <likewise for another author>
+Files: *
+Copyright: © Brendan McKay
+License: Other
+ Copyright (1984-2009) Brendan McKay. All rights reserved. Permission
+ is hereby given for use and/or distribution with the exception of sale
+ for profit or application with nontrivial military significance. You
+ must not remove this copyright notice, and you must document any
+ changes that you make to this program. This software is subject to
+ this copyright only, irrespective of any copyright attached to any
+ package of which this is a part.
 
-Copyright: 
+ Absolutely no guarantees or warranties are made concerning the
+ suitability, correctness, or any other aspect of this program. Any
+ use is at your own risk.  The above does not apply to the file
+ planarity.c, which is copyright to the Magma project and distributed
+ with nauty by permission.
 
-    <Copyright (C) YYYY Name OfAuthor>
-    <likewise for another author>
+Files: planarity.c
+Copyright: ©2001-2007 Magma Project
+License: Other
+ planarity.c - code for planarity testing of undirected graphs.
+ Method of Boyer and Myrvold, programmed by Paulette Lieby.
+ The copyright of this program is owned by the Magma project.
+ Distributed with nauty by permission.
 
-License:
+Files: debian/*
+Copyright: © 2009, David Bremner <bremner@unb.ca> 
+License: MIT 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-    <Put the license of the package here indented by 4 spaces>
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
 
-The Debian packaging is (C) 2008, David Bremner <bremner@unb.ca> and
-is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
-
-# Please also look if there are files or directories which have a
-# different copyright/license attached and list them here.
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
