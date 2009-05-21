@@ -19,6 +19,7 @@ Description: tool to compute graph automorphisms and canonical labellings
 
 Package: libnauty-dev
 Architecture: any 
+Section: non-free/libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: tool to compute graph automorphisms and canonical labellings
  nauty (no automorphisms, yes?) is a set of procedures for determining
