@@ -4,14 +4,18 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+include /usr/share/quilt/quilt.make
+-include /usr/share/topgit/tg2quilt.mk
 
 %:
 	dh --with quilt $@
+	dh_quilt_patch
 
 override_dh_auto_build:
 	$(MAKE)
 
 override_dh_auto_clean:
+	dh_quilt_unpatch
 	$(MAKE) -f makefile.basic clean
 
 override_dh_auto_install: 
