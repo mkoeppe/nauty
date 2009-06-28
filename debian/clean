@@ -22,6 +22,13 @@ directg
 multig 
 dreadnaut 
 dreadnautB
-config.sub 
-config.guess
-
+makefile
+nauty.h
+naututil.h
+gtools.h
+libnauty.a
+*.os
+*.o
+libnauty.so.0d.0.0
+libnauty.so.0d
+libnauty.so
