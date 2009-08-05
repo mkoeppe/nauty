@@ -5,6 +5,12 @@ Original source download from: http://cs.anu.edu.au/~bdm/nauty/
 
 Author : Brendan McKay <bdm@cs.anu.edu.au>
 
+Disclaimer: This program is not part of Debian, because the license
+ discriminates against forbids selling for profit fields of endeavour,
+ which violates the Debian Free Software Guidelines part 1 and 6
+ respectively (see http://www.debian.org/social_contract).  Neither of
+ these conditions impedes the autobuilding of the package.
+
 Files: *
 Copyright: © Brendan McKay
 License: Other

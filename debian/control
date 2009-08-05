@@ -4,11 +4,13 @@ Priority: extra
 Maintainer: David Bremner <bremner@unb.ca>
 Build-Depends: debhelper (>= 7.0.50), autotools-dev, quilt (>=0.46-7)
 Standards-Version: 3.8.1
+XS-Autobuild: yes
 
 Package: nauty
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: command line tool to compute graph automorphisms and canonical labellings 
+Description: command line tool to compute graph automorphisms and
+ canonical labellings
  nauty (no automorphisms, yes?) is a set of procedures for determining
  the automor- phism group of a vertex-coloured graph. It provides this
  information in the form of a set of generators, the size of the
@@ -17,12 +19,12 @@ Description: command line tool to compute graph automorphisms and canonical labe
  testing.  This package provides the main command line tool dreadnaut,
  and some utilities ('gtools').  A C API is also available.
 
-
 Package: libnauty0d
 Architecture: any 
 Section: non-free/libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: command line tool to compute graph automorphisms and canonical labellings
+Description: command line tool to compute graph automorphisms and
+ canonical labellings
  nauty (no automorphisms, yes?) is a set of procedures for determining
  the automorphism group of a vertex-coloured graph. It provides this
  information in the form of a set of generators, the size of the
