@@ -4,6 +4,7 @@ Priority: extra
 Maintainer: David Bremner <bremner@unb.ca>
 Build-Depends: debhelper (>= 7.0.50), autotools-dev, quilt (>=0.46-7)
 Standards-Version: 3.8.1
+XS-Autobuild: yes
 
 Package: nauty
 Architecture: any
