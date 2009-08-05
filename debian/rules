@@ -20,3 +20,5 @@ override_dh_auto_install:
 	#this is a bit crude, but dh_install and dh_link are both being too clever.
 	mkdir -p debian/libnauty-dev/usr/lib && ln -sf $(SONAME) debian/libnauty-dev/usr/lib/libnauty.so
 
+override_dh_auto_test:
+	make checks
