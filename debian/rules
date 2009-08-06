@@ -21,4 +21,6 @@ override_dh_auto_install:
 	mkdir -p debian/libnauty-dev/usr/lib && ln -sf $(SONAME) debian/libnauty-dev/usr/lib/libnauty.so
 
 override_dh_auto_test:
+ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
 	make checks
+endif
