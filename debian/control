@@ -4,6 +4,9 @@ Priority: extra
 Maintainer: David Bremner <bremner@unb.ca>
 Build-Depends: debhelper (>= 7.0.50), autotools-dev, quilt (>=0.46-7)
 Standards-Version: 3.8.1
+Homepage: http://cs.anu.edu.au/~bdm/nauty/
+Vcs-Git: git://git.debian.org/git/debian-science/packages/nauty.git
+Vcs-Browser: http://git.debian.org/?p=debian-science/packages/nauty.git
 XS-Autobuild: yes
 
 Package: nauty
