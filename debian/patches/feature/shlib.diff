@@ -8,11 +8,11 @@ library.
 Signed-off-by: David Bremner <bremner@unb.ca>
 
 ---
- makefile.in |  197 ++++++++++++++++++++++++++++++-----------------------------
- 1 files changed, 101 insertions(+), 96 deletions(-)
+ makefile.in |  213 ++++++++++++++++++++++++++++++-----------------------------
+ 1 files changed, 109 insertions(+), 104 deletions(-)
 
 diff --git a/makefile.in b/makefile.in
-index 90de395..56f3a75 100644
+index 90de395..a4519c8 100644
 --- a/makefile.in
 +++ b/makefile.in
 @@ -18,35 +18,68 @@ S1=-DMAXN=WORDSIZE -DWORDSIZE=16
@@ -20,7 +20,7 @@ index 90de395..56f3a75 100644
  L=-DWORDSIZE=64
  FOURK=-DMAXN=4096
 +PICFLAGS=-fPIC
-+
++TESTCFLAGS=-static
 +
 +NAUTYLIBOBJ= naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o
 +GTLIBOBJ=gtools.o gtnauty.o nausparse.o gutil1.o gutil2.o naugroup.o
@@ -271,5 +271,77 @@ index 90de395..56f3a75 100644
  
  showg : showg.c
  	${CC} -o showg ${CFLAGS} showg.c ${LDFLAGS}
+@@ -337,7 +342,7 @@ nautyex5 : nauty.h nausparse.h nauty.o nautil.o \
+ 		nautyex5.c nauty.o nautil.o nausparse.o naugroup.o ${LDFLAGS}
+ 
+ dreadtest: dreadtest.c naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o
+-	${CC} -o dreadtest ${SAFECFLAGS} dreadtest.c \
++	${CC} -o dreadtest ${TESTCFLAGS} ${SAFECFLAGS} dreadtest.c \
+ 	    naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o ${LDFLAGS}
+ 	./dreadtest <testS.dre
+ 	./dreadtest <testW.dre
+@@ -349,7 +354,7 @@ dreadtest: dreadtest.c naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o
+ 
+ dreadtestL: dreadtest.c \
+ 		naututilL.o nautyL.o nautilL.o nautinvL.o naugraphL.o rng.o
+-	${CC} -o dreadtestL ${SAFECFLAGS} ${L} dreadtest.c naututilL.o \
++	${CC} -o dreadtestL ${TESTCFLAGS}  ${SAFECFLAGS} ${L} dreadtest.c naututilL.o \
+ 	    nautyL.o nautilL.o nautinvL.o naugraphL.o rng.o ${LDFLAGS}
+ 	./dreadtestL < testS.dre
+ 	./dreadtestL < testW.dre
+@@ -360,7 +365,7 @@ dreadtestL: dreadtest.c \
+ 
+ dreadtestS: dreadtest.c \
+ 		naututilS.o nautyS.o nautilS.o nautinvS.o naugraphS.o rng.o
+-	${CC} -o dreadtestS ${SAFECFLAGS} ${S} dreadtest.c naututilS.o \
++	${CC} -o dreadtestS ${TESTCFLAGS} ${SAFECFLAGS} ${S} dreadtest.c naututilS.o \
+ 	    nautyS.o nautilS.o nautinvS.o naugraphS.o rng.o ${LDFLAGS}
+ 	./dreadtestS < testS.dre
+ 	./dreadtestS < testW.dre
+@@ -371,7 +376,7 @@ dreadtestS: dreadtest.c \
+ 
+ dreadtest4K: dreadtest.c \
+ 		naututil4K.o nauty4K.o nautil4K.o nautinv4K.o naugraph4K.o rng.o
+-	${CC} -o dreadtest4K ${SAFECFLAGS} ${FOURK} dreadtest.c naututil4K.o \
++	${CC} -o dreadtest4K ${TESTCFLAGS} ${SAFECFLAGS} ${FOURK} dreadtest.c naututil4K.o \
+ 	    nauty4K.o nautil4K.o nautinv4K.o naugraph4K.o rng.o ${LDFLAGS}
+ 	./dreadtest4K <testS.dre
+ 	./dreadtest4K <testW.dre
+@@ -380,7 +385,7 @@ dreadtest4K: dreadtest.c \
+ 
+ dreadtest1: dreadtest.c \
+ 		naututil1.o nauty1.o nautil1.o nautinv1.o naugraph1.o rng.o
+-	${CC} -o dreadtest1 ${SAFECFLAGS} ${SMALL} dreadtest.c naututil1.o \
++	${CC} -o dreadtest1 ${TESTCFLAGS} ${SAFECFLAGS} ${SMALL} dreadtest.c naututil1.o \
+ 	    nauty1.o nautil1.o nautinv1.o naugraph1.o rng.o ${LDFLAGS}
+ 	./dreadtest1 < testS.dre
+ 	./dreadtest1 < testW.dre
+@@ -388,7 +393,7 @@ dreadtest1: dreadtest.c \
+ 
+ dreadtestL1: dreadtest.c \
+ 		naututilL1.o nautyL1.o nautilL1.o nautinvL1.o naugraphL1.o rng.o
+-	${CC} -o dreadtestL1 ${SAFECFLAGS} ${L1} dreadtest.c naututilL1.o \
++	${CC} -o dreadtestL1 ${TESTCFLAGS} ${SAFECFLAGS} ${L1} dreadtest.c naututilL1.o \
+ 	    nautyL1.o nautilL1.o nautinvL1.o naugraphL1.o rng.o ${LDFLAGS}
+ 	./dreadtestL1 <testS.dre
+ 	./dreadtestL1 <testW.dre
+@@ -397,7 +402,7 @@ dreadtestL1: dreadtest.c \
+ 
+ dreadtestW1: dreadtest.c \
+ 		naututilW1.o nautyW1.o nautilW1.o nautinvW1.o naugraphW1.o rng.o
+-	${CC} -o dreadtestW1 ${SAFECFLAGS} ${W1} dreadtest.c naututilW1.o \
++	${CC} -o dreadtestW1 ${TESTCFLAGS} ${SAFECFLAGS} ${W1} dreadtest.c naututilW1.o \
+ 	    nautyW1.o nautilW1.o nautinvW1.o naugraphW1.o rng.o ${LDFLAGS}
+ 	./dreadtestW1 <testS.dre
+ 	./dreadtestW1 <testW.dre
+@@ -405,7 +410,7 @@ dreadtestW1: dreadtest.c \
+ 
+ dreadtestS1: dreadtest.c \
+ 		naututilS1.o nautyS1.o nautilS1.o nautinvS1.o naugraphS1.o rng.o
+-	${CC} -o dreadtestS1 ${SAFECFLAGS} ${S1} dreadtest.c naututilS1.o \
++	${CC} -o dreadtestS1 ${TESTCFLAGS} ${SAFECFLAGS} ${S1} dreadtest.c naututilS1.o \
+ 	    nautyS1.o nautilS1.o nautinvS1.o naugraphS1.o rng.o ${LDFLAGS}
+ 	./dreadtestS1 <testS.dre
+ 
 -- 
 tg: (f17151d..) feature/shlib (depends on: upstream)
