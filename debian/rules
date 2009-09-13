@@ -4,14 +4,18 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+
 include /usr/share/quilt/quilt.make
--include /usr/share/topgit/tg2quilt.mk
+# use wildcard to avoid warning from dh
+include $(wildcard /usr/share/topgit/tg2quilt.mk)
+
+SONAME=libnauty.so.0d
 
 %:
 	dh --with quilt $@
 
 override_dh_auto_build:
-	$(MAKE) BUILDSHLIBS=libnauty.so SONAME=libnauty.so.0d
+	$(MAKE) BUILDSHLIBS=libnauty.so SONAME=$(SONAME)
 
 override_dh_auto_clean:
 	$(MAKE) -f makefile.basic clean
