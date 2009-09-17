@@ -1,10 +1,11 @@
 nauty (2.4~b7-2) unstable; urgency=low
 
-  * Fix amd64 FTBFS of packages depending on libnauty-dev
-    - add missing libnauty.so symlink to libnauty-dev
+  * Fix FTBFS (amd64, and probably elsewhere) of packages build-depending
+    on libnauty-dev 
+    - add missing libnauty.so symlink to libnauty-dev (Closes: #546729)
     - add dependency on libnauty0d to libnauty-dev
 
- -- David Bremner <bremner@unb.ca>  Sun, 13 Sep 2009 11:54:11 -0300
+ -- David Bremner <bremner@unb.ca>  Thu, 17 Sep 2009 08:40:45 -0300
 
 nauty (2.4~b7-1) unstable; urgency=low
 
