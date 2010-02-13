@@ -24,11 +24,11 @@ INSTALLATION.
 The first step is to unpack the archive.  On Unix-ish systems
 you can use one of these commands:
 
-   tar xfz nauty24b3.tar.gz
+   tar xzf nauty24.tar.gz
 or
-   gunzip -c nauty24b3.tar.gz | tar xf -
+   gunzip -c nauty24.tar.gz | tar xf -
 
-This will write all the files into the subdirectory nauty24b3.
+This will write all the files into the subdirectory nauty24.
 Go to that directory.
 
 If you have a working shell, and make, you can run
@@ -59,8 +59,8 @@ See below for compiling on a PC under DJGPP.
 
 If you are using Windows in an environment that needs Windows line
 endings (which is a configuration option in Cygwin, for example),
-then you might prefer to use nauty24b3.zip rather than
-nauty24b3.tar.gz.
+then you might prefer to use nauty24.zip rather than
+nauty24.tar.gz.
 
 ------------------------------------------------------------
 
@@ -272,3 +272,11 @@ Aug-Sep 2007: Minor things:
 
 Oct 14, 2007: Added -T switch to shortg to specify scratch directory.
 
+Mar 3, 2008:  Fixed makefile for compilation in a 64-bit environment.
+
+Oct 11, 2008: Added -l and -m to genrang
+
+Nov 29, 2008: Slightly improved -c for geng and genbg
+              Added tournament generator gentourng.
+
+Mar 3, 2009:  Added -V to directg.

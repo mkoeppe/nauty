@@ -1,4 +1,4 @@
-/* shortg.c  version 1.8; B D McKay, Oct 14, 2007. */
+/* shortg.c  version 1.9; B D McKay, Jul 29, 2008. */
 
 #define USAGE \
   "shortg [-qvkdu] [-i# -I#:# -K#] [-fxxx] [-Tdir] [infile [outfile]]"
@@ -179,14 +179,14 @@ beginsort(FILE **sortin, FILE **sortout, char *tempdir,
 /**************************************************************************/
 
 static void
-tosort(FILE *f, char *cdstr, char *dstr, unsigned long index)
+tosort(FILE *f, char *cdstr, char *dstr, nauty_counter index)
 /* write one graph to sort process 
    cdstr = canonical string 
    dstr = optional original string
    index = optional index number */
 {
         int i;
-	char buff[20];
+	char buff[30];
 
         for (i = 0; cdstr[i] != '\n'; ++i) {}
 	cdstr[i] = '\0';
@@ -202,7 +202,11 @@ tosort(FILE *f, char *cdstr, char *dstr, unsigned long index)
 
         if (index > 0)
         {
+#if LONG_LONG_COUNTERS
+            sprintf(buff,"\t%09llu\n",index);
+#else
             sprintf(buff,"\t%09lu\n",index);
+#endif
             writeline(f,buff);
         }
         else
@@ -212,7 +216,7 @@ tosort(FILE *f, char *cdstr, char *dstr, unsigned long index)
 /**************************************************************************/
 
 static boolean
-fromsort(FILE *f, char **cdstr, char **dstr, unsigned long *index)
+fromsort(FILE *f, char **cdstr, char **dstr, nauty_counter *index)
 /* read one graph from sort process */
 {
         int j;
@@ -234,7 +238,11 @@ fromsort(FILE *f, char **cdstr, char **dstr, unsigned long *index)
 
         if (s[j] == '\t')
         {
+#if LONG_LONG_COUNTERS
+            if (sscanf(&s[j+1],"%llu",index) != 1)
+#else
             if (sscanf(&s[j+1],"%lu",index) != 1)
+#endif
                 gt_abort(">E shortg: index field corrupted\n");
         }
         else
@@ -258,7 +266,7 @@ main(int argc, char *argv[])
         boolean badargs,quiet,vswitch,dswitch,keep,format,uswitch;
 	boolean iswitch,Iswitch,Kswitch,Tswitch;
 	boolean sswitch,gswitch;
-        unsigned long numread,prevnumread,numwritten,classsize;
+        nauty_counter numread,prevnumread,numwritten,classsize;
         int m,n,i,argnum,line;
 	int outcode,codetype;
 	int inv,mininvarlevel,maxinvarlevel,invararg;
@@ -459,8 +467,13 @@ main(int argc, char *argv[])
 	    else                    writeline(outfile,GRAPH6_HEADER);
 
         if (!quiet)
+#if LONG_LONG_COUNTERS
+            fprintf(stderr,
+                    ">Z %6llu graphs read from %s\n",numread,infilename);
+#else
             fprintf(stderr,
                     ">Z %6lu graphs read from %s\n",numread,infilename);
+#endif
 
      /* collect output from sort process and write to output file */
 
@@ -496,8 +509,13 @@ main(int argc, char *argv[])
 			if (vswitch)
 			{
 			    fprintf(stderr,"\n");
+#if LONG_LONG_COUNTERS
+                    	    fprintf(stderr,"%3llu : %3llu %3llu",
+				numwritten,prevnumread,numread);
+#else
                     	    fprintf(stderr,"%3lu : %3lu %3lu",
 				numwritten,prevnumread,numread);
+#endif
                     	    line = 1;
 			}
 		    }
@@ -519,7 +537,11 @@ main(int argc, char *argv[])
                                 line = 0;
                                 fprintf(stderr,"\n     ");
                             }
+#if LONG_LONG_COUNTERS
+                            fprintf(stderr," %3llu",numread);
+#else
                             fprintf(stderr," %3lu",numread);
+#endif
                             ++line;
 			}
 		    }
@@ -545,7 +567,11 @@ main(int argc, char *argv[])
 		        writeline(outfile,"\n");
 		    }
                     fprintf(stderr,"\n");
+#if LONG_LONG_COUNTERS
+                    fprintf(stderr,"%3llu : %3llu",numwritten,numread);
+#else
                     fprintf(stderr,"%3lu : %3lu",numwritten,numread);
+#endif
                     line = 1;
                 }
                 else
@@ -555,7 +581,11 @@ main(int argc, char *argv[])
                         line = 0;
                         fprintf(stderr,"\n     ");
                     }
+#if LONG_LONG_COUNTERS
+                    fprintf(stderr," %3llu",numread);
+#else
                     fprintf(stderr," %3lu",numread);
+#endif
                     ++line;
                 }
 		if (prevcdstr) FREES(prevcdstr);
@@ -581,11 +611,19 @@ main(int argc, char *argv[])
 
         if (!quiet)
 	{
+#if LONG_LONG_COUNTERS
+	    if (uswitch)
+		fprintf(stderr,">Z %6llu graphs produced\n",numwritten);
+	    else
+                fprintf(stderr,
+                      ">Z %6llu graphs written to %s\n",numwritten,outfilename);
+#else
 	    if (uswitch)
 		fprintf(stderr,">Z %6lu graphs produced\n",numwritten);
 	    else
                 fprintf(stderr,
                       ">Z %6lu graphs written to %s\n",numwritten,outfilename);
+#endif
 	}
 
      /* check that the subprocess exitted properly */

@@ -1,7 +1,7 @@
-/* genrang.c  version 1.3; B D McKay, Nov 7 2004 */
+/* genrang.c  version 1.4; B D McKay, Aug 8, 2008 */
 
 #define USAGE \
-   "genrang [-P#|-P#/#|-e#|-r#|-R#] [-a] [-s|-g] [-S#] [-q] n num [outfile]"
+   "genrang [-P#|-P#/#|-e#|-r#|-R#] [-l#] [-m#] [-a] [-s|-g] [-S#] [-q] n num [outfile]"
 
 #define HELPTEXT \
 " Generate random graphs.\n\
@@ -12,16 +12,19 @@
     -g  : Write in graph6 format\n\
     -P#/# : Give edge probability; -P# means -P1/#.\n\
     -e# : Give the number of edges\n\
-    -r# : Make regular of specified (0-8) degree\n\
-    -R# : Make regular of specified (0-8) degree but output\n\
+    -r# : Make regular of specified degree\n\
+    -R# : Make regular of specified degree but output\n\
           as vertex count, edgecount, then list of edges\n\
+    -l# : Maximum loop multiplicity (default 0)\n\
+    -m# : Maximum multiplicity of non-loop edge (default and minimum 1)\n\
+         -l and -m are only permitted with -R and -r without -g\n\
     -a  : Make invariant under a random permutation\n\
     -S# : Specify random generator seed (default nondeterministic)\n\
     -q  : suppress auxiliary output\n\
 \n\
-    Incompatible: -P,-e,-r,-R; -s,-g,-R; -R,-a.\n"
+    Incompatible: -P,-e,-r,-R; -s,-g,-R; -R,-a; -s,-g & -l,-m.\n"
 
-#define MAXREG 8   /* Max value for -r or -R switch */
+#define MAXREG 88   /* Max value for -r or -R switch */
 
 /*************************************************************************
 
@@ -98,12 +101,12 @@ ranedges(long e, graph *g, int m, int n)
 /**************************************************************************/
 
 static void
-makeranreg(int *cub, int degree, int n)
+makeranreg(int *cub, int degree, int multmax, int loopmax, int n)
 /* Make a random regular graph in cub[].  Each consecutive degree
    entries of cub[] is set to the neighbours of one vertex.
    The length of cub had better be at least degree*n  */
 {
-        long i,j,k,v,w;
+        long i,j,k,v,w,nn,mult;
         boolean ok;
 	set *gi;
 #if MAXN
@@ -111,12 +114,16 @@ makeranreg(int *cub, int degree, int n)
 #else
 	DYNALLSTAT(int,deg,deg_sz);
 	DYNALLSTAT(int,p,p_sz);
+	DYNALLSTAT(int,loops,loops_sz);
 
-	DYNALLOC2(int,deg,deg_sz,degree,n,"genrang");
+	DYNALLOC1(int,deg,deg_sz,n,"genrang");
 	DYNALLOC2(int,p,p_sz,degree,n,"genrang");
+	DYNALLOC1(int,loops,loops_sz,n,"genrang");
 #endif
 
-        for (i = j = 0; i < n; ++i)
+	nn = n;
+
+        for (i = j = 0; i < nn; ++i)
 	    for (k = 0; k < degree; ++k)
                p[j++] = i;
 
@@ -124,35 +131,37 @@ makeranreg(int *cub, int degree, int n)
         {
             ok = TRUE;
 
-            for (j = degree*1L*n-1; j >= 1; j -= 2)
+            for (j = degree*nn-1; j >= 1; j -= 2)
             {
                 i = KRAN(j);
                 k = p[j-1];
                 p[j-1] = p[i];
                 p[i] = k;
             }
+            for (i = 0; i < nn; ++i) deg[i] = loops[i] = 0;
 
-            for (i = 0; i < n; ++i)
-                deg[i] = 0;
-
-            for (j = degree*1L*n-1; j >= 1;)
+            for (j = degree*nn-1; j >= 1;)
             {
                 v = p[j--];
                 w = p[j--];
-                if (v == w)
-                {
-                    ok = FALSE;
+                if (v == w && ++loops[v] > loopmax)
+		{
+		    ok = FALSE;
                     break;
                 }
-                for (i = deg[w]; --i >= 0;)
-                    if (cub[degree*1L*w+i] == v) break;
-                if (i >= 0)
-                {
-                    ok = FALSE;
-                    break;
-                }
-                cub[degree*1L*w+deg[w]++] = v;
-                cub[degree*1L*v+deg[v]++] = w;
+		if (v != w && multmax < degree)
+	 	{
+		    mult = 0;
+                    for (i = deg[w]; --i >= 0;)
+                        if (cub[degree*w+i] == v && ++mult >= multmax) break;
+                    if (i >= 0)
+                    {
+                        ok = FALSE;
+                        break;
+                    }
+		}
+                cub[degree*w+deg[w]++] = v;
+                cub[degree*v+deg[v]++] = w;
             }
         }
         while (!ok);
@@ -161,12 +170,13 @@ makeranreg(int *cub, int degree, int n)
 /**************************************************************************/
 
 static void
-ranregR(FILE *f, int degree, int n)
+ranregR(FILE *f, int degree, int multmax, int loopmax, int n)
 /* Make a random regular graph of order n and degree d and write
    it in f, as number of vertices, number of edges, list of edges */
 {
     	long i,j,k,l;
 	set *gi;
+	int loops;
 #if MAXN
         int cub[MAXREG*MAXN];
 #else
@@ -174,17 +184,18 @@ ranregR(FILE *f, int degree, int n)
 	DYNALLOC2(int,cub,cub_sz,degree,n,"genrang");
 #endif
 
-	makeranreg(cub,degree,n);
+	makeranreg(cub,degree,multmax,loopmax,n);
 
-	fprintf(f,"%d %ld\n",n,n*1L*degree/2);
+	fprintf(f,"%d %ld\n",n,n*(long)degree/2);
 	l = j = 0;
 	for (i = 0; i < n; ++i)
 	{
+	    loops = 0;
 	    for (k = 0; k < degree; ++k, ++j)
-		if (i < cub[j])
+		if (i < cub[j] || i == cub[j] && (++loops & 1) == 0)
 		{
 		    if (l > 0 && l % 5 == 0) fprintf(f,"\n");
-		    fprintf(f," %d %d",i,cub[j]);
+		    fprintf(f," %ld %d",i,cub[j]);
 		    ++l;
 		}
 	}
@@ -195,7 +206,7 @@ ranregR(FILE *f, int degree, int n)
 
 static void
 ranreg(int degree, graph *g, int m, int n)
-/* Make a random regular graph of order n and degree d and return
+/* Make a random simple regular graph of order n and degree d and return
    it in g. */
 {
     	int i,j,k;
@@ -207,7 +218,7 @@ ranreg(int degree, graph *g, int m, int n)
 	DYNALLOC1(int,cub,cub_sz,degree*n,"genrang");
 #endif
 
-	makeranreg(cub,degree,n);
+	makeranreg(cub,degree,1,0,n);
 
 	j = 0;
 	for (i = 0, gi = (set*)g; i < n; ++i, gi += m)
@@ -224,11 +235,11 @@ ranreg(int degree, graph *g, int m, int n)
 /**************************************************************************/
 
 static void
-ranreg_sg(int degree, sparsegraph *sg, int n)
+ranreg_sg(int degree, sparsegraph *sg, int multmax, int loopmax, int n)
 /* Make a sparse random regular graph of order n and degree d
  * and return it in sg. */
 {
-    	int i,j,k,k0;
+    	int i,j,k,k0,deg,loops,nde;
 #if MAXN
         int cub[MAXREG*MAXN];
 #else
@@ -236,24 +247,31 @@ ranreg_sg(int degree, sparsegraph *sg, int n)
 	DYNALLOC1(int,cub,cub_sz,degree*n,"genrang");
 #endif
 
-	makeranreg(cub,degree,n);
+	makeranreg(cub,degree,multmax,loopmax,n);
 
 	SG_ALLOC(*sg,n,degree*n,"genrang");
 
 	sg->nv = n;
-	sg->nde = n * degree;
-	j = 0;
+	j = nde = 0;
 	for (i = 0; i < n; ++i)
 	{
-	    sg->v[i] = i*degree;
-	    sg->d[i] = degree;
-	    for (k = 0; k < degree; ++k)
+	    sg->v[i] = k0 = i*degree;
+	    loops = deg = 0;
+	    for (k = 0; k < degree; ++k, ++j)
 	    {
-		k0 = sg->v[i];
-	        sg->e[k0+k] = cub[j];
-	        j++;
+		if (cub[j] == i)
+		{
+		    /* Loops are in cub twice but sg once */
+		    ++loops;
+		    if ((loops&1)) sg->e[k0+deg++] = i;
+		}
+		else
+	            sg->e[k0+deg++] = cub[j];
 	    }
+	    sg->d[i] = deg;
+	    nde += deg;
 	}
+	sg->nde = nde;
 }
 
 /**************************************************************************/
@@ -266,11 +284,11 @@ main(int argc, char *argv[])
 	int argnum,j;
 	char *arg,sw;
 	boolean badargs;
-	boolean gswitch,sswitch,qswitch,Sswitch,Rswitch;
-	boolean aswitch,P1switch,P2switch,eswitch,rswitch;
+	boolean gswitch,sswitch,qswitch,Sswitch,Rswitch,lswitch;
+	boolean aswitch,P1switch,P2switch,eswitch,rswitch,mswitch;
 	long numgraphs,nout,P1value,P2value,evalue,rvalue;
-	unsigned long ln,nc2;
-	int Svalue;
+	nauty_counter ln,nc2;
+	int Svalue,loopmax,multmax;
         static FILE *outfile;
 	char *outfilename;
 	sparsegraph sg;
@@ -288,6 +306,7 @@ main(int argc, char *argv[])
 
 	gswitch = sswitch = qswitch = Sswitch = Rswitch = FALSE;
 	aswitch = P1switch = P2switch = eswitch = rswitch = FALSE;
+	lswitch = mswitch = FALSE;
 	outfilename = NULL;
 
 	argnum = 0;
@@ -311,6 +330,8 @@ main(int argc, char *argv[])
 		    else SWLONG('r',rswitch,rvalue,"genrang -r")
 		    else SWLONG('R',Rswitch,rvalue,"genrang -R")
 		    else SWINT('S',Sswitch,Svalue,"genrang -S")
+		    else SWINT('l',lswitch,loopmax,"genrang -l")
+		    else SWINT('m',mswitch,multmax,"genrang -m")
 		    else badargs = TRUE;
 		}
 	    }
@@ -359,6 +380,15 @@ main(int argc, char *argv[])
 
 	if ((aswitch!=0) + (Rswitch!=0) > 1)
 	    gt_abort(">E genrang: -aR are incompatible\n");
+
+	if (!lswitch) loopmax = 0;
+	if (!mswitch) multmax = 1;
+
+	if ((loopmax>0 || multmax>1) && !(Rswitch || rswitch && !gswitch))
+	    gt_abort(">E genrang: -l,-m need -R or -r without -g\n");
+
+	if (multmax < 1 || loopmax < 0)
+	    gt_abort(">E genrang: bad value for -l or -m\n");
 
 	if (argnum < 2 || argnum > 3) badargs = TRUE;
 
@@ -410,7 +440,8 @@ main(int argc, char *argv[])
 	}
 
 	ln = n;
-        nc2 = (ln&1) ? ln*((ln-1)/2) : (ln/2)*(ln-1);
+        nc2 = ln*loopmax + ln*(ln-1)/2*multmax;
+
 	if (eswitch && evalue > nc2)
 	{   
             fprintf(stderr,
@@ -419,10 +450,11 @@ main(int argc, char *argv[])
             exit(1);
         }
 
-	if (rswitch && ((n&1) != 0 && (rvalue&1) != 0 || rvalue >= n))
+	if (rswitch && ((n&1) != 0 && (rvalue&1) != 0
+	    || rvalue > (n-1)*multmax+2*loopmax))
 	{
 	    fprintf(stderr, 	
-		 ">E There are no graphs of order %d and degree %ld\n",
+		 ">E There are no such graphs of order %d and degree %ld\n",
 		 n,rvalue);
 	    exit(1);
 	}
@@ -438,8 +470,9 @@ main(int argc, char *argv[])
 	for (nout = 1; nout <= numgraphs; ++nout)
 	{
 	    if (eswitch) ranedges(evalue,g,m,n);
-	    else if (Rswitch) ranregR(outfile,rvalue,n);
-	    else if (rswitch && usesparse) ranreg_sg(rvalue,&sg,n);
+	    else if (Rswitch) ranregR(outfile,rvalue,multmax,loopmax,n);
+	    else if (rswitch && usesparse)
+		ranreg_sg(rvalue,&sg,multmax,loopmax,n);
 	    else if (rswitch && !usesparse) ranreg(rvalue,g,m,n);
             else rangraph2(g,FALSE,P1value,P2value,m,n);
 

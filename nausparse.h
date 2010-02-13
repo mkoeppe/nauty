@@ -20,6 +20,8 @@ typedef struct
 	size_t vlen,dlen,elen,wlen;
 } sparsegraph;
 
+/* tip: loops only contribute 1 to nde */
+
 #define SG_VDE(sgp,vv,dd,ee) do { vv = ((sparsegraph*)(sgp))->v; \
   dd = ((sparsegraph*)(sgp))->d; ee = ((sparsegraph*)(sgp))->e; } while(0)
 #define SG_INIT(sg) do { (sg).v = (sg).d = (sg).e = (sg).w = NULL; \

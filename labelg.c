@@ -1,4 +1,4 @@
-/* labelg.c version 1.2; B D McKay, Dec 2005 */
+/* labelg.c version 1.3; B D McKay, July 2008 */
 
 #define USAGE "labelg [-qsg] [-fxxx] [-S] [-i# -I#:# -K#] [infile [outfile]]"
 
@@ -43,6 +43,7 @@
 
 #include "gtools.h"
 #include "nautinv.h"
+#include "gutils.h"
 
 static struct invarrec
 {
@@ -69,12 +70,13 @@ static struct invarrec
 
 #define NUMINVARS ((int)(sizeof(invarproc)/sizeof(struct invarrec)))
 
-static long orbtotal;
+static nauty_counter orbtotal;
 static double unorbtotal;
 extern int gt_numorbits;
 
 /**************************************************************************/
 
+int
 main(int argc, char *argv[])
 {
 	graph *g;
@@ -91,7 +93,7 @@ main(int argc, char *argv[])
 	double t;
 	char *infilename,*outfilename;
 	FILE *infile,*outfile;
-	long nin;
+	nauty_counter nin;
 	int ii,secret,loops;
 #if MAXN
 	graph h[MAXN*MAXM];
@@ -279,14 +281,23 @@ main(int argc, char *argv[])
 	}
 	t = CPUTIME - t;
 
+#if LONG_LONG_COUNTERS
+	if (Oswitch)
+	    fprintf(stderr,">C orbit totals = %lld %15.8f\n",
+			   orbtotal,unorbtotal);
+        if (!qswitch)
+            fprintf(stderr,
+                    ">Z  %lld graphs labelled from %s to %s in %3.2f sec.\n",
+                    nin,infilename,outfilename,t);
+#else
 	if (Oswitch)
 	    fprintf(stderr,">C orbit totals = %ld %15.8f\n",
 			   orbtotal,unorbtotal);
-
         if (!qswitch)
             fprintf(stderr,
                     ">Z  %ld graphs labelled from %s to %s in %3.2f sec.\n",
                     nin,infilename,outfilename,t);
+#endif
 
 	exit(0);
 }

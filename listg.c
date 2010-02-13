@@ -317,6 +317,7 @@ putMaple(FILE *outfile, graph *g, int linelength, int m, int n, long index)
 /**************************************************************************/
 /**************************************************************************/
 
+int
 main(int argc, char *argv[])
 {
 	graph *g;

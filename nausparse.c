@@ -456,7 +456,7 @@ init_sg(graph *gin, graph **gout, graph *hin, graph **hout, int *lab,
 *                                                                            *
 *  distvals(sparsegraph *sg, int v0, shortish *dist, int n) sets dist[i]     *
 *  to the distance from v0 to i, for each i, or to n if there is no such     *
-*  distance.  work4[] s used as a queue.                                     *
+*  distance.  work4[] is used as a queue.                                    *
 *                                                                            *
 *****************************************************************************/
 
@@ -1145,7 +1145,7 @@ int
 targetcell_sg(graph *g, int *lab, int *ptn, int level, int tc_level,
            boolean digraph, int hint, int m, int n)
 {
-        int i,j;
+        int i;
 
         if (hint >= 0 && ptn[hint] > level &&
                          (hint == 0 || ptn[hint-1] <= level))
@@ -1341,7 +1341,7 @@ distances_sg(graph *g, int *lab, int *ptn, int level, int numcells, int tvpos,
 	     permutation *invar, int invararg, boolean digraph, int m, int n)
 {
         int *v,*d,*e;
-	int i,j,k,dlim,w,wt;
+	int i,j,k,dlim,wt;
 	int vi,di;
 	int cell1,cell2,iv,liv,kcode;
 	int head,tail;
