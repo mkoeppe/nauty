@@ -1,19 +1,20 @@
-/* addedgeg.c   nauty version 2.4; B D McKay, Dec 2005. */
+/* addedgeg.c   nauty version 2.5; B D McKay, March 2009. */
 
-#define USAGE "addedgeg [-lq] [-D#] [-btfF] [infile [outfile]]"
+#define USAGE "addedgeg [-lq] [-D#] [-btfF] [-z#] [infile [outfile]]"
 
 #define HELPTEXT \
-" For each edge e, output G-e\n\
+" For each edge nonedge e, output G+e if it satisfies certain conditions\n\
 \n\
     The output file has a header if and only if the input file does.\n\
 \n\
     -l  Canonically label outputs\n\
     -D# Specify an upper bound on the maximum degree of the output\n\
-    -b  Output is bipartite if input is\n\
-    -t  Output has no 3-cycles if input doesn't\n\
-    -f  Output has no 4-cycles if input doesn't\n\
-    -F  Output has no 5-cycles if input doesn't\n\
-        -btfF can be used in arbitrary combinations\n\
+    -b  Output has no new cycles of odd length\n\
+    -t  Output has no new 3-cycle if input doesn't\n\
+    -f  Output has no new 4-cycle if input doesn't\n\
+    -F  Output has no new 5-cycle if input doesn't\n\
+    -z# Output has no new cycles of length less than #\n\
+        -btfFz can be used in arbitrary combinations\n\
     -q  Suppress auxiliary information\n"
 
 /*************************************************************************/
@@ -80,11 +81,12 @@ main(int argc, char *argv[])
         char *infilename,*outfilename;
         FILE *infile,*outfile;
         boolean badargs,dolabel,quiet,Dswitch;
-	boolean bswitch,tswitch,fswitch,Fswitch;
+	boolean bswitch,tswitch,fswitch,Fswitch,zswitch;
+	int mincycle;
 	int i,j,m,n,v,w,argnum;
 	int codetype,outcode;
 	graph *g,*gq;
-	long nin,nout;
+	nauty_counter nin,nout;
         char *arg,sw;
 	setword *gv,*gw;
 	int maxdeg,actmaxdeg,degv;
@@ -104,7 +106,7 @@ main(int argc, char *argv[])
 
         infilename = outfilename = NULL;
         badargs = FALSE;
-	Dswitch = dolabel = quiet = FALSE;
+	Dswitch = dolabel = quiet = zswitch = FALSE;
 	bswitch = tswitch = fswitch = Fswitch = FALSE;
 
 	argnum = 0;
@@ -124,6 +126,7 @@ main(int argc, char *argv[])
 		    else SWBOOLEAN('t',tswitch)
 		    else SWBOOLEAN('f',fswitch)
 		    else SWBOOLEAN('F',Fswitch)
+                    else SWINT('z',zswitch,mincycle,">E addedgeg -z")
                     else SWINT('D',Dswitch,maxdeg,">E addedgeg -D")
 		    else badargs = TRUE;
 		}
@@ -149,13 +152,14 @@ main(int argc, char *argv[])
 	    fprintf(stderr,">A addedgeg");
 	    if (dolabel) fprintf(stderr," -l");
 	    if (Dswitch) fprintf(stderr," -D%d",maxdeg);
-	    if (bswitch || tswitch || fswitch || Fswitch)
+	    if (bswitch || tswitch || fswitch || Fswitch || zswitch)
 	    {
 		fprintf(stderr," -");
 		if (bswitch) fprintf(stderr,"b");
 		if (tswitch) fprintf(stderr,"t");
 		if (fswitch) fprintf(stderr,"f");
 		if (Fswitch) fprintf(stderr,"F");
+		if (zswitch) fprintf(stderr,"z%d",mincycle);
 	    }
 	    if (argnum > 0) fprintf(stderr," %s",infilename);
 	    if (argnum > 1) fprintf(stderr," %s",outfilename);
@@ -215,19 +219,19 @@ main(int argc, char *argv[])
 		deg[v] = degv;
 	    }
 
+	    if (actmaxdeg > maxdeg) continue;
+
 	    okdist[0] = okdist[1] = FALSE;
-	    for (i = 2; i <= n; ++i)
-		okdist[i] = TRUE;
+	    for (i = 2; i <= n; ++i) okdist[i] = TRUE;
 
 	    if (bswitch)
-	        for (i = 2; i < n; i += 2)
-		    okdist[i] = FALSE;
+	        for (i = 2; i < n; i += 2) okdist[i] = FALSE;
 
 	    if (tswitch && n >= 3) okdist[2] = FALSE;
 	    if (fswitch && n >= 4) okdist[3] = FALSE;
 	    if (Fswitch && n >= 5) okdist[4] = FALSE;
-
-	    if (actmaxdeg > maxdeg) continue;
+	    if (zswitch)
+		for (i = 2; i < mincycle-1 && i < n; ++i) okdist[i] = FALSE;
 
 	    for (v = 0, gv = g; v < n-1; ++v, gv += m)
 	    {
@@ -236,7 +240,7 @@ main(int argc, char *argv[])
 		find_dist(g,m,n,v,dist);
 
 		for (w = v+1; w < n; ++w)
-		    dist[w] = okdist[dist[w]] && deg[w] < maxdeg;
+		    dist[w] = okdist[dist[w]] && (deg[w] < maxdeg);
 
 		if (fswitch) no3path(g,m,n,v,dist);
 		if (Fswitch) no4path(g,m,n,v,dist);
@@ -269,10 +273,17 @@ main(int argc, char *argv[])
 	}
 	t = CPUTIME - t;
 
+#if LONG_LONG_COUNTERS
         if (!quiet)
             fprintf(stderr,
-                ">Z  %ld graphs read from %s, %ld written to %s; %3.2f sec.\n",
+              ">Z  %lld graphs read from %s, %lld written to %s; %3.2f sec.\n",
                     nin,infilename,nout,outfilename,t);
+#else
+        if (!quiet)
+            fprintf(stderr,
+              ">Z  %ld graphs read from %s, %ld written to %s; %3.2f sec.\n",
+                    nin,infilename,nout,outfilename,t);
+#endif
 
 	 exit(0);
 }

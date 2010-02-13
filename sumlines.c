@@ -1,5 +1,5 @@
 /* sumlines.c - total the numbers appearing in various input lines. */
-/* B. D. McKay.   Jan 17, 2006. */
+/* B. D. McKay.  Version of Aug 3, 2009. */
 
 #ifndef GMP
 #define GMP 1  /* Non-zero if gmp multi-precise integers are allowed.
@@ -124,6 +124,7 @@
 #include <pwd.h>
 #include <stdlib.h>
 #include <glob.h>
+#include <limits.h>
 
 #if GMP
 #include <gmp.h>
@@ -147,8 +148,8 @@ typedef long long integer;
 #endif
 
 static char *dout,*fout,*vout;
+static integer maxint;   /* set by find_maxint() */
 
-static integer maxint;   /* set by find_maxint */
 
 #define INCR(x,inc) \
      {if ((x) > 0 && maxint-(x) < (inc) || (x) < 0 && (maxint)+(x) < -(inc)) \
@@ -1015,9 +1016,11 @@ scanline(char *s, char *f, number *val, int *valtype,
 
 /****************************************************************************/
 
+#if 0
 find_maxint(void)
 {
 /* Put the maximum possible integer value into maxint. */
+/* Old version. */
 	integer x;
 
 	x = 1;
@@ -1032,6 +1035,26 @@ find_maxint(void)
 
 	maxint = x;
 }
+#else
+find_maxint(void)
+{
+/* Put the maximum possible integer value into maxint. */
+/* New version with no integer overflow. */
+	integer x,y;
+
+	x = ((integer)1) << (8*sizeof(integer) - 2);
+	y = x - 1;
+	x += y;
+
+	if (x <= 0)
+	{
+	    fprintf(stderr,">E find_maxint() failed\n");
+	    exit(1);
+	}
+
+	maxint = x;
+}
+#endif
 
 /****************************************************************************/
 

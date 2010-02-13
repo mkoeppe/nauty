@@ -1,6 +1,7 @@
-/* TODO:  insert new timings */
+/* TODO:  insert new timings
+ *        add chordal graphs */
 
-/* geng.c  version 2.2; B D McKay, September 19, 2007. */
+/* geng.c  version 2.4; B D McKay, Nov 29, 2008. */
 
 #define USAGE \
 "geng [-cCmtfbd#D#] [-uygsnh] [-lvq] \n\
@@ -9,7 +10,7 @@
 #define HELPTEXT \
 " Generate all graphs of a specified class.\n\
 \n\
-      n    : the number of vertices (1..32)\n\
+      n    : the number of vertices\n\
  mine:maxe : a range for the number of edges\n\
               #:0 means '# or more' except in the case 0:0\n\
    res/mod : only generate subset res out of subsets 0..mod-1\n\
@@ -372,8 +373,11 @@ cost of a small increase in cpu time.
               Apr 1, 2007  : Write >A in one fputs() to try to reduce
 			     mixing of outputs in multi-process pipes.
               Sep 19, 2007 : Force -m for n > 28 regardless of word size.
+	      Nov 29, 2008 : Slightly improved connectivity testing.
 
 **************************************************************************/
+
+#define NAUTY_PGM  1   /* 1 = geng, 2 = genbg, 3 = gentourng */
 
 #ifndef MAXN
 #define MAXN 32         /* not more than max(32,WORDSIZE) */
@@ -637,8 +641,8 @@ writenauty(FILE *f, graph *g, int n)
 
 	nn = n;
 
-        if (fwrite((char *)&nn,sizeof(int),1,f) != 1 ||
-              fwrite((char*)g,sizeof(setword),n,f) != n)
+        if (fwrite((char *)&nn,sizeof(int),(size_t)1,f) != 1 ||
+              fwrite((char*)g,sizeof(setword),(size_t)n,f) != n)
         {
             fprintf(stderr,">E writenauty : error on writing file\n");
             exit(2);
@@ -651,20 +655,22 @@ static boolean
 isconnected(graph *g, int n)
 /* test if g is connected */
 {
-        setword seen,expanded,toexpand;
+        setword seen,expanded,toexpand,allbits;
         int i;
 
-        seen = bit[0];
-        expanded = 0;
+	allbits = ALLMASK(n);
 
-        while ((toexpand = (seen & ~expanded)))             /* not == */
+        expanded = bit[n-1];
+        seen = expanded | g[n-1];
+
+        while (seen != allbits && (toexpand = (seen & ~expanded))) /* not == */
         {
             i = FIRSTBIT(toexpand);
             expanded |= bit[i];
             seen |= g[i];
         }
 
-        return  POPCOUNT(seen) == n;
+        return  seen == allbits;
 }
 
 /**********************************************************************/
@@ -1036,7 +1042,8 @@ makeleveldata(boolean restricted)
 
             if (j != nxsets)
             {
-                fprintf(stderr,">E geng: j=%d mxsets=%d\n",j,nxsets);
+                fprintf(stderr,">E geng: j=%d mxsets=%u\n",
+                        j,(unsigned)nxsets);
                 exit(2);
             }
 

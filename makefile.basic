@@ -25,7 +25,7 @@ nauty : dreadnaut ;
 
 gtools : copyg listg labelg dretog amtog geng complg shortg showg NRswitchg \
   biplabg addedgeg deledgeg countg pickg genrang newedgeg catg genbg directg \
-  multig planarg ;
+  multig planarg gentourng ;
 
 rng.o: rng.c
 	${CC} -c ${CFLAGS} rng.c
@@ -115,6 +115,9 @@ nautauxW1.o: nautaux.h nauty.h naututil.h nautaux.c
 	${CC} -c ${CFLAGS} ${W1} -o nautauxW1.o nautaux.c
 naugraphW1.o: nauty.h naugraph.c
 	${CC} -c ${CFLAGS} ${W1} -o naugraphW1.o naugraph.c
+gtoolsW1.o : gtools.h gtools.c
+	${CC} -c ${CFLAGS} ${W1} -o gtoolsW1.o gtools.c 
+
 
 dreadnautS1: dreadnaut.c naututilS1.o nautyS1.o nautilS1.o nautinvS1.o \
 	     naugraphS1.o rng.o
@@ -217,9 +220,9 @@ dretog : gtools.h dretog.c gtools.o naututil.o nautil.o naugraph.o rng.o
 amtog : gtools.h amtog.c gtools.o
 	${CC} -o amtog ${CFLAGS} amtog.c gtools.o ${LDFLAGS}
 
-genbg : gtools.h genbg.c gtools.o nauty1.o nautil1.o naugraph1.o
-	${CC} -o genbg ${CFLAGS} ${W1} genbg.c gtools.o \
-		nauty1.o nautil1.o naugraph1.o ${LDFLAGS}
+genbg : gtools.h genbg.c gtoolsW1.o nautyW1.o nautilW1.o naugraphW1.o
+	${CC} -o genbg ${CFLAGS} ${W1} genbg.c gtoolsW1.o \
+		nautyW1.o nautilW1.o naugraphW1.o ${LDFLAGS}
 
 genbgL : gtools.h genbg.c gtoolsL1.o nautyL1.o nautilL1.o naugraphL1.o
 	${CC} -o genbgL ${CFLAGS} ${L1} -DMAXN1=30 genbg.c gtoolsL1.o \
@@ -235,6 +238,10 @@ geng16 : gtools.h geng.c gtools.o nauty1.o nautil1.o naugraph1.o
 
 geng24 : gtools.h geng.c gtools.o nauty1.o nautil1.o naugraph1.o
 	${CC} -o geng24 ${CFLAGS} -DMAXN=24 geng.c gtools.o nauty1.o \
+		nautil1.o naugraph1.o ${LDFLAGS}
+
+gentourng : gtools.h gentourng.c gtools.o nauty1.o nautil1.o naugraph1.o
+	${CC} -o gentourng ${CFLAGS} -DMAXN=24 gentourng.c gtools.o nauty1.o \
 		nautil1.o naugraph1.o ${LDFLAGS}
 
 genrang : gtools.h genrang.c gtools.o naututil.o nautil.o naugraph.o \

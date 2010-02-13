@@ -1,4 +1,4 @@
-/* showg.c  version 1.5; B D McKay, September 2007.
+/* showg.c  version 1.6; B D McKay, September 2009.
    Formerly called readg.c.
  
    This is a stand-alone edition of listg.c that does not
@@ -41,11 +41,13 @@
                 which define the GNU function without being asked
 		don't cause a conflict.   June 16, 2006.
  Version 1.5: Use function prototypes.  Avoid errno.  Sep 19, 2007.
+ Version 1.6: Very minor tweaks.  Hope you all have string.h. Sep 6, 2009.
 */
 
 /*************************************************************************/
 
 #include <stdio.h>
+#include <string.h>
 
 /* gtools.h : General header for gtools programs. */
 
@@ -352,7 +354,8 @@ opengraphfile(char *filename, int *codetype, int assumefixed, long position)
 	    bad_header = FALSE;
 	    if ((c = getc(f)) == EOF || c != '>')
 	        bad_header = TRUE;
-	    if (!bad_header && ((c = getc(f)) == EOF || c != 'g' && c != 's'))
+	    if (!bad_header &&
+		    ((c = getc(f)) == EOF || (c != 'g' && c != 's')))
 		bad_header = TRUE;	
 	    if (!bad_header && c == 'g')
 	    {
@@ -979,6 +982,7 @@ putam(FILE *f, graph *g, int linelength, boolean space, boolean triang,
 /**************************************************************************/
 /**************************************************************************/
 
+int
 main(int argc, char *argv[])
 {
 	graph *g;

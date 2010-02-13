@@ -56,7 +56,7 @@ main(int argc, char *argv[])
 	int j,m,n,argnum;
 	int codetype,outcode;
 	graph *g;
-	long nin,nout,ii;
+	long nin,nout;
         char *arg,sw;
 	double t;
 #if MAXN

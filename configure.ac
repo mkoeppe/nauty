@@ -102,7 +102,7 @@ AC_EXEEXT
 dnl Checks for header files.
 dnl AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS(stddef.h unistd.h sys/types.h stdlib.h string.h errno.h)
+AC_CHECK_HEADERS(stddef.h unistd.h sys/types.h sys/wait.h stdlib.h string.h errno.h)
 CVT_YESNO(ac_cv_header_stddef_h,header_stddef_h)
 CVT_YESNO(ac_cv_header_unistd_h,header_unistd_h)
 CVT_YESNO(ac_cv_header_stdlib_h,header_stdlib_h)
