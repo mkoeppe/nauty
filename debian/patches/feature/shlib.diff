@@ -8,14 +8,14 @@ library.
 Signed-off-by: David Bremner <bremner@unb.ca>
 
 ---
- makefile.in |  213 ++++++++++++++++++++++++++++++-----------------------------
- 1 files changed, 109 insertions(+), 104 deletions(-)
+ makefile.in |  235 ++++++++++++++++++++++++++++++++--------------------------
+ 1 files changed, 130 insertions(+), 105 deletions(-)
 
 diff --git a/makefile.in b/makefile.in
-index 90de395..a4519c8 100644
+index 9ebfe46..ac87707 100644
 --- a/makefile.in
 +++ b/makefile.in
-@@ -18,35 +18,68 @@ S1=-DMAXN=WORDSIZE -DWORDSIZE=16
+@@ -18,35 +18,88 @@ S1=-DMAXN=WORDSIZE -DWORDSIZE=16
  S=-DWORDSIZE=16
  L=-DWORDSIZE=64
  FOURK=-DMAXN=4096
@@ -30,14 +30,21 @@ index 90de395..a4519c8 100644
 +SHGTLIBOBJ=gtools.os gtnauty.os nausparse.os gutil1.os gutil2.os naugroup.os
 +SHLIBOBJ=${SHNAUTYLIBOBJ} ${SHGTLIBOBJ}
 +
++STLIB=libnauty.a
 +
-+SONAME=libnauty.so.0
-+SOMINOR=.0.0
-+SHLIB=$(SONAME)$(SOMINOR)
-+BUILDSHLIBS=libnauty.so $(SONAME) $(SHLIB)
++SONAME?=libnauty.so.0
++SOMINOR?=.0.0
++SHLIB?=$(SONAME)$(SOMINOR)
++SHLINK?=libnauty.so
++BUILDSHLIBS=$(SONAME) $(SHLIB)
 +BUILDSHLIBS=
-+
 +LDFLAGS:=-L. -lnauty  $(LDFLAGS)
++
++DESTDIR=
++GTOOLSBIN=copyg listg labelg dretog amtog geng complg shortg showg NRswitchg \
++  biplabg addedgeg deledgeg countg pickg genrang newedgeg catg genbg directg \
++  multig planarg gentourng
++BINARIES=$(GTOOLSBIN) dreadnaut
 +
 +.SUFFIXES: .os
 +.c.os:
@@ -45,36 +52,52 @@ index 90de395..a4519c8 100644
 +
 +%.o: %.c
 +	${CC} -c ${CFLAGS} -o $@ $<
++
++.PHONY: all nauty libs gtools install clean
  
  all : nauty gtools ;
  
  nauty : dreadnaut ;
  
-+libs: libnauty.a $(BUILDSHLIBS)
+-gtools : copyg listg labelg dretog amtog geng complg shortg showg NRswitchg \
+-  biplabg addedgeg deledgeg countg pickg genrang newedgeg catg genbg directg \
+-  multig planarg gentourng ;
++LIBS=$(STLIB) $(BUILDSHLIBS)
++libs: $(LIBS)
 +
- gtools : copyg listg labelg dretog amtog geng complg shortg showg NRswitchg \
-   biplabg addedgeg deledgeg countg pickg genrang newedgeg catg genbg directg \
-   multig planarg ;
- 
++gtools: $(GTOOLSBIN)
++
 +$(SHLIB): $(SHLIBOBJ)
 +	gcc -shared -Wl,-soname=$(SONAME) -o $(SONAME)$(SOMINOR) $(SHLIBOBJ)
 +
 +$(SONAME): $(SHLIB)
 +	rm -f $@ && ln -s $(SHLIB) $@
 +
-+libnauty.so: $(SONAME)
-+	rm -f $@ && ln -s $(SONAME) $@
++install-shlibs: $(SHLIB)
++	 mkdir -p $(DESTDIR)/usr/lib
++	 install -t $(DESTDIR)/usr/lib $(SHLIB)
++	 cd $(DESTDIR)/usr/lib && ln -sf $(SONAME) $(SHLINK) && ln -sf $(SHLIB) $(SONAME)
 +
-+libnauty.a: $(LIBOBJ)
++install:
++	 mkdir -p $(DESTDIR)/usr/bin
++	 install -t $(DESTDIR)/usr/bin $(BINARIES)
++
++install-dev:
++	 mkdir -p $(DESTDIR)/usr/include
++	 install -t $(DESTDIR)/usr/include nauty.h
++	 mkdir -p $(DESTDIR)/usr/lib
++	 install -t $(DESTDIR)/usr/lib $(STLIB)
++
++$(STLIB): $(LIBOBJ)
 +	ar r $@ $(LIBOBJ)
-+
+ 
  rng.o: rng.c
  	${CC} -c ${CFLAGS} rng.c
  
 -dreadnaut: dreadnaut.c naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o
 -	${CC} -o dreadnaut ${SAFECFLAGS} dreadnaut.c \
 -	    naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o ${LDFLAGS}
-+dreadnaut: dreadnaut.c libs
++dreadnaut: dreadnaut.c $(LIBS)
 +	${CC} -o dreadnaut ${SAFECFLAGS} dreadnaut.c   ${LDFLAGS}
 +
  naututil.o: nauty.h naututil.h naututil.c
@@ -94,7 +117,7 @@ index 90de395..a4519c8 100644
  
  dreadnaut1: dreadnaut.c naututil1.o nauty1.o nautil1.o \
              nautinv1.o naugraph1.o rng.o
-@@ -173,6 +206,7 @@ clean:
+@@ -176,6 +229,7 @@ clean:
  		dreadtestS${EXEEXT} dreadtestS1${EXEEXT} \
  	        dreadtest4K${EXEEXT} dreadtest1${EXEEXT} \
  		dreadtestL1${EXEEXT} dreadtestW1${EXEEXT}
@@ -102,23 +125,23 @@ index 90de395..a4519c8 100644
  
  gtools.h : nauty.h naututil.h nausparse.h
  	touch gtools.h
-@@ -189,111 +223,82 @@ gutil1.o : gtools.h gutils.h gutil1.c
+@@ -192,33 +246,26 @@ gutil1.o : gtools.h gutils.h gutil1.c
  gutil2.o : gtools.h gutils.h gutil2.c
  	${CC} -c ${CFLAGS} gutil2.c
  
 -catg : gtools.h catg.c gtools.o
 -	${CC} -o catg ${CFLAGS} catg.c gtools.o ${LDFLAGS}
-+catg : gtools.h catg.c libs
++catg : gtools.h catg.c $(LIBS)
 +	${CC} -o catg ${CFLAGS} catg.c ${LDFLAGS}
  
 -copyg : gtools.h copyg.c gtools.o
 -	${CC} -o copyg ${CFLAGS} copyg.c gtools.o ${LDFLAGS}
-+copyg : gtools.h copyg.c libs
++copyg : gtools.h copyg.c $(LIBS)
 +	${CC} -o copyg ${CFLAGS} copyg.c ${LDFLAGS}
  
 -listg : gtools.h listg.c gtools.o nautil.o
 -	${CC} -o listg ${CFLAGS} listg.c gtools.o nautil.o ${LDFLAGS}
-+listg : gtools.h listg.c libs
++listg : gtools.h listg.c $(LIBS)
 +	${CC} -o listg ${CFLAGS} listg.c  ${LDFLAGS}
  
 -labelg : gtools.h naututil.h labelg.c gtools.o gtnauty.o nauty.o \
@@ -127,34 +150,30 @@ index 90de395..a4519c8 100644
 -	${CC} -o labelg ${SAFECFLAGS} labelg.c gtools.o gtnauty.o \
 -	    nauty.o nautil.o naugraph.o nautinv.o nausparse.o \
 -	    gutil2.o ${LDFLAGS}
-+labelg : gtools.h naututil.h labelg.c libs
++labelg : gtools.h naututil.h labelg.c $(LIBS)
 +	${CC} -o labelg ${SAFECFLAGS} labelg.c ${LDFLAGS}
  
 -shortg : gtools.h shortg.c gtools.o gtnauty.o nauty.o nautil.o naugraph.o \
 -            nausparse.h nausparse.o gutils.h gutil2.o nautinv.h nautinv.o
 -	${CC} -o shortg ${CFLAGS} shortg.c gtools.o gtnauty.o nautinv.o \
 -            nauty.o nautil.o naugraph.o nausparse.o gutil2.o ${LDFLAGS}
-+shortg : gtools.h shortg.c libs
++shortg : gtools.h shortg.c $(LIBS)
 +	${CC} -o shortg ${CFLAGS} shortg.c ${LDFLAGS}
  
 -dretog : gtools.h dretog.c gtools.o naututil.o nautil.o naugraph.o rng.o
 -	${CC} -o dretog ${CFLAGS} dretog.c \
 -		gtools.o naututil.o nautil.o rng.o naugraph.o ${LDFLAGS}
-+dretog : gtools.h dretog.c libs
++dretog : gtools.h dretog.c $(LIBS)
 +	${CC} -o dretog ${CFLAGS} dretog.c ${LDFLAGS}
  
 -amtog : gtools.h amtog.c gtools.o
 -	${CC} -o amtog ${CFLAGS} amtog.c gtools.o ${LDFLAGS}
-+amtog : gtools.h amtog.c libs
++amtog : gtools.h amtog.c $(LIBS)
 +	${CC} -o amtog ${CFLAGS} amtog.c ${LDFLAGS}
  
--genbg : gtools.h genbg.c gtools.o nauty1.o nautil1.o naugraph1.o
--	${CC} -o genbg ${CFLAGS} ${W1} genbg.c gtools.o \
-+genbg : gtools.h genbg.c  nauty1.o nautil1.o naugraph1.o
-+	${CC} -o genbg ${CFLAGS} ${W1} genbg.c  \
- 		nauty1.o nautil1.o naugraph1.o ${LDFLAGS}
- 
- genbgL : gtools.h genbg.c gtoolsL1.o nautyL1.o nautilL1.o naugraphL1.o
+ genbg : gtools.h genbg.c gtoolsW1.o nautyW1.o nautilW1.o naugraphW1.o
+ 	${CC} -o genbg ${CFLAGS} ${W1} genbg.c gtoolsW1.o \
+@@ -228,79 +275,57 @@ genbgL : gtools.h genbg.c gtoolsL1.o nautyL1.o nautilL1.o naugraphL1.o
  	${CC} -o genbgL ${CFLAGS} ${L1} -DMAXN1=30 genbg.c gtoolsL1.o \
  	    nautyL1.o nautilL1.o naugraphL1.o ${LDFLAGS}
  
@@ -174,6 +193,10 @@ index 90de395..a4519c8 100644
 -	${CC} -o geng24 ${CFLAGS} -DMAXN=24 geng.c gtools.o nauty1.o \
 +geng24 : gtools.h geng.c  nauty1.o nautil1.o naugraph1.o
 +	${CC} -o geng24 ${CFLAGS} -DMAXN=24 geng.c  nauty1.o \
+ 		nautil1.o naugraph1.o ${LDFLAGS}
+ 
+ gentourng : gtools.h gentourng.c gtools.o nauty1.o nautil1.o naugraph1.o
+ 	${CC} -o gentourng ${CFLAGS} -DMAXN=24 gentourng.c gtools.o nauty1.o \
  		nautil1.o naugraph1.o ${LDFLAGS}
  
 -genrang : gtools.h genrang.c gtools.o naututil.o nautil.o naugraph.o \
@@ -233,45 +256,45 @@ index 90de395..a4519c8 100644
 -planarg : gtools.h planarg.c gtools.o planarity.c
 -	${CC} -o planarg ${CFLAGS} \
 -		planarg.c planarity.c gtools.o ${LDFLAGS}
-+genrang : gtools.h genrang.c libs
++genrang : gtools.h genrang.c $(LIBS)
 +	${CC} -o genrang ${CFLAGS} genrang.c ${LDFLAGS}
 +
 +complg : gtools.h complg.c 
 +	${CC} -o complg ${CFLAGS} complg.c ${LDFLAGS}
 +
-+biplabg : gtools.h biplabg.c libs
++biplabg : gtools.h biplabg.c $(LIBS)
 +	${CC} -o biplabg ${CFLAGS} biplabg.c  ${LDFLAGS}
 +
-+NRswitchg : gtools.h NRswitchg.c libs
++NRswitchg : gtools.h NRswitchg.c $(LIBS)
 +	${CC} -o NRswitchg ${CFLAGS} NRswitchg.c ${LDFLAGS}
 +
-+deledgeg : gtools.h deledgeg.c libs
++deledgeg : gtools.h deledgeg.c $(LIBS)
 +	${CC} -o deledgeg ${CFLAGS} deledgeg.c ${LDFLAGS}
 +
-+addedgeg : gtools.h addedgeg.c libs
++addedgeg : gtools.h addedgeg.c $(LIBS)
 +	${CC} -o addedgeg ${CFLAGS} addedgeg.c   ${LDFLAGS}
 +
-+newedgeg : gtools.h newedgeg.c libs
++newedgeg : gtools.h newedgeg.c $(LIBS)
 +	${CC} -o newedgeg ${CFLAGS} newedgeg.c ${LDFLAGS}
 +
-+pickg : gtools.h testg.c splay.c libs
++pickg : gtools.h testg.c splay.c $(LIBS)
 +	${CC} -o pickg ${SAFECFLAGS} testg.c ${LDFLAGS}
 +
-+countg : gtools.h testg.c splay.c libs
++countg : gtools.h testg.c splay.c $(LIBS)
 +	${CC} -o countg ${SAFECFLAGS} testg.c  ${LDFLAGS}
 +
-+directg : gtools.h naugroup.h directg.c libs
++directg : gtools.h naugroup.h directg.c $(LIBS)
 +	${CC} -o directg ${CFLAGS} directg.c  ${LDFLAGS}
 +
-+multig : gtools.h naugroup.h multig.c libs
++multig : gtools.h naugroup.h multig.c $(LIBS)
 +	${CC} -o multig ${CFLAGS} multig.c ${LDFLAGS}
 +
-+planarg : gtools.h planarg.c  planarity.c libs
++planarg : gtools.h planarg.c  planarity.c $(LIBS)
 +	${CC} -o planarg ${CFLAGS} planarg.c planarity.c  ${LDFLAGS}
  
  showg : showg.c
  	${CC} -o showg ${CFLAGS} showg.c ${LDFLAGS}
-@@ -337,7 +342,7 @@ nautyex5 : nauty.h nausparse.h nauty.o nautil.o \
+@@ -344,7 +369,7 @@ nautyex5 : nauty.h nausparse.h nauty.o nautil.o \
  		nautyex5.c nauty.o nautil.o nausparse.o naugroup.o ${LDFLAGS}
  
  dreadtest: dreadtest.c naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o
@@ -280,7 +303,7 @@ index 90de395..a4519c8 100644
  	    naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o ${LDFLAGS}
  	./dreadtest <testS.dre
  	./dreadtest <testW.dre
-@@ -349,7 +354,7 @@ dreadtest: dreadtest.c naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o
+@@ -356,7 +381,7 @@ dreadtest: dreadtest.c naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o
  
  dreadtestL: dreadtest.c \
  		naututilL.o nautyL.o nautilL.o nautinvL.o naugraphL.o rng.o
@@ -289,7 +312,7 @@ index 90de395..a4519c8 100644
  	    nautyL.o nautilL.o nautinvL.o naugraphL.o rng.o ${LDFLAGS}
  	./dreadtestL < testS.dre
  	./dreadtestL < testW.dre
-@@ -360,7 +365,7 @@ dreadtestL: dreadtest.c \
+@@ -367,7 +392,7 @@ dreadtestL: dreadtest.c \
  
  dreadtestS: dreadtest.c \
  		naututilS.o nautyS.o nautilS.o nautinvS.o naugraphS.o rng.o
@@ -298,7 +321,7 @@ index 90de395..a4519c8 100644
  	    nautyS.o nautilS.o nautinvS.o naugraphS.o rng.o ${LDFLAGS}
  	./dreadtestS < testS.dre
  	./dreadtestS < testW.dre
-@@ -371,7 +376,7 @@ dreadtestS: dreadtest.c \
+@@ -378,7 +403,7 @@ dreadtestS: dreadtest.c \
  
  dreadtest4K: dreadtest.c \
  		naututil4K.o nauty4K.o nautil4K.o nautinv4K.o naugraph4K.o rng.o
@@ -307,7 +330,7 @@ index 90de395..a4519c8 100644
  	    nauty4K.o nautil4K.o nautinv4K.o naugraph4K.o rng.o ${LDFLAGS}
  	./dreadtest4K <testS.dre
  	./dreadtest4K <testW.dre
-@@ -380,7 +385,7 @@ dreadtest4K: dreadtest.c \
+@@ -387,7 +412,7 @@ dreadtest4K: dreadtest.c \
  
  dreadtest1: dreadtest.c \
  		naututil1.o nauty1.o nautil1.o nautinv1.o naugraph1.o rng.o
@@ -316,7 +339,7 @@ index 90de395..a4519c8 100644
  	    nauty1.o nautil1.o nautinv1.o naugraph1.o rng.o ${LDFLAGS}
  	./dreadtest1 < testS.dre
  	./dreadtest1 < testW.dre
-@@ -388,7 +393,7 @@ dreadtest1: dreadtest.c \
+@@ -395,7 +420,7 @@ dreadtest1: dreadtest.c \
  
  dreadtestL1: dreadtest.c \
  		naututilL1.o nautyL1.o nautilL1.o nautinvL1.o naugraphL1.o rng.o
@@ -325,7 +348,7 @@ index 90de395..a4519c8 100644
  	    nautyL1.o nautilL1.o nautinvL1.o naugraphL1.o rng.o ${LDFLAGS}
  	./dreadtestL1 <testS.dre
  	./dreadtestL1 <testW.dre
-@@ -397,7 +402,7 @@ dreadtestL1: dreadtest.c \
+@@ -404,7 +429,7 @@ dreadtestL1: dreadtest.c \
  
  dreadtestW1: dreadtest.c \
  		naututilW1.o nautyW1.o nautilW1.o nautinvW1.o naugraphW1.o rng.o
@@ -334,7 +357,7 @@ index 90de395..a4519c8 100644
  	    nautyW1.o nautilW1.o nautinvW1.o naugraphW1.o rng.o ${LDFLAGS}
  	./dreadtestW1 <testS.dre
  	./dreadtestW1 <testW.dre
-@@ -405,7 +410,7 @@ dreadtestW1: dreadtest.c \
+@@ -412,7 +437,7 @@ dreadtestW1: dreadtest.c \
  
  dreadtestS1: dreadtest.c \
  		naututilS1.o nautyS1.o nautilS1.o nautinvS1.o naugraphS1.o rng.o
@@ -344,4 +367,4 @@ index 90de395..a4519c8 100644
  	./dreadtestS1 <testS.dre
  
 -- 
-tg: (f17151d..) feature/shlib (depends on: upstream)
+tg: (34b5c88..) feature/shlib (depends on: upstream)

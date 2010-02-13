@@ -1,0 +1,114 @@
+From: David Bremner <bremner@unb.ca>
+Subject: [PATCH] fix/getline
+
+rename gtools getline to avoid conflict with glibc's version.  Since
+getline is now part of POSIX2008, having our own version could cause
+problems for other applications linking to libnauty, even if we turn
+on the appropriate flags to hide the glibc version.
+
+Signed-off-by: David Bremner <bremner@unb.ca>
+
+---
+ checks6.c   |    2 +-
+ gtools-h.in |    2 +-
+ gtools.c    |   12 ++++++------
+ shortg.c    |    2 +-
+ 4 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/checks6.c b/checks6.c
+index 8379d9e..eaec1df 100644
+--- a/checks6.c
++++ b/checks6.c
+@@ -211,7 +211,7 @@ char *argv[];
+ 	else                maxin = pval2 - pval1 + 1;
+ 	while (nin < maxin || maxin == NOLIMIT)
+ 	{
+-	    if ((s = getline(infile)) == NULL) break;
++	    if ((s = gtools_getline(infile)) == NULL) break;
+ 	    ++nin;
+ 
+ 	    if (seemsbad(s)) ++nerr;
+diff --git a/gtools-h.in b/gtools-h.in
+index 298d026..9915575 100644
+--- a/gtools-h.in
++++ b/gtools-h.in
+@@ -156,7 +156,7 @@ extern "C" {
+ extern void gtools_check(int,int,int,int);
+ extern FILE *opengraphfile(char*,int*,boolean,long);
+ extern void writeline(FILE*,char*);
+-extern char *getline(FILE*);
++extern char *gtools_getline(FILE*);
+ extern int graphsize(char*);
+ extern void stringcounts(char*,int*,size_t*);
+ extern void stringtograph(char*,graph*,int);
+diff --git a/gtools.c b/gtools.c
+index c5d2c88..822c779 100644
+--- a/gtools.c
++++ b/gtools.c
+@@ -372,21 +372,21 @@ writeline(FILE *f, char *s)
+ */
+ 
+ char*
+-getline(FILE *f)     /* read a line with error checking */
++gtools_getline(FILE *f)     /* read a line with error checking */
+ /* includes \n (if present) and \0.  Immediate EOF causes NULL return. */
+ {
+     DYNALLSTAT(char,s,s_sz);
+     int c;
+     long i;
+ 
+-    DYNALLOC1(char,s,s_sz,5000,"getline");
++    DYNALLOC1(char,s,s_sz,5000,"gtools_getline");
+ 
+     FLOCKFILE(f);
+     i = 0;
+     while ((c = GETC(f)) != EOF && c != '\n')
+     {
+         if (i == s_sz-3)
+-            DYNREALLOC(char,s,s_sz,3*(s_sz/2)+10000,"getline");
++            DYNREALLOC(char,s,s_sz,3*(s_sz/2)+10000,"gtools_getline");
+         s[i++] = c;
+     }
+     FUNLOCKFILE(f);
+@@ -735,7 +735,7 @@ readg(FILE *f, graph *g, int reqm, int *pm, int *pn)
+     char *s,*p;
+     int m,n;
+ 
+-    if ((readg_line = getline(f)) == NULL) return NULL;
++    if ((readg_line = gtools_getline(f)) == NULL) return NULL;
+ 
+     s = readg_line;
+     if (s[0] == ':')
+@@ -1018,7 +1018,7 @@ read_sg_loops(FILE *f, sparsegraph *sg, int *nloops)
+     char *s,*p;
+     int n,loops;
+ 
+-    if ((readg_line = getline(f)) == NULL) return NULL;
++    if ((readg_line = gtools_getline(f)) == NULL) return NULL;
+ 
+     s = readg_line;
+     if (s[0] == ':')
+@@ -1652,7 +1652,7 @@ readpcle_sg(FILE *f,sparsegraph *sg)
+ 
+ void
+ writelast(FILE *f)
+-/* write last graph read by readg() assuming no intervening getline() */
++/* write last graph read by readg() assuming no intervening gtools_getline() */
+ {
+     writeline(f,readg_line);
+ }
+diff --git a/shortg.c b/shortg.c
+index 5ddbb5f..545042e 100644
+--- a/shortg.c
++++ b/shortg.c
+@@ -222,7 +222,7 @@ fromsort(FILE *f, char **cdstr, char **dstr, nauty_counter *index)
+         int j;
+         char *s;
+ 
+-	if ((s = getline(f)) == NULL) return FALSE;
++	if ((s = gtools_getline(f)) == NULL) return FALSE;
+ 
+ 	*cdstr = s;
+         for (j = 0; s[j] != ' ' && s[j] != '\t' && s[j] != '\n'; ++j) {}
+-- 
+tg: (34b5c88..) fix/getline (depends on: upstream)
