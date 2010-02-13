@@ -55,7 +55,7 @@ libnauty.so.0d libnauty0d #MINVER#
  getbigcells@Base 2.4~b7
  getecline@Base 2.4~b7
  getint@Base 2.4~b7
- getline@Base 2.4~b7
+#MISSING: 2.4-1# getline@Base 2.4~b7
  girth@Base 2.4~b7
  graphsize@Base 2.4~b7
  groupautomproc@Base 2.4~b7
@@ -64,6 +64,7 @@ libnauty.so.0d libnauty0d #MINVER#
  gt_abort@Base 2.4~b7
  gt_numorbits@Base 2.4~b7
  gtools_check@Base 2.4~b7
+ gtools_getline@Base 2.4
  hash@Base 2.4~b7
  indsets@Base 2.4~b7
  init_sg@Base 2.4~b7
