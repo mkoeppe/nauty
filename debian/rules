@@ -8,7 +8,7 @@ include /usr/share/quilt/quilt.make
 # use wildcard to avoid warning from dh
 include $(wildcard /usr/share/topgit/tg2quilt.mk)
 
-SONAME=libnauty.so.0d
+SONAME=libnauty.so.1d
 
 %:
 	dh --with quilt $@

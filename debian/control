@@ -22,7 +22,7 @@ Description: command line tools to compute graph automorphisms
  testing.  This package provides the main command line tool dreadnaut,
  and some utilities ('gtools').  A C API is also available.
 
-Package: libnauty0d
+Package: libnauty1d
 Architecture: any 
 Section: non-free/libs
 Depends: ${shlibs:Depends}, ${misc:Depends}
