@@ -8,14 +8,14 @@ library.
 Signed-off-by: David Bremner <bremner@unb.ca>
 
 ---
- makefile.in |  235 ++++++++++++++++++++++++++++++++--------------------------
- 1 files changed, 130 insertions(+), 105 deletions(-)
+ makefile.in |  241 +++++++++++++++++++++++++++++++++--------------------------
+ 1 files changed, 136 insertions(+), 105 deletions(-)
 
 diff --git a/makefile.in b/makefile.in
-index 9ebfe46..ac87707 100644
+index 9ebfe46..40d2c80 100644
 --- a/makefile.in
 +++ b/makefile.in
-@@ -18,35 +18,88 @@ S1=-DMAXN=WORDSIZE -DWORDSIZE=16
+@@ -18,35 +18,94 @@ S1=-DMAXN=WORDSIZE -DWORDSIZE=16
  S=-DWORDSIZE=16
  L=-DWORDSIZE=64
  FOURK=-DMAXN=4096
@@ -32,13 +32,16 @@ index 9ebfe46..ac87707 100644
 +
 +STLIB=libnauty.a
 +
++ifeq ($(SHARED),yes)
 +SONAME?=libnauty.so.0
 +SOMINOR?=.0.0
 +SHLIB?=$(SONAME)$(SOMINOR)
 +SHLINK?=libnauty.so
-+BUILDSHLIBS=$(SONAME) $(SHLIB)
-+BUILDSHLIBS=
++BUILDSHLIBS=$(SONAME) $(SHLIB) $(SHLINK)
 +LDFLAGS:=-L. -lnauty  $(LDFLAGS)
++else
++BUILDSHLIBS=
++endif
 +
 +DESTDIR=
 +GTOOLSBIN=copyg listg labelg dretog amtog geng complg shortg showg NRswitchg \
@@ -72,6 +75,9 @@ index 9ebfe46..ac87707 100644
 +
 +$(SONAME): $(SHLIB)
 +	rm -f $@ && ln -s $(SHLIB) $@
++
++$(SHLINK): $(SONAME)
++	rm -f $@ && ln -s $(SONAME) $@
 +
 +install-shlibs: $(SHLIB)
 +	 mkdir -p $(DESTDIR)/usr/lib
@@ -117,7 +123,7 @@ index 9ebfe46..ac87707 100644
  
  dreadnaut1: dreadnaut.c naututil1.o nauty1.o nautil1.o \
              nautinv1.o naugraph1.o rng.o
-@@ -176,6 +229,7 @@ clean:
+@@ -176,6 +235,7 @@ clean:
  		dreadtestS${EXEEXT} dreadtestS1${EXEEXT} \
  	        dreadtest4K${EXEEXT} dreadtest1${EXEEXT} \
  		dreadtestL1${EXEEXT} dreadtestW1${EXEEXT}
@@ -125,7 +131,7 @@ index 9ebfe46..ac87707 100644
  
  gtools.h : nauty.h naututil.h nausparse.h
  	touch gtools.h
-@@ -192,33 +246,26 @@ gutil1.o : gtools.h gutils.h gutil1.c
+@@ -192,33 +252,26 @@ gutil1.o : gtools.h gutils.h gutil1.c
  gutil2.o : gtools.h gutils.h gutil2.c
  	${CC} -c ${CFLAGS} gutil2.c
  
@@ -173,7 +179,7 @@ index 9ebfe46..ac87707 100644
  
  genbg : gtools.h genbg.c gtoolsW1.o nautyW1.o nautilW1.o naugraphW1.o
  	${CC} -o genbg ${CFLAGS} ${W1} genbg.c gtoolsW1.o \
-@@ -228,79 +275,57 @@ genbgL : gtools.h genbg.c gtoolsL1.o nautyL1.o nautilL1.o naugraphL1.o
+@@ -228,79 +281,57 @@ genbgL : gtools.h genbg.c gtoolsL1.o nautyL1.o nautilL1.o naugraphL1.o
  	${CC} -o genbgL ${CFLAGS} ${L1} -DMAXN1=30 genbg.c gtoolsL1.o \
  	    nautyL1.o nautilL1.o naugraphL1.o ${LDFLAGS}
  
@@ -294,7 +300,7 @@ index 9ebfe46..ac87707 100644
  
  showg : showg.c
  	${CC} -o showg ${CFLAGS} showg.c ${LDFLAGS}
-@@ -344,7 +369,7 @@ nautyex5 : nauty.h nausparse.h nauty.o nautil.o \
+@@ -344,7 +375,7 @@ nautyex5 : nauty.h nausparse.h nauty.o nautil.o \
  		nautyex5.c nauty.o nautil.o nausparse.o naugroup.o ${LDFLAGS}
  
  dreadtest: dreadtest.c naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o
@@ -303,7 +309,7 @@ index 9ebfe46..ac87707 100644
  	    naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o ${LDFLAGS}
  	./dreadtest <testS.dre
  	./dreadtest <testW.dre
-@@ -356,7 +381,7 @@ dreadtest: dreadtest.c naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o
+@@ -356,7 +387,7 @@ dreadtest: dreadtest.c naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o
  
  dreadtestL: dreadtest.c \
  		naututilL.o nautyL.o nautilL.o nautinvL.o naugraphL.o rng.o
@@ -312,7 +318,7 @@ index 9ebfe46..ac87707 100644
  	    nautyL.o nautilL.o nautinvL.o naugraphL.o rng.o ${LDFLAGS}
  	./dreadtestL < testS.dre
  	./dreadtestL < testW.dre
-@@ -367,7 +392,7 @@ dreadtestL: dreadtest.c \
+@@ -367,7 +398,7 @@ dreadtestL: dreadtest.c \
  
  dreadtestS: dreadtest.c \
  		naututilS.o nautyS.o nautilS.o nautinvS.o naugraphS.o rng.o
@@ -321,7 +327,7 @@ index 9ebfe46..ac87707 100644
  	    nautyS.o nautilS.o nautinvS.o naugraphS.o rng.o ${LDFLAGS}
  	./dreadtestS < testS.dre
  	./dreadtestS < testW.dre
-@@ -378,7 +403,7 @@ dreadtestS: dreadtest.c \
+@@ -378,7 +409,7 @@ dreadtestS: dreadtest.c \
  
  dreadtest4K: dreadtest.c \
  		naututil4K.o nauty4K.o nautil4K.o nautinv4K.o naugraph4K.o rng.o
@@ -330,7 +336,7 @@ index 9ebfe46..ac87707 100644
  	    nauty4K.o nautil4K.o nautinv4K.o naugraph4K.o rng.o ${LDFLAGS}
  	./dreadtest4K <testS.dre
  	./dreadtest4K <testW.dre
-@@ -387,7 +412,7 @@ dreadtest4K: dreadtest.c \
+@@ -387,7 +418,7 @@ dreadtest4K: dreadtest.c \
  
  dreadtest1: dreadtest.c \
  		naututil1.o nauty1.o nautil1.o nautinv1.o naugraph1.o rng.o
@@ -339,7 +345,7 @@ index 9ebfe46..ac87707 100644
  	    nauty1.o nautil1.o nautinv1.o naugraph1.o rng.o ${LDFLAGS}
  	./dreadtest1 < testS.dre
  	./dreadtest1 < testW.dre
-@@ -395,7 +420,7 @@ dreadtest1: dreadtest.c \
+@@ -395,7 +426,7 @@ dreadtest1: dreadtest.c \
  
  dreadtestL1: dreadtest.c \
  		naututilL1.o nautyL1.o nautilL1.o nautinvL1.o naugraphL1.o rng.o
@@ -348,7 +354,7 @@ index 9ebfe46..ac87707 100644
  	    nautyL1.o nautilL1.o nautinvL1.o naugraphL1.o rng.o ${LDFLAGS}
  	./dreadtestL1 <testS.dre
  	./dreadtestL1 <testW.dre
-@@ -404,7 +429,7 @@ dreadtestL1: dreadtest.c \
+@@ -404,7 +435,7 @@ dreadtestL1: dreadtest.c \
  
  dreadtestW1: dreadtest.c \
  		naututilW1.o nautyW1.o nautilW1.o nautinvW1.o naugraphW1.o rng.o
@@ -357,7 +363,7 @@ index 9ebfe46..ac87707 100644
  	    nautyW1.o nautilW1.o nautinvW1.o naugraphW1.o rng.o ${LDFLAGS}
  	./dreadtestW1 <testS.dre
  	./dreadtestW1 <testW.dre
-@@ -412,7 +437,7 @@ dreadtestW1: dreadtest.c \
+@@ -412,7 +443,7 @@ dreadtestW1: dreadtest.c \
  
  dreadtestS1: dreadtest.c \
  		naututilS1.o nautyS1.o nautilS1.o nautinvS1.o naugraphS1.o rng.o
