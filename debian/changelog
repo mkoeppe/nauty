@@ -7,6 +7,7 @@ nauty (2.4-1) unstable; urgency=low
     - Bump soname because of changed ABI
     - Thanks to Kamal Mostafa <kamal@whence.com>, for the report and patch.
   * Update standards version to 3.8.4 (no changes)
+  * Convert to source format 3.0 (quilt)
 
  -- David Bremner <bremner@unb.ca>  Sat, 13 Feb 2010 05:27:59 -0400
 
