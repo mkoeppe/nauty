@@ -1,2 +1,3 @@
-nauty.h /usr/include
-libnauty.a /usr/lib
+usr/include/nauty.h /usr/include
+usr/lib/libnauty.a /usr/lib
+usr/lib/libnauty.so /usr/lib
