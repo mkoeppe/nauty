@@ -4,7 +4,7 @@ Priority: extra
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: David Bremner <bremner@unb.ca>
 Build-Depends: debhelper (>= 7.0.50), autotools-dev, quilt (>=0.46-7)
-Standards-Version: 3.8.2
+Standards-Version: 3.8.4
 Homepage: http://cs.anu.edu.au/~bdm/nauty/
 Vcs-Git: git://git.debian.org/git/debian-science/packages/nauty.git
 Vcs-Browser: http://git.debian.org/?p=debian-science/packages/nauty.git
