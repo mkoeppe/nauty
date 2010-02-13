@@ -15,6 +15,7 @@ deledgeg
 countg
 pickg 
 genrang 
+gentourng
 newedgeg 
 catg 
 genbg 
@@ -32,3 +33,4 @@ libnauty.a
 libnauty.so.0d.0.0
 libnauty.so.0d
 libnauty.so
+
