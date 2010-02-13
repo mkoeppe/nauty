@@ -1,7 +1,7 @@
 nauty (2.4-1) unstable; urgency=low
 
   * New upstream version
-  * Fix FTBFS (Closes: #569269), (LP: #521190). 
+  * Fix FTBFS (Closes: #569626), (LP: #521190). 
     - Caused by getline becoming visible in stdio.h by default
     - Rename getline to gtools_getline
     - Bump soname because of changed ABI
