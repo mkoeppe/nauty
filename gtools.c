@@ -385,7 +385,7 @@ getline(FILE *f)     /* read a line with error checking */
     i = 0;
     while ((c = GETC(f)) != EOF && c != '\n')
     {
-        if (i == s_sz-2)
+        if (i == s_sz-3)
             DYNREALLOC(char,s,s_sz,3*(s_sz/2)+10000,"getline");
         s[i++] = c;
     }
@@ -1764,7 +1764,7 @@ strhaschar(char *s, int c)
 void
 arg_range(char **ps, char *sep, long *val1, long *val2, char *id)
 {
-    int code,i;
+    int code;
     char *s;
 
     s = *ps;

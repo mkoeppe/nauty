@@ -1,7 +1,7 @@
-/* directg.c version 1.2; B D McKay, Jul 29, 2007 */
+/* directg.c version 1.3; B D McKay, march 3, 2009 */
 
 #define USAGE \
-  "directg [-q] [-u|-T|-G] [-o] [-f#] [-e#|-e#:#] [infile [outfile]]"
+  "directg [-q] [-u|-T|-G] [-V] [-o] [-f#] [-e#|-e#:#] [infile [outfile]]"
 
 #define HELPTEXT \
 " Read undirected graphs and orient their edges in all possible ways.\n\
@@ -16,6 +16,8 @@
     -T  use a simple text output format (nv ne edges) instead of digraph6\n\
     -G  like -T but includes group size as third item (if less than 10^10)\n\
           The group size does not include exchange of isolated vertices.\n\
+    -V  only output graphs with nontrivial groups (including exchange of\n\
+          isolated vertices).  The -f option is respected.\n\
     -u  no output, just count them\n\
     -q  suppress auxiliary information\n"
 
@@ -55,7 +57,7 @@ static boolean lastrejok;
 static int rejectlevel;
 static unsigned long groupsize;
 static unsigned long newgroupsize;
-static boolean Gswitch;
+static boolean Gswitch,Vswitch,ntgroup,ntisol;
 
 /* DEGPRUNE feature 
  *
@@ -131,6 +133,7 @@ ismax(permutation *p, int n)
 	else if (px[i] < x[i]) return TRUE;
 
     ++newgroupsize;
+    ntgroup = TRUE;
     return TRUE;
 }
 
@@ -140,7 +143,7 @@ void
 testmax(permutation *p, int n, int *abort)
 /* Called by allgroup2. */
 {
-    int i,j,k;
+    int i;
 
     if (first)
     {                       /* only the identity */
@@ -169,6 +172,7 @@ trythisone(grouprec *group, int ne, int n)
     ADDBIG(ngen,1);
     nix = ne;
     newgroupsize = 1;
+    ntgroup = FALSE;
 
     if (!group || groupsize == 1)
 	accept = TRUE;
@@ -178,7 +182,8 @@ trythisone(grouprec *group, int ne, int n)
 	accept = TRUE;
     else
     {
-	newgroupsize = 1;
+        newgroupsize = 1;
+        ntgroup = FALSE;
 	if (allgroup2(group,testmax) == 0)
 	    accept = TRUE;
         else
@@ -194,11 +199,13 @@ trythisone(grouprec *group, int ne, int n)
 	totallab += groupsize/newgroupsize;
 #endif
 
+	if (Vswitch && !ntisol && !ntgroup) return MAXNE+1;
+
 	ADDBIG(nout,1);
 
 	if (outfile)
 	{
-	    fprintf(outfile,"%d %ld",n,ne);
+	    fprintf(outfile,"%d %d",n,ne);
 	    if (Gswitch) fprintf(outfile," %lu",newgroupsize);
 
             for (i = -1; (i = nextelement(x,me,i)) >= 0; )
@@ -303,8 +310,8 @@ scan(int level, int ne, int minarcs, int maxarcs, int sofar,
 /**************************************************************************/
 
 static void
-direct(graph *g, int nfixed,
-       long minarcs, long maxarcs, boolean oriented, int m, int n)
+direct(graph *g, int nfixed, long minarcs, long maxarcs,
+       boolean oriented, int m, int n)
 {
     static DEFAULTOPTIONS_GRAPH(options);
     statsblk stats;
@@ -312,6 +319,7 @@ direct(graph *g, int nfixed,
     grouprec *group;
     long ne;
     int i,j,k,j0,j1,deg;
+    int isol0,isol1;  /* isolated vertices before and after nfixed */
     set *gi;
     int lab[MAXNV],ptn[MAXNV],orbits[MAXNV];
     set active[(MAXNV+WORDSIZE-1)/WORDSIZE];
@@ -320,23 +328,30 @@ direct(graph *g, int nfixed,
 
     j0 = -1;  /* last vertex with degree 0 */
     j1 = n;   /* first vertex with degree > 0 */
+    isol0 = isol1 = 0;
  
     ne = 0;
     for (i = 0, gi = g; i < n; ++i, gi += m)
     {
 	deg = 0;
 	for (j = 0; j < m; ++j) deg += POPCOUNT(gi[j]);
-	if (deg == 0) lab[++j0] = i;
-	else          lab[--j1] = i;
+	if (deg == 0)
+	{
+	    lab[++j0] = i;
+	    if (i < nfixed) ++isol0; else ++isol1;
+	}
+	else
+            lab[--j1] = i;
 	ne += deg;
     }
     ne /= 2;
+    ntisol = (isol0 >= 2 || isol1 >= 2);
 
     me = (2*ne + WORDSIZE - 1) / WORDSIZE;
     if (me == 0) me = 1;
     EMPTYSET(x,me);
 
-    if (ne == 0 && minarcs <= 0)
+    if (ne == 0 && minarcs <= 0 && (!Vswitch || ntisol))
     {
 	trythisone(NULL,0,n);
 	return;
@@ -388,6 +403,8 @@ direct(graph *g, int nfixed,
     else
 	groupsize = 0;
 
+    if (Vswitch && groupsize == 1 && !ntisol) return;
+
     group = groupptr(FALSE);
     makecosetreps(group);
 
@@ -434,17 +451,12 @@ main(int argc, char *argv[])
 	FILE *infile;
 	char msg[201];
         int msglen;
-#if MAXN
-	graph h[MAXN*MAXM];
-#else
-	DYNALLSTAT(graph,h,h_sz);
-#endif
 
 	HELP;
 
 	nauty_check(WORDSIZE,1,1,NAUTYVERSIONID);
 
-	Tswitch = Gswitch = fswitch = FALSE;
+	Tswitch = Gswitch = fswitch = Vswitch = FALSE;
 	uswitch = eswitch = oswitch = qswitch = FALSE;
 	infilename = outfilename = NULL;
 
@@ -464,6 +476,7 @@ main(int argc, char *argv[])
 		    else SWBOOLEAN('u',uswitch)
 		    else SWBOOLEAN('T',Tswitch)
 		    else SWBOOLEAN('G',Gswitch)
+		    else SWBOOLEAN('V',Vswitch)
 		    else SWINT('f',fswitch,nfixed,"directg -f")
 		    else SWRANGE('e',":-",eswitch,minarcs,maxarcs,"directg -e")
 		    else badargs = TRUE;
@@ -508,8 +521,10 @@ main(int argc, char *argv[])
 	    if (oswitch) CATMSG0("o");
 	    if (uswitch) CATMSG0("u");
 	    if (Tswitch) CATMSG0("T");
+	    if (Gswitch) CATMSG0("G");
+	    if (Vswitch) CATMSG0("V");
 	    if (fswitch) CATMSG1("f%d",nfixed);
-	    if (eswitch) CATMSG2("e%d:%d",minarcs,maxarcs);
+	    if (eswitch) CATMSG2("e%ld:%ld",minarcs,maxarcs);
 	    msglen = strlen(msg);
             if (argnum > 0) msglen += strlen(infilename);
             if (argnum > 1) msglen += strlen(outfilename);

@@ -45,7 +45,8 @@ char *argv[];
 	boolean loop,unsymm,compl,triangle;
 	char *infilename,*outfilename;
 	FILE *infile,*outfile;
-	long nin,ii;
+	long ii;
+	unsigned long nin;
 	char s[10];
 #if MAXN
 	graph g[MAXN*MAXM];
@@ -176,8 +177,7 @@ char *argv[];
 		if (s[0] == '0' || s[0] == '1') ungetc(s[0],infile);
 		m = (n + WORDSIZE - 1) / WORDSIZE;
 	
-		for (ii = (long)m*n; --ii >= 0;)
-		    g[ii] = 0;
+		for (ii = (long)m*n; --ii >= 0;) g[ii] = 0;
 
 		loop = unsymm = FALSE;
                 triangle = (s[0] == 't') || (s[0] == 'T');
@@ -229,10 +229,10 @@ char *argv[];
 		}
 
 		if (loop) fprintf(stderr,
-                       ">E amtog: warning, loop in graph %ld\n",nin);
+                       ">E amtog: warning, loop in graph %lu\n",nin);
 
 		if (unsymm) fprintf(stderr,
-		       ">E amtog: warning, graph %ld is unsymmetric\n",nin);
+		       ">E amtog: warning, graph %lu is unsymmetric\n",nin);
 	
 		if (outcode == SPARSE6) writes6(outfile,g,m,n);
 		else                    writeg6(outfile,g,m,n);
@@ -249,7 +249,7 @@ char *argv[];
 	}
 
 	if (!qswitch)
-	    fprintf(stderr,">Z  %d graphs converted from %s to %s.\n",
+	    fprintf(stderr,">Z  %lu graphs converted from %s to %s.\n",
 			   nin,infilename,outfilename);
 
 	exit(0);

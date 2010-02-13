@@ -250,7 +250,7 @@ contract1(graph *g, graph *h, int v, int w, int n)
 
 /**************************************************************************/
 
-static int knm[16][16];  /* knm[n,m] = conncontent(K_n - m*K_2) */
+static int knm[18][16];  /* knm[n,m] = conncontent(K_n - m*K_2) */
 static boolean knm_computed = FALSE;
 
 int

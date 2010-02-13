@@ -224,7 +224,9 @@ it is necessary to check they are correct.
 *                   - add declarations of extra_autom and extra_level        *
 *       10-Dec-06 : - BIGNAUTY is gone!  Now permutation=shortish=int.       *
 *                     NAUTY_INFINITY only depends on whether sizeof(int)=2.  *
-*                     
+*       27-Jun-08 : - define nauty_counter and LONG_LONG_COUNTERS            *
+*       30-Jun-08 : - declare version 2.4                                    *
+*                                                                            *
 *    nauty.h.  Generated from nauty-h.in by configure.
 *                                                                            *
 *****************************************************************************/
@@ -378,6 +380,14 @@ typedef unsigned long long setword;
 #endif
 
 #endif /* NAUTY_IN_MAGMA else */
+
+#if SIZEOF_LONG_LONG>=8 && SIZEOF_LONG==4
+typedef unsigned long long nauty_counter;
+#define LONG_LONG_COUNTERS 1
+#else
+typedef unsigned long nauty_counter;
+#define LONG_LONG_COUNTERS 0
+#endif
 
 #if WORDSIZE==16
 #define NAUTYVERSION "2.4 (16 bits)"
@@ -573,7 +583,7 @@ typedef unsigned long long setword;
 #endif
 
 /* POPCOUNT(x) = number of 1-bits in a setword x
-   POPCOUNT(x) = number of first 1-bit in non-zero setword (0..WORDSIZE-1)
+   FIRSTBIT(x) = number of first 1-bit in non-zero setword (0..WORDSIZE-1)
    BITMASK(x)  = setword whose rightmost WORDSIZE-x-1 (numbered) bits
                  are 1 and the rest 0 (0 <= x < WORDSIZE)
                  (I.e., bits 0..x are unselected and the rest selected.)

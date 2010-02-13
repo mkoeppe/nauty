@@ -611,7 +611,7 @@ int
 targetcell(graph *g, int *lab, int *ptn, int level, int tc_level,
            boolean digraph, int hint, int m, int n)
 {
-	int i,j;
+	int i;
 
         if (hint >= 0 && ptn[hint] > level &&
                          (hint == 0 || ptn[hint-1] <= level))

@@ -387,7 +387,7 @@ allgroup(grouprec *grp, void (*action)(permutation*,int))
 
 /**************************************************************************/
 
-static int
+static void
 groupelts2(levelrec *lr, int n, int level,
     void (*action)(permutation*,int,int*), permutation *before,
     permutation *after, permutation *id, int *abort)

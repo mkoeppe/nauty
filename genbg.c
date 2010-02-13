@@ -1,4 +1,4 @@
-/* genbg.c : version 1.5; B D McKay, Apr 11, 2007. */
+/* genbg.c : version 1.7; B D McKay, Nov 29, 2008. */
 
 /* TODO: consider colour swaps */
 
@@ -93,16 +93,17 @@ PRUNE feature.
 OUTPROC feature.
 
    By defining the C preprocessor variable OUTPROC at compile time
-   (for Unix the syntax is  -DOUTPROC=procname  on the cc command),
-   genbg can be made to call a procedure of your manufacture with each
-   output graph instead of writing anything.  Your procedure needs to
-   have type void and the argument list  (FILE *f, graph *g, int n1, int n2).
-   f is a stream open for writing (in fact, in the current version it
-   is always stdout), g is the graph in nauty format, and n is the number
-   of vertices.  Your procedure can be in a separate file so long as it
-   is linked with genbg.  The global variables nooutput, nautyformat
-   and canonise (all type boolean) can be used to test for the presence
-   of the flags -u, -n and -l, respectively.
+   (for Unix the syntax is -DOUTPROC=procname on the cc command),
+   genbg can be made to call a procedure of your manufacture with
+   each output graph instead of writing anything. Your procedure
+   needs to have type void and the argument list (FILE *f, graph *g,
+   int n1, int n2). f is a stream open for writing (in fact, in the
+   current version it is always stdout), g is the graph in nauty
+   format, and n1,n2 are the numbers of vertices on each side. Your
+   procedure can be in a separate file so long as it is linked with
+   genbg. The global variables nooutput, nautyformat and canonise
+   (all type boolean) can be used to test for the presence of the
+   flags -u, -n and -l, respectively.
 
    For backward compatibility, it is possible to instead define OUTPROC1 to
    be the name of a procedure with argument list  (FILE *f, graph *g, int n).
@@ -116,16 +117,19 @@ INSTRUMENT feature.
 **************************************************************************
 
     Author:   B. D. McKay, Oct 1994.     bdm@cs.anu.edu.au
-              Copyright  B. McKay (1994-2007).  All rights reserved.
+              Copyright  B. McKay (1994-2008).  All rights reserved.
               This software is subject to the conditions and waivers
               detailed in the file nauty.h.
     1 May 2003 : fixed PRUNE feature
    13 Sep 2003 : added Greechie output, all outprocs have n1,n2
     9 Oct 2003 : changed -l to respect partition
    11 Apr 2007 : make >A line more atomic
+   29 Aug 2008 : include PLUGIN insertion
+   29 Nov 2008 : slight improvement of connectivity testing
 
 **************************************************************************/
 
+#define NAUTY_PGM  2   /* 1 = geng, 2 = genbg, 3 = gentourng */
 #undef MAXN
 #define MAXN WORDSIZE
 
@@ -251,6 +255,10 @@ static long a2calls,a2nauty,a2uniq,a2succs;
 
 #ifdef SPLITTEST
 static unsigned long splitcases = 0;
+#endif
+
+#ifdef PLUGIN
+#include PLUGIN
 #endif
 
 /************************************************************************/
@@ -441,20 +449,22 @@ static boolean
 isconnected(graph *g, int n)
 /* test if g is connected */
 {
-        setword seen,expanded,toexpand;
+        setword seen,expanded,toexpand,allbits;
         int i;
 
-        seen = bit[0];
-        expanded = 0;
+        allbits = ALLMASK(n);
 
-        while ((toexpand = (seen & ~expanded)))            /* not == */
-        {
+        expanded = bit[n-1];
+        seen = expanded | g[n-1];
+
+        while (seen != allbits && (toexpand = (seen & ~expanded))) /* not == */
+        {   
             i = FIRSTBIT(toexpand);
             expanded |= bit[i];
             seen |= g[i];
-        }
+        }   
 
-        return  POPCOUNT(seen) == n;
+        return  seen == allbits;
 }
 
 /**************************************************************************/
@@ -1563,7 +1573,7 @@ PLUGIN_SWITCHES
 #ifdef OUTPROC
         outproc = OUTPROC;
 #else
-#ifdef OUTROC1
+#ifdef OUTPROC1
 	outproc = write12;
 #endif
         if (nautyformat)   outproc = writenauty;

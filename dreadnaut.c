@@ -218,7 +218,7 @@ main(int argc, char *argv[])
         char *s1,*s2,*invarprocname;
         int c,d;
         long li;
-	unsigned uli;
+	unsigned long uli;
         set *gp;
         double timebefore,timeafter;
         char filename[200];
