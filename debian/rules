@@ -13,13 +13,13 @@ SONAME=libnauty.so.1d
 	dh $@
 
 override_dh_auto_build:
-	$(MAKE) BUILDSHLIBS=$(SONAME) SONAME=$(SONAME)
+	$(MAKE) SHARED=yes SONAME=$(SONAME)
 
 override_dh_auto_clean:
 	$(MAKE) -f makefile.basic clean
 
 override_dh_auto_install:
-	$(MAKE) SONAME=$(SONAME) DESTDIR=$(CURDIR)/debian/tmp install install-dev install-shlibs
+	$(MAKE) SHARED=yes SONAME=$(SONAME) DESTDIR=$(CURDIR)/debian/tmp install install-dev install-shlibs
 
 override_dh_auto_test:
 ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
