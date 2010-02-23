@@ -1,3 +1,10 @@
+nauty (2.4-2) unstable; urgency=low
+
+  * Fix depends of libnauty-dev to libnauty1d. Thanks to Jan Hauke Rahm
+  for noticing.
+
+ -- David Bremner <bremner@unb.ca>  Tue, 23 Feb 2010 06:44:50 -0400
+
 nauty (2.4-1) unstable; urgency=low
 
   * New upstream version
