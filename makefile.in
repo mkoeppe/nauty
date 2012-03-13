@@ -435,3 +435,5 @@ bigs: gtnauty.o gutil2.o nausparse.o nautil.o naututil.o gtools.o \
 	cp nautaux.o nautauxB.o
 	cp nautinv.o nautinvB.o
 	cp nauty.o nautyB.o
+
+# @edit_msg@

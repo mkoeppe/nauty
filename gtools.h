@@ -20,13 +20,15 @@ used, it is necessary to check they are correct.
 #define POPEN_DEC  1         /* popen() is declared in stdio.h */
 #define FTELL_DEC  1         /* ftell() is declared in stdio.h */
 #define FDOPEN_DEC  1        /* fdopen() is declared in stdio.h */
-#define SORTPROG  "sort"         /* name of sort program */
+#define SORTPROG  "gsort"         /* name of sort program */
+#define SORT_NEWKEY 1  /* if -k is supported */
 #define HAVE_PID_T 1    /* pid_t is defined */
 #define PUTENV_DEC 1   /* putenv() is declared in stdlib.h */
 #define SETENV_DEC 1   /* setenv() is declared in stdlib.h */
 #define HAVE_PUTENV 1   /* putenv() exists */
 #define HAVE_SETENV 1   /* setenv() exists */
 
+/* @edit_msg@ */
 /*==================================================================*/
 
 #ifndef MAXN 
@@ -156,7 +158,7 @@ extern "C" {
 extern void gtools_check(int,int,int,int);
 extern FILE *opengraphfile(char*,int*,boolean,long);
 extern void writeline(FILE*,char*);
-extern char *getline(FILE*);
+extern char *gtools_getline(FILE*);
 extern int graphsize(char*);
 extern void stringcounts(char*,int*,size_t*);
 extern void stringtograph(char*,graph*,int);
@@ -212,5 +214,7 @@ extern boolean is_pipe;
 #ifdef CPUDEFS
 CPUDEFS
 #endif
+
+/* @edit_msg@ */
 
 #endif /* _GTOOLS_H_  */

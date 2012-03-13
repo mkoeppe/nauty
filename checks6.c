@@ -211,7 +211,7 @@ char *argv[];
 	else                maxin = pval2 - pval1 + 1;
 	while (nin < maxin || maxin == NOLIMIT)
 	{
-	    if ((s = getline(infile)) == NULL) break;
+	    if ((s = gtools_getline(infile)) == NULL) break;
 	    ++nin;
 
 	    if (seemsbad(s)) ++nerr;

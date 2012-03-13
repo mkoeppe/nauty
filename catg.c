@@ -1,4 +1,4 @@
-/* catg.c version 1.0; B D McKay, July 2001 */
+/* catg.c version 1.1; B D McKay, Dec 2009 */
 
 #define USAGE "catg [-xv] [infile]..."
 
@@ -22,154 +22,151 @@ openfile_head(char *filename, char **header)
    *header to point to the header string (statically allocated).
    A filename of NULL or "-" means stdin. */
 {
-	int c,i;
-	char *actname;
-	FILE *f;
-	DYNALLSTAT(char,head,head_sz);
+    int c,i;
+    char *actname;
+    FILE *f;
+    DYNALLSTAT(char,head,head_sz);
 
-	if (filename == NULL || strcmp(filename,"-") == 0)
-	{
-	    f = stdin;
-	    actname = "stdin";
-	}
-	else 
-	{
-	    f = fopen(filename,"r");
-	    actname = filename;
-	}
+    if (filename == NULL || strcmp(filename,"-") == 0)
+    {
+        f = stdin;
+        actname = "stdin";
+    }
+    else 
+    {
+        f = fopen(filename,"r");
+        actname = filename;
+    }
 
-	if (f == NULL)
-	{
-	    fprintf(stderr,">E catg: can't open file %s\n",actname);
-	    return NULL;
-	}
+    if (f == NULL)
+    {
+        fprintf(stderr,">E catg: can't open file %s\n",actname);
+        return NULL;
+    }
 
-	DYNALLOC1(char,head,head_sz,100,"catg");
+    DYNALLOC1(char,head,head_sz,100,"catg");
 
-	c = getc(f);
-	if (c == '>')
-	{
-	    i = 0;
-	    head[i++] = c;
+    c = getc(f);
+    if (c == '>')
+    {
+        i = 0;
+        head[i++] = c;
 
-	    c = getc(f);
-	    if (c != '>')
-	    {
-		fprintf(stderr,">E catg: bad header in %s\n",actname);
-		fclose(f);
+        c = getc(f);
+        if (c != '>')
+        {
+            fprintf(stderr,">E catg: bad header in %s\n",actname);
+            fclose(f);
+            return NULL;
+        }
+        head[i++] = c;
+
+        do
+        {
+            c = getc(f);
+            if (c == EOF)
+            {
+                fprintf(stderr,">E catg: bad header in %s\n",actname);
+                fclose(f);
                 return NULL;
             }
+
+            if (i >= head_sz-1)
+                DYNREALLOC(char,head,head_sz,head_sz+100,"catg");
             head[i++] = c;
+        }
+        while (c != '<' || head[i-2] != '<');
 
-	    do
-	    {
-		c = getc(f);
-		if (c == EOF)
-		{
-                    fprintf(stderr,">E catg: bad header in %s\n",actname);
-		    fclose(f);
-                    return NULL;
-                }
+        head[i] = '\0';
+    }
+    else
+        head[0] = '\0';
 
-		if (i >= head_sz-1)
-                    DYNREALLOC(char,head,head_sz,head_sz+100,"catg");
-                head[i++] = c;
-	    }
-	    while (c != '<' || head[i-2] != '<');
+    *header = head;
 
-	    head[i] = '\0';
-	}
-	else
-	    head[0] = '\0';
-
-	*header = head;
-
-	return f;
+    return f;
 }
 
 /***********************************************************************/
 
 int
-main(argc,argv)
-int argc;
-char *argv[];
+main(int argc, char *argv[])
 {
-	char *infilename,*head;
-	FILE *infile;
-	long nin;
-	int nfiles,i,j;
-	char *arg,sw;
-	boolean vswitch,xswitch;
-	boolean badargs;
-	char buff[1024];
-	size_t nr;
-	DYNALLSTAT(char*,filename,filename_sz);
+    char *infilename,*head;
+    FILE *infile;
+    int nfiles,i,j;
+    char *arg,sw;
+    boolean vswitch,xswitch;
+    boolean badargs;
+    char buff[1024];
+    size_t nr;
+    DYNALLSTAT(char*,filename,filename_sz);
 
-	HELP;
+    HELP;
 
-	DYNALLOC1(char*,filename,filename_sz,200,"catg");
+    DYNALLOC1(char*,filename,filename_sz,200,"catg");
 
-	xswitch = vswitch = FALSE;
+    xswitch = vswitch = FALSE;
 
-	nfiles = 0;
-	badargs = FALSE;
-	for (j = 1; !badargs && j < argc; ++j)
-	{
-	    arg = argv[j];
-	    if (arg[0] == '-' && arg[1] != '\0')
-	    {
-		++arg;
-		while (*arg != '\0')
-		{
-		    sw = *arg++;
-		         SWBOOLEAN('v',vswitch)
-		    else SWBOOLEAN('x',xswitch)
-		    else badargs = TRUE;
-		}
-	    }
-	    else
-	    {
-		if (nfiles >= filename_sz)
-		    DYNREALLOC(char*,filename,filename_sz,
-				          filename_sz+200,"catg");
-		filename[nfiles++] = arg;
-	    }
-	}
+    nfiles = 0;
+    badargs = FALSE;
+    for (j = 1; !badargs && j < argc; ++j)
+    {
+        arg = argv[j];
+        if (arg[0] == '-' && arg[1] != '\0')
+        {
+            ++arg;
+            while (*arg != '\0')
+            {
+                sw = *arg++;
+                     SWBOOLEAN('v',vswitch)
+                else SWBOOLEAN('x',xswitch)
+                else badargs = TRUE;
+            }
+        }
+        else
+        {
+            if (nfiles >= filename_sz)
+                DYNREALLOC(char*,filename,filename_sz,
+                                      filename_sz+200,"catg");
+            filename[nfiles++] = arg;
+        }
+    }
 
-	if (badargs)
-	{
-	    fprintf(stderr,">E Usage: %s\n",USAGE);
-	    GETHELP;
-	    exit(1);
-	}
+    if (badargs)
+    {
+        fprintf(stderr,">E Usage: %s\n",USAGE);
+        GETHELP;
+        exit(1);
+    }
 
-	for (i = 0; i < (nfiles == 0 ? 1 : nfiles); ++i)
-	{
-	    infilename = (nfiles == 0 ? NULL : filename[i]);
-	    infile = openfile_head(infilename,&head);
-	    if (infile == NULL) ABORT("catg");
+    for (i = 0; i < (nfiles == 0 ? 1 : nfiles); ++i)
+    {
+        infilename = (nfiles == 0 ? NULL : filename[i]);
+        infile = openfile_head(infilename,&head);
+        if (infile == NULL) ABORT("catg");
 
-	    if (i == 0 && !xswitch) fprintf(stdout,"%s",head);
+        if (i == 0 && !xswitch) fprintf(stdout,"%s",head);
 
-	    while ((nr = fread(buff,1,1024,infile)) > 0)
-	    {
-		fwrite(buff,1,nr,stdout);
-		if (ferror(stdout))
-		{
-		    fprintf(stderr,">E catg: error in writing to stdout\n");
-		    ABORT("catg");
-		}
-	    }
-	    if (ferror(infile))
-	    {
-		fprintf(stderr,">E catg: error in reading from %s\n",
-			infilename == NULL ? "stdin" : infilename);
+        while ((nr = fread(buff,1,1024,infile)) > 0)
+        {
+            fwrite(buff,1,nr,stdout);
+            if (ferror(stdout))
+            {
+                fprintf(stderr,">E catg: error in writing to stdout\n");
                 ABORT("catg");
             }
-	    fclose(infile);
-	}
+        }
+        if (ferror(infile))
+        {
+            fprintf(stderr,">E catg: error in reading from %s\n",
+                    infilename == NULL ? "stdin" : infilename);
+            ABORT("catg");
+        }
+        fclose(infile);
+    }
 
-	if (vswitch)  { }
+    if (vswitch)  { }
 
-	exit(0);
+    exit(0);
 }

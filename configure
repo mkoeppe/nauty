@@ -704,6 +704,7 @@ have_putenv
 have_setenv
 stdio_nolock
 sort_prog
+sort_newparams_ok
 LIBOBJS
 LTLIBOBJS'
 ac_subst_files=''
@@ -7648,6 +7649,16 @@ fi
 done
 test -n "$sort_prog" || sort_prog="no_sort_found"
 
+{ echo "$as_me:$LINENO: checking if sort supports the -k switch" >&5
+echo $ECHO_N "checking if sort supports the -k switch... $ECHO_C" >&6; }
+if { $sort_prog -k 2,3 </dev/null >/dev/null 2>&1 ; } ; then
+   sort_newparams_ok=1
+else
+   sort_newparams_ok=0
+fi
+
+{ echo "$as_me:$LINENO: result: $sort_newparams_ok" >&5
+echo "${ECHO_T}$sort_newparams_ok" >&6; }
 
 ac_config_files="$ac_config_files makefile:makefile.in nauty.h:nauty-h.in naututil.h:naututil-h.in gtools.h:gtools-h.in"
 
@@ -8373,11 +8384,12 @@ have_putenv!$have_putenv$ac_delim
 have_setenv!$have_setenv$ac_delim
 stdio_nolock!$stdio_nolock$ac_delim
 sort_prog!$sort_prog$ac_delim
+sort_newparams_ok!$sort_newparams_ok$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 93; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 94; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

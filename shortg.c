@@ -1,4 +1,4 @@
-/* shortg.c  version 1.9; B D McKay, Jul 29, 2008. */
+/* shortg.c  version 2.0; B D McKay, Jun 2010 */
 
 #define USAGE \
   "shortg [-qvkdu] [-i# -I#:# -K#] [-fxxx] [-Tdir] [infile [outfile]]"
@@ -88,6 +88,7 @@ int pipe(int*);
 FILE *fdopen(int, const char*);
 #endif
 
+#if SORT_NEWKEY == 0
 #define SORTCOMMAND  SORTPROG,SORTPROG,"-u","+0","-1"
 #define VSORTCOMMAND1  SORTPROG,SORTPROG
 #define VSORTCOMMAND2  SORTPROG,SORTPROG,"+0","-1","+2"
@@ -95,6 +96,15 @@ FILE *fdopen(int, const char*);
 #define SORTCOMMANDT  SORTPROG,SORTPROG,"-T",tempdir,"-u","+0","-1"
 #define VSORTCOMMANDT1  SORTPROG,SORTPROG,"-T",tempdir
 #define VSORTCOMMANDT2  SORTPROG,SORTPROG,"-T",tempdir,"+0","-1","+2"
+#else
+#define SORTCOMMAND  SORTPROG,SORTPROG,"-u","-k","1,1"
+#define VSORTCOMMAND1  SORTPROG,SORTPROG
+#define VSORTCOMMAND2  SORTPROG,SORTPROG,"-k","1,1","-k","3"
+
+#define SORTCOMMANDT  SORTPROG,SORTPROG,"-T",tempdir,"-u","-k","1,1"
+#define VSORTCOMMANDT1  SORTPROG,SORTPROG,"-T",tempdir
+#define VSORTCOMMANDT2  SORTPROG,SORTPROG,"-T",tempdir,"-k","1,1","-k","3"
+#endif
 
 static struct invarrec
 {
@@ -222,7 +232,7 @@ fromsort(FILE *f, char **cdstr, char **dstr, nauty_counter *index)
         int j;
         char *s;
 
-	if ((s = getline(f)) == NULL) return FALSE;
+	if ((s = gtools_getline(f)) == NULL) return FALSE;
 
 	*cdstr = s;
         for (j = 0; s[j] != ' ' && s[j] != '\t' && s[j] != '\n'; ++j) {}
