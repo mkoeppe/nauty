@@ -2,7 +2,7 @@
 *                                                                            *
 *  Vertex-invariants source file for nauty 2.4.                              *
 *                                                                            *
-*   Copyright (1989-2007) Brendan McKay.  All rights reserved.               *
+*   Copyright (1989-2010) Brendan McKay.  All rights reserved.               *
 *   Subject to waivers and disclaimers in nauty.h.                           *
 *                                                                            *
 *   CHANGE HISTORY                                                           *
@@ -1307,7 +1307,7 @@ cellcliq(graph *g, int *lab, int *ptn, int level, int numcells, int tvpos,
             }
             wt = invar[lab[cell1]];
             for (iv = cell1; iv <= cell2; ++iv)
-                if (invar[lab[i]] != wt) return;
+                if (invar[lab[iv]] != wt) return;
         }
 }
 
@@ -1403,7 +1403,7 @@ cellind(graph *g, int *lab, int *ptn, int level, int numcells, int tvpos,
             }
             wt = invar[lab[cell1]];
             for (iv = cell1; iv <= cell2; ++iv)
-                if (invar[lab[i]] != wt) return;
+                if (invar[lab[iv]] != wt) return;
         }
 }
 

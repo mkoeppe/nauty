@@ -3,7 +3,7 @@
 * This is the main file for dreadnaut() version 2.4, which is a test-bed     *
 *   for nauty() version 2.4.                                                 *
 *                                                                            *
-*   Copyright (1984-2007) Brendan McKay.  All rights reserved.               *
+*   Copyright (1984-2010) Brendan McKay.  All rights reserved.               *
 *   Subject to the waivers and disclaimers in nauty.h.                       *
 *                                                                            *
 *   CHANGE HISTORY                                                           *

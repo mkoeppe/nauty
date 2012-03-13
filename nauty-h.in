@@ -60,13 +60,13 @@ it is necessary to check they are correct.
 /*****************************************************************************
 *                                                                            *
 *    AUTHOR: Brendan D. McKay                                                *
-*            Computer Science Department                                     *
+*            School of Computer Science                                      *
 *            Australian National University                                  *
 *            Canberra, ACT 0200, Australia                                   *
 *            phone:  +61 2 6125 3845    fax:  +61 2 6125 0010                *
 *            email:  bdm@cs.anu.edu.au                                       *
 *                                                                            *
-*   Copyright (1984-2007) Brendan McKay.  All rights reserved.  Permission   *
+*   Copyright (1984-2010) Brendan McKay.  All rights reserved.  Permission   *
 *   is hereby given for use and/or distribution with the exception of        *
 *   sale for profit or application with nontrivial military significance.    *
 *   You must not remove this copyright notice, and you must document any     *
@@ -226,6 +226,8 @@ it is necessary to check they are correct.
 *                     NAUTY_INFINITY only depends on whether sizeof(int)=2.  *
 *       27-Jun-08 : - define nauty_counter and LONG_LONG_COUNTERS            *
 *       30-Jun-08 : - declare version 2.4                                    *
+*       14-Jun-10 : Maintenance release 2.4r1                                *
+*        7-Aug-10 : Maintenance release 2.4r2                                *
 *                                                                            *
 *    @configure_input@
 *                                                                            *

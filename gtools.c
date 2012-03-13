@@ -366,27 +366,23 @@ writeline(FILE *f, char *s)
 }
 
 /*********************************************************************/
-/* The canonical name for this function is getline(), but this can be
-   changed at compile time to avoid conflict with the GNU function of
-   that name.
-*/
 
 char*
-getline(FILE *f)     /* read a line with error checking */
+gtools_getline(FILE *f)     /* read a line with error checking */
 /* includes \n (if present) and \0.  Immediate EOF causes NULL return. */
 {
     DYNALLSTAT(char,s,s_sz);
     int c;
     long i;
 
-    DYNALLOC1(char,s,s_sz,5000,"getline");
+    DYNALLOC1(char,s,s_sz,5000,"gtools_getline");
 
     FLOCKFILE(f);
     i = 0;
     while ((c = GETC(f)) != EOF && c != '\n')
     {
         if (i == s_sz-3)
-            DYNREALLOC(char,s,s_sz,3*(s_sz/2)+10000,"getline");
+            DYNREALLOC(char,s,s_sz,3*(s_sz/2)+10000,"gtools_getline");
         s[i++] = c;
     }
     FUNLOCKFILE(f);
@@ -441,7 +437,7 @@ getecline(FILE *f)     /* read an edge_code line */
     DYNALLOC1(unsigned char,s,s_sz,headsize+bodysize,"getecline");
 
     s[0] = c1;
-    if (c1 > 0)
+    if (c1 == 0)
     {
 	s[1] = (sizesize << 4) + edgesize;
 	for (i = 0; i < sizesize; ++i)
@@ -735,7 +731,7 @@ readg(FILE *f, graph *g, int reqm, int *pm, int *pn)
     char *s,*p;
     int m,n;
 
-    if ((readg_line = getline(f)) == NULL) return NULL;
+    if ((readg_line = gtools_getline(f)) == NULL) return NULL;
 
     s = readg_line;
     if (s[0] == ':')
@@ -1018,7 +1014,7 @@ read_sg_loops(FILE *f, sparsegraph *sg, int *nloops)
     char *s,*p;
     int n,loops;
 
-    if ((readg_line = getline(f)) == NULL) return NULL;
+    if ((readg_line = gtools_getline(f)) == NULL) return NULL;
 
     s = readg_line;
     if (s[0] == ':')
@@ -1414,7 +1410,7 @@ writepc_sg(FILE *f, sparsegraph *sg)
 
 #define BEPUT1(x) buff[j++]=(x);
 #define BEPUT2(x) w=(x); buff[j++]=(w>>8)&0xFF; buff[j++]=w&0xff;
-#define BEPUT4(x) w=(x); buff[j++]=(w>>24)&0xFF; buff[j++]=(x>>16)&0xff; \
+#define BEPUT4(x) w=(x); buff[j++]=(w>>24)&0xFF; buff[j++]=(w>>16)&0xff; \
                  buff[j++]=(w>>8)&0xFF; buff[j++]=w&0xff;
 
     n = sg->nv;

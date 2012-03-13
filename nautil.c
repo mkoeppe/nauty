@@ -2,7 +2,7 @@
 *                                                                            *
 *  Auxiliary source file for version 2.4 of nauty.                           *
 *                                                                            *
-*   Copyright (1984-2007) Brendan McKay.  All rights reserved.               *
+*   Copyright (1984-2010) Brendan McKay.  All rights reserved.               *
 *   Subject to waivers and disclaimers in nauty.h.                           *
 *                                                                            *
 *   CHANGE HISTORY                                                           *

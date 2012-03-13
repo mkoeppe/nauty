@@ -35,9 +35,7 @@ extern int labelorg;
 /**************************************************************************/
 
 int
-main(argc,argv)
-int argc;
-char *argv[];
+main(int argc, char *argv[])
 {
 	int m,n,c;
 	int argnum,j,outcode,initorg;
@@ -180,7 +178,8 @@ char *argv[];
                         gt_abort(">E dretog: must have labelorg >= 0\n");
 		}
             }
-	    else if (s[0] == 'g' || s[0] >= '0' && s[0] <= '9' || s[0] == ';')
+	    else if (s[0] == 'g' || (s[0] >= '0' && s[0] <= '9')
+                                                       || s[0] == ';')
 	    {
 		if (n < 0)
 		    gt_abort(">E dretog: g command before n is defined\n");

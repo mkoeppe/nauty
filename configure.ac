@@ -229,6 +229,14 @@ fi
 AC_SUBST(stdio_nolock)
 
 AC_CHECK_PROGS(sort_prog,gsort sort,no_sort_found)
+AC_MSG_CHECKING(if sort supports the -k switch)
+if { $sort_prog -k 2,3 </dev/null >/dev/null 2>&1 ; } ; then
+   sort_newparams_ok=1
+else
+   sort_newparams_ok=0
+fi
+AC_SUBST(sort_newparams_ok)
+AC_MSG_RESULT($sort_newparams_ok)
 
 AC_OUTPUT(makefile:makefile.in nauty.h:nauty-h.in
     naututil.h:naututil-h.in gtools.h:gtools-h.in)
