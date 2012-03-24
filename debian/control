@@ -15,7 +15,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: command line tools to compute graph automorphisms
  nauty (no automorphisms, yes?) is a set of procedures for determining
- the automor- phism group of a vertex-coloured graph. It provides this
+ the automorphism group of a vertex-coloured graph. It provides this
  information in the form of a set of generators, the size of the
  group, and the orbits of the group. It is also able to produce a
  canonically-labelled isomorph of the graph, to assist in isomorphism
