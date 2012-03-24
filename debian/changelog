@@ -1,8 +1,9 @@
 nauty (2.4r2-1) unstable; urgency=low
 
   * New upstream release
+  * Bump standards version to 3.9.3, no changes
 
- -- David Bremner <bremner@debian.org>  Tue, 13 Mar 2012 23:02:17 -0300
+ -- David Bremner <bremner@debian.org>  Fri, 23 Mar 2012 23:18:35 -0300
 
 nauty (2.4-2) unstable; urgency=low
 
