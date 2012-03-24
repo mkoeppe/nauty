@@ -2,7 +2,7 @@ Source: nauty
 Section: non-free/math
 Priority: extra
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
-Uploaders: David Bremner <bremner@unb.ca>
+Uploaders: David Bremner <bremner@debian.org>
 Build-Depends: debhelper (>= 7.0.50), autotools-dev
 Standards-Version: 3.8.4
 Homepage: http://cs.anu.edu.au/~bdm/nauty/
