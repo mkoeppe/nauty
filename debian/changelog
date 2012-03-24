@@ -1,6 +1,9 @@
 nauty (2.4r2-1) unstable; urgency=low
 
   * New upstream release
+    - getline patch is now upstream.
+    - Fix invariants cellinv(). cellcliq().
+    - Fix i/o getecline(), writepc_sg().
   * Bump standards version to 3.9.3, no changes
 
  -- David Bremner <bremner@debian.org>  Fri, 23 Mar 2012 23:18:35 -0300
