@@ -18,6 +18,44 @@ S1=-DMAXN=WORDSIZE -DWORDSIZE=16
 S=-DWORDSIZE=16
 L=-DWORDSIZE=64
 FOURK=-DMAXN=4096
+PICFLAGS=-fPIC
+TESTCFLAGS=-static
+
+NAUTYLIBOBJ= naututil.o nauty.o nautil.o nautinv.o naugraph.o rng.o
+GTLIBOBJ=gtools.o gtnauty.o nausparse.o gutil1.o gutil2.o naugroup.o
+LIBOBJ=${NAUTYLIBOBJ} ${GTLIBOBJ}
+
+SHNAUTYLIBOBJ= naututil.os nauty.os nautil.os nautinv.os naugraph.os rng.os
+SHGTLIBOBJ=gtools.os gtnauty.os nausparse.os gutil1.os gutil2.os naugroup.os
+SHLIBOBJ=${SHNAUTYLIBOBJ} ${SHGTLIBOBJ}
+
+STLIB=libnauty.a
+
+ifeq ($(SHARED),yes)
+SONAME?=libnauty.so.0
+SOMINOR?=.0.0
+SHLIB?=$(SONAME)$(SOMINOR)
+SHLINK?=libnauty.so
+BUILDSHLIBS=$(SONAME) $(SHLIB) $(SHLINK)
+LDFLAGS:=-L. -lnauty  $(LDFLAGS)
+else
+BUILDSHLIBS=
+endif
+
+DESTDIR=
+GTOOLSBIN=copyg listg labelg dretog amtog geng complg shortg showg NRswitchg \
+  biplabg addedgeg deledgeg countg pickg genrang newedgeg catg genbg directg \
+  multig planarg gentourng
+BINARIES=$(GTOOLSBIN) dreadnaut
+
+.SUFFIXES: .os
+.c.os:
+	${CC} -c ${PICFLAGS} ${CFLAGS} -o $@ $<
+
+%.o: %.c
+	${CC} -c ${CFLAGS} -o $@ $<
+
+.PHONY: all nauty libs gtools install clean
 
 all : nauty gtools ;
 
