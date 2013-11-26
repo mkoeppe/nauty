@@ -1,0 +1,59 @@
+Description: debianization
+	Meant to maintain a minimal debian/rules, to fix warnings,
+	to address Debian specific stuff in general.
+Author: Jerome Benoit <calculus@rezozer.net>
+Last-Update: 2013-11-24
+
+--- a/dreadnaut.c
++++ b/dreadnaut.c
+@@ -399,7 +399,11 @@
+ 
+     if (prompt)
+     {
++#ifdef DEBPKGVERSION
++        fprintf(PROMPTFILE, "Dreadnaut (Debian " DEBPKGVERSION ") version %s.\n" ,NAUTYVERSION);
++#else
+         fprintf(PROMPTFILE,"Dreadnaut version %s.\n",NAUTYVERSION);
++#endif
+         fprintf(PROMPTFILE,"> ");
+     }
+ 
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -4,7 +4,6 @@
+ SUBDIRS = nauty
+ 
+ pkginclude_HEADERS = \
+-	nauty.h \
+ 	nautinv.h \
+ 	naurng.h \
+ 	nausparse.h \
+@@ -15,6 +14,10 @@
+ 	gtools.h \
+ 	gutils.h
+ 
++pkgmultiarchincludedir = $(includedir)/$(DEB_HOST_MULTIARCH)/$(PACKAGE)
++pkgmultiarchinclude_HEADERS = \
++	nauty.h
++
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA= nauty.pc
+ 
+@@ -130,7 +133,7 @@
+ 	$(HELP2MAN) \
+ 			-s 1 \
+ 			$(AM_H2MFLAGS) \
+-			-I $(top_srcdir)/man/$*.h2m \
++			-I $(top_srcdir)/debian/man/$*.h2m \
+ 			-n $(if $($*_DESCRIPTION), $($*_DESCRIPTION), "manual page for $*") \
+ 			-o $@ \
+ 		$(top_builddir)/$<
+@@ -183,7 +186,7 @@
+ checks6_DESCRIPTION =       "check a file of graphs and optionally perform corrections"
+ sumlines_DESCRIPTION =      "sum lines matching specified graph formats"
+ 
+-dreadnaut_CPPFLAGS =
++dreadnaut_CPPFLAGS =     -DDEBPKGVERSION=$(DEB_PKG_VERSION)
+ addedgeg_CPPFLAGS =
+ amtog_CPPFLAGS =
+ biplabg_CPPFLAGS =

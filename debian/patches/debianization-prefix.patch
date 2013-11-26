@@ -1,0 +1,432 @@
+Description: debianization: nauty tools suite prefix
+ Prepend nauty- to the names of the nauty tools, named gtools.
+Author: Jerome Benoit <calculus@rezozer.net>
+Last-Update: 2013-11-25
+
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -24,72 +24,72 @@
+ bin_PROGRAMS = \
+ 	dreadnaut \
+ 	\
+-	addedgeg \
+-	amtog \
+-	biplabg \
+-	catg \
+-	complg \
+-	copyg \
+-	countg \
+-	deledgeg \
+-	directg \
+-	dretog \
+-	genbg \
+-	geng \
+-	genrang \
+-	gentourng \
+-	labelg \
+-	linegraphg \
+-	listg \
+-	multig \
+-	newedgeg \
+-	NRswitchg \
+-	pickg \
+-	planarg \
+-	ranlabg \
+-	shortg \
+-	showg \
+-	subdivideg \
+-	watercluster2 \
++	nauty-addedgeg \
++	nauty-amtog \
++	nauty-biplabg \
++	nauty-catg \
++	nauty-complg \
++	nauty-copyg \
++	nauty-countg \
++	nauty-deledgeg \
++	nauty-directg \
++	nauty-dretog \
++	nauty-genbg \
++	nauty-geng \
++	nauty-genrang \
++	nauty-gentourng \
++	nauty-labelg \
++	nauty-linegraphg \
++	nauty-listg \
++	nauty-multig \
++	nauty-newedgeg \
++	nauty-NRswitchg \
++	nauty-pickg \
++	nauty-planarg \
++	nauty-ranlabg \
++	nauty-shortg \
++	nauty-showg \
++	nauty-subdivideg \
++	nauty-watercluster2 \
+ 	\
+-	blisstog \
+-	checks6 \
+-	sumlines
++	nauty-blisstog \
++	nauty-checks6 \
++	nauty-sumlines
+ 
+ man_MANS = \
+ 	dreadnaut.1 \
+ 	\
+-	addedgeg.1 \
+-	amtog.1 \
+-	biplabg.1 \
+-	catg.1 \
+-	complg.1 \
+-	copyg.1 \
+-	countg.1 \
+-	deledgeg.1 \
+-	directg.1 \
+-	dretog.1 \
+-	genbg.1 \
+-	geng.1 \
+-	genrang.1 \
+-	gentourng.1 \
+-	labelg.1 \
+-	linegraphg.1 \
+-	listg.1 \
+-	multig.1 \
+-	newedgeg.1 \
+-	NRswitchg.1 \
+-	pickg.1 \
+-	planarg.1 \
+-	ranlabg.1 \
+-	shortg.1 \
+-	showg.1 \
+-	subdivideg.1 \
+-	watercluster2.1 \
++	nauty-addedgeg.1 \
++	nauty-amtog.1 \
++	nauty-biplabg.1 \
++	nauty-catg.1 \
++	nauty-complg.1 \
++	nauty-copyg.1 \
++	nauty-countg.1 \
++	nauty-deledgeg.1 \
++	nauty-directg.1 \
++	nauty-dretog.1 \
++	nauty-genbg.1 \
++	nauty-geng.1 \
++	nauty-genrang.1 \
++	nauty-gentourng.1 \
++	nauty-labelg.1 \
++	nauty-linegraphg.1 \
++	nauty-listg.1 \
++	nauty-multig.1 \
++	nauty-newedgeg.1 \
++	nauty-NRswitchg.1 \
++	nauty-pickg.1 \
++	nauty-planarg.1 \
++	nauty-ranlabg.1 \
++	nauty-shortg.1 \
++	nauty-showg.1 \
++	nauty-subdivideg.1 \
++	nauty-watercluster2.1 \
+ 	\
+-	blisstog.1 \
+-	checks6.1 \
+-	sumlines.1
++	nauty-blisstog.1 \
++	nauty-checks6.1 \
++	nauty-sumlines.1
+ 
+ lib_LTLIBRARIES = \
+ 	libnauty.la \
+@@ -133,8 +133,8 @@
+ 	$(HELP2MAN) \
+ 			-s 1 \
+ 			$(AM_H2MFLAGS) \
+-			-I $(top_srcdir)/debian/man/$*.h2m \
+-			-n $(if $($*_DESCRIPTION), $($*_DESCRIPTION), "manual page for $*") \
++			-I $(top_srcdir)/debian/man/$(subst nauty-,,$*).h2m \
++			-n $(if $($(subst -,_,$*)_DESCRIPTION), $($(subst -,_,$*)_DESCRIPTION), "manual page for $*") \
+ 			-o $@ \
+ 		$(top_builddir)/$<
+ 
+@@ -154,133 +154,133 @@
+ 
+ ## short descriptions inspired from the basic functions of the programs as described
+ ## in section `Utilities' (15) of the `Nauty and Traces User's Guide' (version 2.5)
+-dreadnaut_DESCRIPTION =     "command line interface to nauty graph isomorphism library"
+-addedgeg_DESCRIPTION =      "add an edge in each possible way"
+-amtog_DESCRIPTION =         "read graphs in matrix format"
+-biplabg_DESCRIPTION =       "label bipartite graphs so the colour classes are contiguous"
+-catg_DESCRIPTION =          "concatenate files of graphs"
+-complg_DESCRIPTION =        "complement graphs"
+-copyg_DESCRIPTION =         "convert format and select subset"
+-countg_DESCRIPTION =        "count graphs according to a variety of properties"
+-deledgeg_DESCRIPTION =      "delete an edge in each possible way"
+-directg_DESCRIPTION =       "generate small digraphs with given underlying graph"
+-dretog_DESCRIPTION =        "read graphs in dreadnaut form"
+-genbg_DESCRIPTION =         "generate small bicoloured graphs"
+-geng_DESCRIPTION =          "generate small graphs"
+-genrang_DESCRIPTION =       "generate random graphs"
+-gentourng_DESCRIPTION =     "generate small tournaments"
+-labelg_DESCRIPTION =        "canonically label graphs"
+-linegraphg_DESCRIPTION =    "compute the linegraphs of a file of graphs"
+-listg_DESCRIPTION =         "display graphs in a variety of forms"
+-multig_DESCRIPTION =        "generate small multigraphs with given underlying graph"
+-newedgeg_DESCRIPTION =      "create new edges from pairs of non-adjacent edges in each possible way"
+-NRswitchg_DESCRIPTION =     "complement vertex edges"
+-pickg_DESCRIPTION =         "select graphs according to a variety of properties"
+-planarg_DESCRIPTION =       "test graphs for planarity and find embeddings or obstructions"
+-ranlabg_DESCRIPTION =       "randomly relabel graphs"
+-shortg_DESCRIPTION =        "remove isomorphs from a file of graphs"
+-showg_DESCRIPTION =         "$(shell printf "%s %s" $(listg_DESCRIPTION) "(stand-alone subset of listg)")"
+-subdivideg_DESCRIPTION =    "compute the subdivision graphs of a file of graphs"
+-watercluster2_DESCRIPTION = "$(shell printf "%s %s" $(directg_DESCRIPTION) "(faster alternative to directg)")"
+-blisstog_DESCRIPTION =      "convert files of graphs in bliss format to stdout in sparse6 format"
+-checks6_DESCRIPTION =       "check a file of graphs and optionally perform corrections"
+-sumlines_DESCRIPTION =      "sum lines matching specified graph formats"
++dreadnaut_DESCRIPTION =           "command line interface to nauty graph isomorphism library"
++nauty_addedgeg_DESCRIPTION =      "add an edge in each possible way"
++nauty_amtog_DESCRIPTION =         "read graphs in matrix format"
++nauty_biplabg_DESCRIPTION =       "label bipartite graphs so the colour classes are contiguous"
++nauty_catg_DESCRIPTION =          "concatenate files of graphs"
++nauty_complg_DESCRIPTION =        "complement graphs"
++nauty_copyg_DESCRIPTION =         "convert format and select subset"
++nauty_countg_DESCRIPTION =        "count graphs according to a variety of properties"
++nauty_deledgeg_DESCRIPTION =      "delete an edge in each possible way"
++nauty_directg_DESCRIPTION =       "generate small digraphs with given underlying graph"
++nauty_dretog_DESCRIPTION =        "read graphs in dreadnaut form"
++nauty_genbg_DESCRIPTION =         "generate small bicoloured graphs"
++nauty_geng_DESCRIPTION =          "generate small graphs"
++nauty_genrang_DESCRIPTION =       "generate random graphs"
++nauty_gentourng_DESCRIPTION =     "generate small tournaments"
++nauty_labelg_DESCRIPTION =        "canonically label graphs"
++nauty_linegraphg_DESCRIPTION =    "compute the linegraphs of a file of graphs"
++nauty_listg_DESCRIPTION =         "display graphs in a variety of forms"
++nauty_multig_DESCRIPTION =        "generate small multigraphs with given underlying graph"
++nauty_newedgeg_DESCRIPTION =      "create new edges from pairs of non-adjacent edges in each possible way"
++nauty_NRswitchg_DESCRIPTION =     "complement vertex edges"
++nauty_pickg_DESCRIPTION =         "select graphs according to a variety of properties"
++nauty_planarg_DESCRIPTION =       "test graphs for planarity and find embeddings or obstructions"
++nauty_ranlabg_DESCRIPTION =       "randomly relabel graphs"
++nauty_shortg_DESCRIPTION =        "remove isomorphs from a file of graphs"
++nauty_showg_DESCRIPTION =         "$(shell printf "%s %s" $(listg_DESCRIPTION) "(stand-alone subset of listg)")"
++nauty_subdivideg_DESCRIPTION =    "compute the subdivision graphs of a file of graphs"
++nauty_watercluster2_DESCRIPTION = "$(shell printf "%s %s" $(directg_DESCRIPTION) "(faster alternative to directg)")"
++nauty_blisstog_DESCRIPTION =      "convert files of graphs in bliss format to stdout in sparse6 format"
++nauty_checks6_DESCRIPTION =       "check a file of graphs and optionally perform corrections"
++nauty_sumlines_DESCRIPTION =      "sum lines matching specified graph formats"
+ 
+ dreadnaut_CPPFLAGS =     -DDEBPKGVERSION=$(DEB_PKG_VERSION)
+-addedgeg_CPPFLAGS =
+-amtog_CPPFLAGS =
+-biplabg_CPPFLAGS =
+-catg_CPPFLAGS =
+-complg_CPPFLAGS =
+-copyg_CPPFLAGS =
+-countg_CPPFLAGS =
+-deledgeg_CPPFLAGS =
+-directg_CPPFLAGS =
+-dretog_CPPFLAGS =
+-genbg_CPPFLAGS =         $(nautyW1_falvour_CPPFLAGS)
+-geng_CPPFLAGS =          $(nautyW1_falvour_CPPFLAGS)
+-genrang_CPPFLAGS =
+-gentourng_CPPFLAGS =     -DMAXN=24
+-labelg_CPPFLAGS =
+-linegraphg_CPPFLAGS =
+-listg_CPPFLAGS =
+-multig_CPPFLAGS =
+-newedgeg_CPPFLAGS =
+-NRswitchg_CPPFLAGS =
+-pickg_CPPFLAGS =
+-planarg_CPPFLAGS =
+-ranlabg_CPPFLAGS =
+-shortg_CPPFLAGS =
+-showg_CPPFLAGS =
+-subdivideg_CPPFLAGS =
+-watercluster2_CPPFLAGS = -DMAXN=32
+-blisstog_CPPFLAGS =      $(ZLIB_CFLAGS)
+-checks6_CPPFLAGS =
+-sumlines_CPPFLAGS =      $(GMP_CFLAGS)
++nauty_addedgeg_CPPFLAGS =
++nauty_amtog_CPPFLAGS =
++nauty_biplabg_CPPFLAGS =
++nauty_catg_CPPFLAGS =
++nauty_complg_CPPFLAGS =
++nauty_copyg_CPPFLAGS =
++nauty_countg_CPPFLAGS =
++nauty_deledgeg_CPPFLAGS =
++nauty_directg_CPPFLAGS =
++nauty_dretog_CPPFLAGS =
++nauty_genbg_CPPFLAGS =         $(nautyW1_falvour_CPPFLAGS)
++nauty_geng_CPPFLAGS =          $(nautyW1_falvour_CPPFLAGS)
++nauty_genrang_CPPFLAGS =
++nauty_gentourng_CPPFLAGS =     -DMAXN=24
++nauty_labelg_CPPFLAGS =
++nauty_linegraphg_CPPFLAGS =
++nauty_listg_CPPFLAGS =
++nauty_multig_CPPFLAGS =
++nauty_newedgeg_CPPFLAGS =
++nauty_NRswitchg_CPPFLAGS =
++nauty_pickg_CPPFLAGS =
++nauty_planarg_CPPFLAGS =
++nauty_ranlabg_CPPFLAGS =
++nauty_shortg_CPPFLAGS =
++nauty_showg_CPPFLAGS =
++nauty_subdivideg_CPPFLAGS =
++nauty_watercluster2_CPPFLAGS = -DMAXN=32
++nauty_blisstog_CPPFLAGS =      $(ZLIB_CFLAGS)
++nauty_checks6_CPPFLAGS =
++nauty_sumlines_CPPFLAGS =      $(GMP_CFLAGS)
+ 
+ dreadnaut_SOURCES = dreadnaut.c
+-addedgeg_SOURCES = addedgeg.c
+-amtog_SOURCES = amtog.c
+-biplabg_SOURCES = biplabg.c
+-catg_SOURCES = catg.c
+-complg_SOURCES = complg.c
+-copyg_SOURCES = copyg.c
+-countg_SOURCES = testg.c
+-deledgeg_SOURCES = deledgeg.c
+-directg_SOURCES = directg.c
+-dretog_SOURCES = dretog.c
+-genbg_SOURCES = genbg.c
+-geng_SOURCES = geng.c
+-genrang_SOURCES = genrang.c
+-gentourng_SOURCES = gentourng.c
+-labelg_SOURCES = labelg.c
+-linegraphg_SOURCES = linegraphg.c
+-listg_SOURCES = listg.c
+-multig_SOURCES = multig.c
+-newedgeg_SOURCES = newedgeg.c
+-NRswitchg_SOURCES = NRswitchg.c
+-pickg_SOURCES = testg.c
+-planarg_SOURCES = planarg.c planarity.c
+-ranlabg_SOURCES = ranlabg.c
+-shortg_SOURCES = shortg.c
+-showg_SOURCES = showg.c
+-subdivideg_SOURCES = subdivideg.c
+-watercluster2_SOURCES = watercluster2.c
+-blisstog_SOURCES = blisstog.c
+-checks6_SOURCES = checks6.c
+-sumlines_SOURCES = sumlines.c
+-
+-dreadnaut_LDADD =     $(NAUTY_LDADD)
+-addedgeg_LDADD =      $(NAUTY_LDADD)
+-amtog_LDADD =         $(NAUTY_LDADD)
+-biplabg_LDADD =       $(NAUTY_LDADD)
+-catg_LDADD =          $(NAUTY_LDADD)
+-complg_LDADD =        $(NAUTY_LDADD)
+-copyg_LDADD =         $(NAUTY_LDADD)
+-countg_LDADD =        $(NAUTY_LDADD)
+-deledgeg_LDADD =      $(NAUTY_LDADD)
+-directg_LDADD =       $(NAUTY_LDADD)
+-dretog_LDADD =        $(NAUTY_LDADD)
+-genbg_LDADD =         $(NAUTYW1_LDADD)
+-geng_LDADD =          $(NAUTYW1_LDADD)
+-genrang_LDADD =       $(NAUTY_LDADD)
+-gentourng_LDADD =     $(NAUTY_LDADD)
+-labelg_LDADD =        $(NAUTY_LDADD)
+-linegraphg_LDADD =    $(NAUTY_LDADD)
+-listg_LDADD =         $(NAUTY_LDADD)
+-multig_LDADD =        $(NAUTY_LDADD)
+-newedgeg_LDADD =      $(NAUTY_LDADD)
+-NRswitchg_LDADD =     $(NAUTY_LDADD)
+-pickg_LDADD =         $(NAUTY_LDADD)
+-planarg_LDADD =       $(NAUTY_LDADD)
+-ranlabg_LDADD =       $(NAUTY_LDADD)
+-shortg_LDADD =        $(NAUTY_LDADD)
+-showg_LDADD =
+-subdivideg_LDADD =    $(NAUTY_LDADD)
+-watercluster2_LDADD = $(NAUTY_LDADD)
+-blisstog_LDADD =      $(NAUTY_LDADD) $(ZLIB_LIBS)
+-checks6_LDADD =       $(NAUTY_LDADD)
+-sumlines_LDADD =      $(GMP_LIBS)
++nauty_addedgeg_SOURCES = addedgeg.c
++nauty_amtog_SOURCES = amtog.c
++nauty_biplabg_SOURCES = biplabg.c
++nauty_catg_SOURCES = catg.c
++nauty_complg_SOURCES = complg.c
++nauty_copyg_SOURCES = copyg.c
++nauty_countg_SOURCES = testg.c
++nauty_deledgeg_SOURCES = deledgeg.c
++nauty_directg_SOURCES = directg.c
++nauty_dretog_SOURCES = dretog.c
++nauty_genbg_SOURCES = genbg.c
++nauty_geng_SOURCES = geng.c
++nauty_genrang_SOURCES = genrang.c
++nauty_gentourng_SOURCES = gentourng.c
++nauty_labelg_SOURCES = labelg.c
++nauty_linegraphg_SOURCES = linegraphg.c
++nauty_listg_SOURCES = listg.c
++nauty_multig_SOURCES = multig.c
++nauty_newedgeg_SOURCES = newedgeg.c
++nauty_NRswitchg_SOURCES = NRswitchg.c
++nauty_pickg_SOURCES = testg.c
++nauty_planarg_SOURCES = planarg.c planarity.c
++nauty_ranlabg_SOURCES = ranlabg.c
++nauty_shortg_SOURCES = shortg.c
++nauty_showg_SOURCES = showg.c
++nauty_subdivideg_SOURCES = subdivideg.c
++nauty_watercluster2_SOURCES = watercluster2.c
++nauty_blisstog_SOURCES = blisstog.c
++nauty_checks6_SOURCES = checks6.c
++nauty_sumlines_SOURCES = sumlines.c
++
++dreadnaut_LDADD =           $(NAUTY_LDADD)
++nauty_addedgeg_LDADD =      $(NAUTY_LDADD)
++nauty_amtog_LDADD =         $(NAUTY_LDADD)
++nauty_biplabg_LDADD =       $(NAUTY_LDADD)
++nauty_catg_LDADD =          $(NAUTY_LDADD)
++nauty_complg_LDADD =        $(NAUTY_LDADD)
++nauty_copyg_LDADD =         $(NAUTY_LDADD)
++nauty_countg_LDADD =        $(NAUTY_LDADD)
++nauty_deledgeg_LDADD =      $(NAUTY_LDADD)
++nauty_directg_LDADD =       $(NAUTY_LDADD)
++nauty_dretog_LDADD =        $(NAUTY_LDADD)
++nauty_genbg_LDADD =         $(NAUTYW1_LDADD)
++nauty_geng_LDADD =          $(NAUTYW1_LDADD)
++nauty_genrang_LDADD =       $(NAUTY_LDADD)
++nauty_gentourng_LDADD =     $(NAUTY_LDADD)
++nauty_labelg_LDADD =        $(NAUTY_LDADD)
++nauty_linegraphg_LDADD =    $(NAUTY_LDADD)
++nauty_listg_LDADD =         $(NAUTY_LDADD)
++nauty_multig_LDADD =        $(NAUTY_LDADD)
++nauty_newedgeg_LDADD =      $(NAUTY_LDADD)
++nauty_NRswitchg_LDADD =     $(NAUTY_LDADD)
++nauty_pickg_LDADD =         $(NAUTY_LDADD)
++nauty_planarg_LDADD =       $(NAUTY_LDADD)
++nauty_ranlabg_LDADD =       $(NAUTY_LDADD)
++nauty_shortg_LDADD =        $(NAUTY_LDADD)
++nauty_showg_LDADD =
++nauty_subdivideg_LDADD =    $(NAUTY_LDADD)
++nauty_watercluster2_LDADD = $(NAUTY_LDADD)
++nauty_blisstog_LDADD =      $(NAUTY_LDADD) $(ZLIB_LIBS)
++nauty_checks6_LDADD =       $(NAUTY_LDADD)
++nauty_sumlines_LDADD =      $(GMP_LIBS)
+ 
+ libnauty_la_LD_VERSION_SCRIPT =
+ libnautyA1_la_MAP =
+--- a/runalltests
++++ b/runalltests
+@@ -30,7 +30,7 @@
+ eval $cmd <"$in" 2>$out2 >$out1
+ 
+ if [ -d $top_workingdir/.libs ]; then
+-   sed -i 's@'$top_workingdir'/.libs/lt-@./@' $out2
++   sed -i 's@'$top_workingdir'/.libs/lt-nauty-@./@' $out2
+ fi
+ 
+ LC_COLLATE=C sort $out2 >>$out1
+@@ -82,9 +82,9 @@
+ runonetest ./dreadtest4K nautest2.dre nautest2a.ans
+ runonetest "./dreadtest4K -o As" nautest2.dre nautest2b.ans
+ 
+-runonetest "./geng -ud1D7t 11" "" nautesta.ans
+-runonetest "./geng -cd1f 10 | ./labelg -q" "" nautestb.ans
+-runonetest "./genrang -r3 114 100 | ./countg --nedDr -q | sed '/^:/d'" "" nautestc.ans
++runonetest "./nauty-geng -ud1D7t 11" "" nautesta.ans
++runonetest "./nauty-geng -cd1f 10 | ./nauty-labelg -q" "" nautestb.ans
++runonetest "./nauty-genrang -r3 114 100 | ./nauty-countg --nedDr -q | sed '/^:/d'" "" nautestc.ans
+ 
+ echo
+ echo "${0##*/}: $fails test(s) failed over $tdx tests"

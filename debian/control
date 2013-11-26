@@ -2,48 +2,115 @@ Source: nauty
 Section: non-free/math
 Priority: extra
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
-Uploaders: David Bremner <bremner@debian.org>
-Build-Depends: debhelper (>= 7.0.50), autotools-dev
-Standards-Version: 3.9.3
-Homepage: http://cs.anu.edu.au/~bdm/nauty/
-Vcs-Git: git://git.debian.org/git/debian-science/packages/nauty.git
-Vcs-Browser: http://git.debian.org/?p=debian-science/packages/nauty.git
-XS-Autobuild: yes
+Uploaders: Jerome Benoit <calculus@rezozer.net>
+Build-Depends:
+ debhelper (>= 9), autotools-dev, libtool, dh-autoreconf, pkg-config, help2man,
+ zlib1g-dev, libgmp-dev
+Standards-Version: 3.9.4
+Homepage: http://pallini.di.uniroma1.it
+Vcs-Git: git://anonscm.debian.org/debian-science/packages/nauty.git
+Vcs-Browser: http://anonscm.debian.org/?p=debian-science/packages/nauty.git
+
+Package: libnauty2
+Provides: libnauty
+Section: non-free/libs
+Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Conflicts: libnauty
+Suggests: nauty (=${binary:Version}), nauty-doc
+Multi-Arch: same
+Description: library for graph automorphisms -- library package
+ nauty (No AUTomorphisms, Yes?) is a set of procedures for computing
+ automorphism groups of graphs and digraphs. This mathematical software
+ suite is developed by Brendan McKay and Adolfo Piperno:
+ http://pallini.di.uniroma1.it
+ .
+ nauty computes graph information in the form of a set of generators,
+ the size of the group, and the orbits of the group; it can also
+ produce a canonical label. The nauty suite is written in C and comes
+ with a command-line interface, a collection of command-line tools,
+ and an Application Programming Interface (API).
+ .
+ This package provides the shared libraries required to run programs
+ compiled against the nauty library. To compile your own programs you
+ also need to install the libnauty2-dev package.
 
 Package: nauty
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: command line tools to compute graph automorphisms
- nauty (no automorphisms, yes?) is a set of procedures for determining
- the automorphism group of a vertex-coloured graph. It provides this
- information in the form of a set of generators, the size of the
- group, and the orbits of the group. It is also able to produce a
- canonically-labelled isomorph of the graph, to assist in isomorphism
- testing.  This package provides the main command line tool dreadnaut,
- and some utilities ('gtools').  A C API is also available.
+Depends: libnauty2 (=${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Suggests: nauty-doc
+Description: library for graph automorphisms -- interface and tools
+ nauty (No AUTomorphisms, Yes?) is a set of procedures for computing
+ automorphism groups of graphs and digraphs. This mathematical software
+ suite is developed by Brendan McKay and Adolfo Piperno:
+ http://pallini.di.uniroma1.it
+ .
+ nauty computes graph information in the form of a set of generators,
+ the size of the group, and the orbits of the group; it can also
+ produce a canonical label. The nauty suite is written in C and comes
+ with a command-line interface, a collection of command-line tools,
+ and an Application Programming Interface (API).
+ .
+ This package provides the nauty interface named dreadnaut, and a
+ small collection of utilities called gtools.
 
-Package: libnauty1d
-Architecture: any 
-Section: non-free/libs
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: library to compute graph automorphisms and canonical labellings
- nauty (no automorphisms, yes?) is a set of procedures for determining
- the automorphism group of a vertex-coloured graph. It provides this
- information in the form of a set of generators, the size of the
- group, and the orbits of the group. It is also able to produce a
- canonically-labelled isomorph of the graph, to assist in isomorphism
- testing.  
-
-Package: libnauty-dev
-Architecture: any 
+Package: libnauty2-dev
+Provides: libnauty-dev
 Section: non-free/libdevel
-Depends: ${shlibs:Depends}, ${misc:Depends}, libnauty1d (= ${binary:Version}) 
-Description: library for computing graph automorphisms (development files)
- nauty (no automorphisms, yes?) is a set of procedures for determining
- the automorphism group of a vertex-coloured graph. It provides this
- information in the form of a set of generators, the size of the
- group, and the orbits of the group. It is also able to produce a
- canonically-labelled isomorph of the graph, to assist in isomorphism
- testing.  This package provides a C API.
+Architecture: any
+Depends: libnauty2 (= ${binary:Version}), ${misc:Depends}
+Conflicts: libnauty-dev
+Suggests: nauty-doc, pkg-config
+Multi-Arch: same
+Description: library for graph automorphisms -- development package
+ nauty (No AUTomorphisms, Yes?) is a set of procedures for computing
+ automorphism groups of graphs and digraphs. This mathematical software
+ suite is developed by Brendan McKay and Adolfo Piperno:
+ http://pallini.di.uniroma1.it
+ .
+ nauty computes graph information in the form of a set of generators,
+ the size of the group, and the orbits of the group; it can also
+ produce a canonical label. The nauty suite is written in C and comes
+ with a command-line interface, a collection of command-line tools,
+ and an Application Programming Interface (API).
+ .
+ This package contains the header files, static libraries and symbolic
+ links that developers using the nauty API will need.
 
+Package: libnauty2-dbg
+Provides: libnauty-dbg
+Section: non-free/debug
+Architecture: any
+Depends: libnauty2 (=${binary:Version}), ${misc:Depends}
+Conflicts: libnauty-dbg
+Multi-Arch: same
+Description: library for graph automorphisms -- debug symbols package
+ nauty (No AUTomorphisms, Yes?) is a set of procedures for computing
+ automorphism groups of graphs and digraphs. This mathematical software
+ suite is developed by Brendan McKay and Adolfo Piperno:
+ http://pallini.di.uniroma1.it
+ .
+ nauty computes graph information in the form of a set of generators,
+ the size of the group, and the orbits of the group; it can also
+ produce a canonical label. The nauty suite is written in C and comes
+ with a command-line interface, a collection of command-line tools,
+ and an Application Programming Interface (API).
+ .
+ This package provides debugging symbols for the libraries from
+ the libnauty2-dev package.
 
+Package: nauty-doc
+Section: non-free/doc
+Architecture: all
+Depends: ${misc:Depends}
+Suggests: libnauty2 (=${binary:Version}), nauty (=${binary:Version}), libnauty2-dev (=${binary:Version}), pdf-viewer
+Multi-Arch: foreign
+Description: library for graph automorphisms -- user guide
+ nauty (No AUTomorphisms, Yes?) is a set of procedures for computing
+ automorphism groups of graphs and digraphs. This mathematical software
+ suite is developed by Brendan McKay and Adolfo Piperno:
+ http://pallini.di.uniroma1.it
+ .
+ This package provides the user guide for the nauty mathematical software
+ suite; it also contains examples and extra technical documentations.

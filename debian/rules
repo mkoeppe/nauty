@@ -1,27 +1,23 @@
 #!/usr/bin/make -f
-# -*- makefile -*-
 
-# Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+DEB_PKG_DIR = $(abspath $(dir $(MAKEFILE_LIST)))
+export DEB_PKG_VERSION = "\"$(shell dpkg-parsechangelog -l$(DEB_PKG_DIR)/changelog | sed -n -e '/^Version:/s/Version: //p')\""
+export DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
-# use wildcard to avoid warning from dh
-include $(wildcard /usr/share/topgit/tg2quilt.mk)
-
-SONAME=libnauty.so.1d
+default:
+	@uscan --no-conf --dehs --report || true
 
 %:
-	dh $@
+	dh $@ --with autoreconf
 
-override_dh_auto_build:
-	$(MAKE) SHARED=yes SONAME=$(SONAME)
+override_dh_auto_configure:
+	dh_auto_configure -- --enable-clz --enable-tls --disable-ansicontrols
 
-override_dh_auto_clean:
-	$(MAKE) -f makefile.basic clean
+override_dh_installchangelogs:
+	dh_installchangelogs --keep changes24-25.txt
 
-override_dh_auto_install:
-	$(MAKE) SHARED=yes SONAME=$(SONAME) DESTDIR=$(CURDIR)/debian/tmp install install-dev install-shlibs
+override_dh_strip:
+	dh_strip --dbg-package=libnauty2-dbg
 
-override_dh_auto_test:
-ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
-	make checks
-endif
+get-orig-source:
+	uscan --no-conf --download-current-version --verbose

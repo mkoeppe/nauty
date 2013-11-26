@@ -1,0 +1,3 @@
+[SYNOPSIS]
+.B shortg
+[\fI\-qvkdu\fR] [\fI\-i# \-I#:# \-K#\fR] [\fI\-fxxx\fR] [\fI\-S|\-t\fR] [\fI\-Tdir\fR] [\fIinfile \fR[\fIoutfile\fR]]

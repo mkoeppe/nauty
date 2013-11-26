@@ -1,0 +1,1429 @@
+Description: upstream autotoolization
+ Attempt to autotoolize nauty source.
+Origin: debian
+Author: Jerome Benoit <calculus@rezozer.net>
+Last-Update: 2013-11-22
+
+--- a/configure.ac
++++ b/configure.ac
+@@ -1,5 +1,22 @@
+ dnl Process this file with autoconf to produce a configure script.
+-AC_INIT(dreadnaut.c)
++AC_INIT([nauty],[2.5.6],[bdm@cs.anu.edu.au],[nauty],[http://pallini.di.uniroma1.it/])
++AC_CONFIG_MACRO_DIR([m4])
++AC_CONFIG_AUX_DIR([autotool])
++AC_CONFIG_SRCDIR([dreadnaut.c])
++AC_CONFIG_HEADER([nauty/nauty_config.h])
++AM_INIT_AUTOMAKE([foreign])
++AM_MAINTAINER_MODE
++
++LIBNAUTY_VERSION_MAJOR=${PACKAGE_VERSION%%.*}
++LIBNAUTY_VERSION_MINOR=${PACKAGE_VERSION#*.}
++LIBNAUTY_VERSION_MINOR=${LIBNAUTY_VERSION_MINOR%%.*}
++LIBNAUTY_VERSION_MICRO=${PACKAGE_VERSION##*.}
++LIBNAUTY_LT_VERSION="$(expr ${LIBNAUTY_VERSION_MAJOR} + ${LIBNAUTY_VERSION_MINOR}):${LIBNAUTY_VERSION_MICRO}:${LIBNAUTY_VERSION_MINOR}"
++
++AC_SUBST(LIBNAUTY_VERSION_MAJOR)
++AC_SUBST(LIBNAUTY_VERSION_MINOR)
++AC_SUBST(LIBNAUTY_VERSION_MICRO)
++AC_SUBST(LIBNAUTY_LT_VERSION)
+ 
+ AC_DEFUN([AX_TLS], [
+   AC_MSG_CHECKING(for thread local storage (TLS) class)
+@@ -58,74 +75,81 @@
+ dnl Checks for system features
+ AC_CANONICAL_HOST
+ 
+-dnl Checks for C compiler and sets CFLAGS if not set by user
+-user_cflags="$CFLAGS"
++AC_PATH_PROG([HELP2MAN],[help2man])
+ AC_PROG_CC
+-CFLAGS=$user_cflags
++AC_PROG_INSTALL
++AC_PROG_LN_S
++AC_PROG_MAKE_SET
++LT_INIT
++
++dnl dnl Checks for C compiler and sets CFLAGS if not set by user
++dnl user_cflags="$CFLAGS"
++dnl AC_PROG_CC
++dnl CFLAGS=$user_cflags
+ MORECFLAGS=""
+ dnl  we need  AC_SYS_LARGEFILE and AC_FUNC_FSEEKO
+ AC_SYS_LARGEFILE
+ AC_SUBST(ac_cv_sys_file_offset_bits)
+ 
+-if test x"$user_cflags" = x"" -o x"$user_cflags" = x-m32 ; then
+-  AC_TRY_CFLAGS([-O4],[CFLAGS="$CFLAGS -O4"]);
+-  if test x"$ac_cv_try_cflags_ok" = x"no"; then
+-     AC_TRY_CFLAGS([-O3],[CFLAGS="$CFLAGS -O3"]);
+-     if test x"$ac_cv_try_cflags_ok" = x"no"; then
+-         AC_TRY_CFLAGS([-O2],[CFLAGS="$CFLAGS -O2"],[CFLAGS="$CFLAGS -O"]);
+-     fi
+-  fi
+- 
+-  if test "$CC" = "gcc" ; then
+-      gccver=`gcc --version 2>/dev/null || echo 0.0.0`
+-  else
+-      gccver=0.0.0
+-  fi
+-
+-  case "$host" in
+-   *i686-apple-darwin*)
+-	AC_TRY_CFLAGS([-fast],[CFLAGS="$MORECFLAGS -fast"]);;
+-   *pentium*solaris*)
+-	;;
+-   *pentium4*)
+-	AC_TRY_CFLAGS([-march=pentium4],[CFLAGS="$CFLAGS -march=pentium4"]);;
+-   *pentium3*|*i686*|*athlon*|x86*)
+-	AC_TRY_CFLAGS([-march=i686],[CFLAGS="$CFLAGS -march=i686"]);;
+-   *pentium2*|*i586*)
+-	AC_TRY_CFLAGS([-march=i586],[CFLAGS="$CFLAGS -march=i586"]);;
+-   *powerpc*)
+-        machtype=`/usr/bin/machine 2>/dev/null || echo unknown`
+-        case "$machtype" in
+-	  ppc740?)
+-	     AC_TRY_CFLAGS([-mcpu=7400],[CFLAGS="$CFLAGS -mcpu=7400"])
+-	     AC_TRY_CFLAGS([-mtune=7400],[CFLAGS="$CFLAGS -mtune=7400"]);;
+-	  ppc745?)
+-	     AC_TRY_CFLAGS([-mcpu=7450],[CFLAGS="$CFLAGS -mcpu=7450"])
+-	     AC_TRY_CFLAGS([-mtune=7450],[CFLAGS="$CFLAGS -mtune=7450"])
+-             case "$gccver" in
+-               *\ 4.[[0-9]].[[0-9]]\ *)
+-	           AC_TRY_CFLAGS([$CFLAGS -fast],
+-			[MORECFLAGS="$MORECFLAGS -fast"]);;
+-             esac;;
+-	  ppc970)
+-	     AC_TRY_CFLAGS([-mcpu=g5],[CFLAGS="$CFLAGS -mcpu=g5"])
+-	     AC_TRY_CFLAGS([-mtune=g5],[CFLAGS="$CFLAGS -mtune=g5"])
+-	     AC_TRY_CFLAGS([-fast],[CFLAGS="$MORECFLAGS -fast"]);;
+-          *)
+-	     AC_TRY_CFLAGS([-mpowerpc],[CFLAGS="$CFLAGS -mpowerpc"]);;
+-        esac;;
+-   *osf*)
+-	AC_TRY_CFLAGS([-fast],[CFLAGS="$CFLAGS -fast"]);;
+-   *sparcv8*|*sparcv9*)
+-	AC_TRY_CFLAGS([-msupersparc],[CFLAGS="$CFLAGS -msupersparc"])
+-	if test x"$ac_cv_try_cflags_ok" = x"no"; then
+-	    AC_TRY_CFLAGS([-cg92],[CFLAGS="$CFLAGS -cg92"])
+-	    if test x"$ac_cv_try_cflags_ok" = x"no"; then
+-		AC_TRY_CFLAGS([-xcg92],[CFLAGS="$CFLAGS -xcg92"])
+-	    fi
+-	fi;;
+-  esac
+-fi
++dnl if test x"$user_cflags" = x"" -o x"$user_cflags" = x-m32 ; then
++dnl   AC_TRY_CFLAGS([-O4],[CFLAGS="$CFLAGS -O4"]);
++dnl   if test x"$ac_cv_try_cflags_ok" = x"no"; then
++dnl      AC_TRY_CFLAGS([-O3],[CFLAGS="$CFLAGS -O3"]);
++dnl      if test x"$ac_cv_try_cflags_ok" = x"no"; then
++dnl          AC_TRY_CFLAGS([-O2],[CFLAGS="$CFLAGS -O2"],[CFLAGS="$CFLAGS -O"]);
++dnl      fi
++dnl   fi
++dnl
++dnl   if test "$CC" = "gcc" ; then
++dnl       gccver=`gcc --version 2>/dev/null || echo 0.0.0`
++dnl   else
++dnl       gccver=0.0.0
++dnl   fi
++dnl
++dnl   case "$host" in
++dnl    *i686-apple-darwin*)
++dnl 	AC_TRY_CFLAGS([-fast],[CFLAGS="$MORECFLAGS -fast"]);;
++dnl    *pentium*solaris*)
++dnl 	;;
++dnl    *pentium4*)
++dnl 	AC_TRY_CFLAGS([-march=pentium4],[CFLAGS="$CFLAGS -march=pentium4"]);;
++dnl    *pentium3*|*i686*|*athlon*|x86*)
++dnl 	AC_TRY_CFLAGS([-march=i686],[CFLAGS="$CFLAGS -march=i686"]);;
++dnl    *pentium2*|*i586*)
++dnl 	AC_TRY_CFLAGS([-march=i586],[CFLAGS="$CFLAGS -march=i586"]);;
++dnl    *powerpc*)
++dnl         machtype=`/usr/bin/machine 2>/dev/null || echo unknown`
++dnl         case "$machtype" in
++dnl 	  ppc740?)
++dnl 	     AC_TRY_CFLAGS([-mcpu=7400],[CFLAGS="$CFLAGS -mcpu=7400"])
++dnl	      AC_TRY_CFLAGS([-mtune=7400],[CFLAGS="$CFLAGS -mtune=7400"]);;
++dnl 	  ppc745?)
++dnl 	     AC_TRY_CFLAGS([-mcpu=7450],[CFLAGS="$CFLAGS -mcpu=7450"])
++dnl 	     AC_TRY_CFLAGS([-mtune=7450],[CFLAGS="$CFLAGS -mtune=7450"])
++dnl              case "$gccver" in
++dnl                *\ 4.[[0-9]].[[0-9]]\ *)
++dnl 	           AC_TRY_CFLAGS([$CFLAGS -fast],
++dnl 			[MORECFLAGS="$MORECFLAGS -fast"]);;
++dnl              esac;;
++dnl 	  ppc970)
++dnl 	     AC_TRY_CFLAGS([-mcpu=g5],[CFLAGS="$CFLAGS -mcpu=g5"])
++dnl 	     AC_TRY_CFLAGS([-mtune=g5],[CFLAGS="$CFLAGS -mtune=g5"])
++dnl 	     AC_TRY_CFLAGS([-fast],[CFLAGS="$MORECFLAGS -fast"]);;
++dnl           *)
++dnl 	     AC_TRY_CFLAGS([-mpowerpc],[CFLAGS="$CFLAGS -mpowerpc"]);;
++dnl        esac;;
++dnl     *osf*)
++dnl 	AC_TRY_CFLAGS([-fast],[CFLAGS="$CFLAGS -fast"]);;
++dnl    *sparcv8*|*sparcv9*)
++dnl 	AC_TRY_CFLAGS([-msupersparc],[CFLAGS="$CFLAGS -msupersparc"])
++dnl 	if test x"$ac_cv_try_cflags_ok" = x"no"; then
++dnl	     AC_TRY_CFLAGS([-cg92],[CFLAGS="$CFLAGS -cg92"])
++dnl	     if test x"$ac_cv_try_cflags_ok" = x"no"; then
++dnl 		AC_TRY_CFLAGS([-xcg92],[CFLAGS="$CFLAGS -xcg92"])
++dnl 	    fi
++dnl 	fi;;
++dnl   esac
++dnl fi
+ 
+ echo CFLAGS=$CFLAGS
+ echo MORECFLAGS=$MORECFLAGS
+@@ -363,6 +387,24 @@
+ edit_msg="++++++ This file is automatically generated, don't edit it by hand! ++++++"
+ AC_SUBST(edit_msg)
+ 
+-AC_OUTPUT(makefile:makefile.in nauty.h:nauty-h.in
+-    naututil.h:naututil-h.in gtools.h:gtools-h.in)
++dnl Checks for linker script support
++gl_LD_VERSION_SCRIPT
++
++dnl Checks for libraries
++## pkg-config
++PKG_PROG_PKG_CONFIG
++## zlib Library (zlib)
++AM_PATH_ZLIB(1.2.7,[],[AC_MSG_WARN([could not find required version of zlib])])
++## GNU MultiPrecision arithmetic library (GMP)
++AM_PATH_GMP(5.1.2,[],[AC_MSG_WARN([could not find required version of GMP])])
++
++AC_CONFIG_FILES([
++	nauty.pc
++	Makefile
++	nauty/Makefile
++	nauty.h:nauty-h.in
++	naututil.h:naututil-h.in
++	gtools.h:gtools-h.in
++	])
+ 
++AC_OUTPUT
+--- /dev/null
++++ b/Makefile.am
+@@ -0,0 +1,416 @@
++AUTOMAKE_OPTIONS = foreign
++ACLOCAL_AMFLAGS = -I m4
++
++SUBDIRS = nauty
++
++pkginclude_HEADERS = \
++	nauty.h \
++	nautinv.h \
++	naurng.h \
++	nausparse.h \
++	naututil.h \
++	naugroup.h \
++	schreier.h \
++	traces.h \
++	gtools.h \
++	gutils.h
++
++pkgconfigdir = $(libdir)/pkgconfig
++pkgconfig_DATA= nauty.pc
++
++bin_PROGRAMS = \
++	dreadnaut \
++	\
++	addedgeg \
++	amtog \
++	biplabg \
++	catg \
++	complg \
++	copyg \
++	countg \
++	deledgeg \
++	directg \
++	dretog \
++	genbg \
++	geng \
++	genrang \
++	gentourng \
++	labelg \
++	linegraphg \
++	listg \
++	multig \
++	newedgeg \
++	NRswitchg \
++	pickg \
++	planarg \
++	ranlabg \
++	shortg \
++	showg \
++	subdivideg \
++	watercluster2 \
++	\
++	blisstog \
++	checks6 \
++	sumlines
++
++man_MANS = \
++	dreadnaut.1 \
++	\
++	addedgeg.1 \
++	amtog.1 \
++	biplabg.1 \
++	catg.1 \
++	complg.1 \
++	copyg.1 \
++	countg.1 \
++	deledgeg.1 \
++	directg.1 \
++	dretog.1 \
++	genbg.1 \
++	geng.1 \
++	genrang.1 \
++	gentourng.1 \
++	labelg.1 \
++	linegraphg.1 \
++	listg.1 \
++	multig.1 \
++	newedgeg.1 \
++	NRswitchg.1 \
++	pickg.1 \
++	planarg.1 \
++	ranlabg.1 \
++	shortg.1 \
++	showg.1 \
++	subdivideg.1 \
++	watercluster2.1 \
++	\
++	blisstog.1 \
++	checks6.1 \
++	sumlines.1
++
++lib_LTLIBRARIES = \
++	libnauty.la \
++	libnautyA1.la \
++	libnautyS0.la \
++	libnautyW0.la \
++	libnautyL0.la \
++	libnautyS1.la \
++	libnautyW1.la \
++	libnautyL1.la
++
++check_PROGRAMS = \
++	dreadtest \
++	dreadtest1 \
++	dreadtestS \
++	dreadtestW \
++	dreadtestL \
++	dreadtestS1 \
++	dreadtestW1 \
++	dreadtestL1 \
++	dreadtest4K \
++	naucompare
++
++TESTS = runalltests
++
++AM_CPPFLAGS =
++AM_CFLAGS =
++AM_LDFLAGS =
++LDADD =
++
++NAUTY_LDADD =   $(top_builddir)/libnauty.la $(threadlib)
++NAUTYW1_LDADD = $(top_builddir)/libnautyW1.la $(threadlib)
++
++AM_H2MFLAGS = \
++	--manual="Nauty Manual" \
++	--version-string="$(PACKAGE_VERSION)" \
++	--source="nauty $(PACKAGE_VERSION)" \
++	--no-info
++
++%.1: %
++	$(HELP2MAN) \
++			-s 1 \
++			$(AM_H2MFLAGS) \
++			-I $(top_srcdir)/man/$*.h2m \
++			-n $(if $($*_DESCRIPTION), $($*_DESCRIPTION), "manual page for $*") \
++			-o $@ \
++		$(top_builddir)/$<
++
++%.map: $(top_srcdir)/nauty.map
++	$(SED) -e 's#LIBNAUTY_#LIBNAUTY'$(subst nauty,,$*)'_#' $< > $@
++
++##
++#nauty_falvour_CPPFLAGS =
++nautyA1_falvour_CPPFLAGS = -DMAXN=WORDSIZE
++nautyS0_falvour_CPPFLAGS = -DWORDSIZE=16
++nautyS1_falvour_CPPFLAGS = $(nautyA1_falvour_CPPFLAGS) $(nautyS0_falvour_CPPFLAGS)
++nautyW0_falvour_CPPFLAGS = -DWORDSIZE=32
++nautyW1_falvour_CPPFLAGS = $(nautyA1_falvour_CPPFLAGS) $(nautyW0_falvour_CPPFLAGS)
++nautyL0_falvour_CPPFLAGS = -DWORDSIZE=64
++nautyL1_falvour_CPPFLAGS = $(nautyA1_falvour_CPPFLAGS) $(nautyL0_falvour_CPPFLAGS)
++
++
++## short descriptions inspired from the basic functions of the programs as described
++## in section `Utilities' (15) of the `Nauty and Traces User's Guide' (version 2.5)
++dreadnaut_DESCRIPTION =     "command line interface to nauty graph isomorphism library"
++addedgeg_DESCRIPTION =      "add an edge in each possible way"
++amtog_DESCRIPTION =         "read graphs in matrix format"
++biplabg_DESCRIPTION =       "label bipartite graphs so the colour classes are contiguous"
++catg_DESCRIPTION =          "concatenate files of graphs"
++complg_DESCRIPTION =        "complement graphs"
++copyg_DESCRIPTION =         "convert format and select subset"
++countg_DESCRIPTION =        "count graphs according to a variety of properties"
++deledgeg_DESCRIPTION =      "delete an edge in each possible way"
++directg_DESCRIPTION =       "generate small digraphs with given underlying graph"
++dretog_DESCRIPTION =        "read graphs in dreadnaut form"
++genbg_DESCRIPTION =         "generate small bicoloured graphs"
++geng_DESCRIPTION =          "generate small graphs"
++genrang_DESCRIPTION =       "generate random graphs"
++gentourng_DESCRIPTION =     "generate small tournaments"
++labelg_DESCRIPTION =        "canonically label graphs"
++linegraphg_DESCRIPTION =    "compute the linegraphs of a file of graphs"
++listg_DESCRIPTION =         "display graphs in a variety of forms"
++multig_DESCRIPTION =        "generate small multigraphs with given underlying graph"
++newedgeg_DESCRIPTION =      "create new edges from pairs of non-adjacent edges in each possible way"
++NRswitchg_DESCRIPTION =     "complement vertex edges"
++pickg_DESCRIPTION =         "select graphs according to a variety of properties"
++planarg_DESCRIPTION =       "test graphs for planarity and find embeddings or obstructions"
++ranlabg_DESCRIPTION =       "randomly relabel graphs"
++shortg_DESCRIPTION =        "remove isomorphs from a file of graphs"
++showg_DESCRIPTION =         "$(shell printf "%s %s" $(listg_DESCRIPTION) "(stand-alone subset of listg)")"
++subdivideg_DESCRIPTION =    "compute the subdivision graphs of a file of graphs"
++watercluster2_DESCRIPTION = "$(shell printf "%s %s" $(directg_DESCRIPTION) "(faster alternative to directg)")"
++blisstog_DESCRIPTION =      "convert files of graphs in bliss format to stdout in sparse6 format"
++checks6_DESCRIPTION =       "check a file of graphs and optionally perform corrections"
++sumlines_DESCRIPTION =      "sum lines matching specified graph formats"
++
++dreadnaut_CPPFLAGS =
++addedgeg_CPPFLAGS =
++amtog_CPPFLAGS =
++biplabg_CPPFLAGS =
++catg_CPPFLAGS =
++complg_CPPFLAGS =
++copyg_CPPFLAGS =
++countg_CPPFLAGS =
++deledgeg_CPPFLAGS =
++directg_CPPFLAGS =
++dretog_CPPFLAGS =
++genbg_CPPFLAGS =         $(nautyW1_falvour_CPPFLAGS)
++geng_CPPFLAGS =          $(nautyW1_falvour_CPPFLAGS)
++genrang_CPPFLAGS =
++gentourng_CPPFLAGS =     -DMAXN=24
++labelg_CPPFLAGS =
++linegraphg_CPPFLAGS =
++listg_CPPFLAGS =
++multig_CPPFLAGS =
++newedgeg_CPPFLAGS =
++NRswitchg_CPPFLAGS =
++pickg_CPPFLAGS =
++planarg_CPPFLAGS =
++ranlabg_CPPFLAGS =
++shortg_CPPFLAGS =
++showg_CPPFLAGS =
++subdivideg_CPPFLAGS =
++watercluster2_CPPFLAGS = -DMAXN=32
++blisstog_CPPFLAGS =      $(ZLIB_CFLAGS)
++checks6_CPPFLAGS =
++sumlines_CPPFLAGS =      $(GMP_CFLAGS)
++
++dreadnaut_SOURCES = dreadnaut.c
++addedgeg_SOURCES = addedgeg.c
++amtog_SOURCES = amtog.c
++biplabg_SOURCES = biplabg.c
++catg_SOURCES = catg.c
++complg_SOURCES = complg.c
++copyg_SOURCES = copyg.c
++countg_SOURCES = testg.c
++deledgeg_SOURCES = deledgeg.c
++directg_SOURCES = directg.c
++dretog_SOURCES = dretog.c
++genbg_SOURCES = genbg.c
++geng_SOURCES = geng.c
++genrang_SOURCES = genrang.c
++gentourng_SOURCES = gentourng.c
++labelg_SOURCES = labelg.c
++linegraphg_SOURCES = linegraphg.c
++listg_SOURCES = listg.c
++multig_SOURCES = multig.c
++newedgeg_SOURCES = newedgeg.c
++NRswitchg_SOURCES = NRswitchg.c
++pickg_SOURCES = testg.c
++planarg_SOURCES = planarg.c planarity.c
++ranlabg_SOURCES = ranlabg.c
++shortg_SOURCES = shortg.c
++showg_SOURCES = showg.c
++subdivideg_SOURCES = subdivideg.c
++watercluster2_SOURCES = watercluster2.c
++blisstog_SOURCES = blisstog.c
++checks6_SOURCES = checks6.c
++sumlines_SOURCES = sumlines.c
++
++dreadnaut_LDADD =     $(NAUTY_LDADD)
++addedgeg_LDADD =      $(NAUTY_LDADD)
++amtog_LDADD =         $(NAUTY_LDADD)
++biplabg_LDADD =       $(NAUTY_LDADD)
++catg_LDADD =          $(NAUTY_LDADD)
++complg_LDADD =        $(NAUTY_LDADD)
++copyg_LDADD =         $(NAUTY_LDADD)
++countg_LDADD =        $(NAUTY_LDADD)
++deledgeg_LDADD =      $(NAUTY_LDADD)
++directg_LDADD =       $(NAUTY_LDADD)
++dretog_LDADD =        $(NAUTY_LDADD)
++genbg_LDADD =         $(NAUTYW1_LDADD)
++geng_LDADD =          $(NAUTYW1_LDADD)
++genrang_LDADD =       $(NAUTY_LDADD)
++gentourng_LDADD =     $(NAUTY_LDADD)
++labelg_LDADD =        $(NAUTY_LDADD)
++linegraphg_LDADD =    $(NAUTY_LDADD)
++listg_LDADD =         $(NAUTY_LDADD)
++multig_LDADD =        $(NAUTY_LDADD)
++newedgeg_LDADD =      $(NAUTY_LDADD)
++NRswitchg_LDADD =     $(NAUTY_LDADD)
++pickg_LDADD =         $(NAUTY_LDADD)
++planarg_LDADD =       $(NAUTY_LDADD)
++ranlabg_LDADD =       $(NAUTY_LDADD)
++shortg_LDADD =        $(NAUTY_LDADD)
++showg_LDADD =
++subdivideg_LDADD =    $(NAUTY_LDADD)
++watercluster2_LDADD = $(NAUTY_LDADD)
++blisstog_LDADD =      $(NAUTY_LDADD) $(ZLIB_LIBS)
++checks6_LDADD =       $(NAUTY_LDADD)
++sumlines_LDADD =      $(GMP_LIBS)
++
++libnauty_la_LD_VERSION_SCRIPT =
++libnautyA1_la_MAP =
++libnautyA1_la_LD_VERSION_SCRIPT =
++libnautyS0_la_MAP =
++libnautyS0_la_LD_VERSION_SCRIPT =
++libnautyS1_la_MAP =
++libnautyS1_la_LD_VERSION_SCRIPT =
++libnautyW0_la_MAP =
++libnautyW0_la_LD_VERSION_SCRIPT =
++libnautyW1_la_MAP =
++libnautyW1_la_LD_VERSION_SCRIPT =
++libnautyL0_la_MAP =
++libnautyL0_la_LD_VERSION_SCRIPT =
++libnautyL1_la_MAP =
++libnautyL1_la_LD_VERSION_SCRIPT =
++if HAVE_LD_VERSION_SCRIPT
++libnauty_la_LD_VERSION_SCRIPT += -Wl,--version-script=$(top_srcdir)/nauty.map
++libnautyA1_la_MAP += nautyA1.map
++libnautyA1_la_LD_VERSION_SCRIPT += -Wl,--version-script=$(top_builddir)/$(libnautyA1_la_MAP)
++libnautyS0_la_MAP += nautyS0.map
++libnautyS0_la_LD_VERSION_SCRIPT += -Wl,--version-script=$(top_builddir)/$(libnautyS0_la_MAP)
++libnautyS1_la_MAP += nautyS1.map
++libnautyS1_la_LD_VERSION_SCRIPT += -Wl,--version-script=$(top_builddir)/$(libnautyS1_la_MAP)
++libnautyW0_la_MAP += nautyW0.map
++libnautyW0_la_LD_VERSION_SCRIPT += -Wl,--version-script=$(top_builddir)/$(libnautyW0_la_MAP)
++libnautyW1_la_MAP += nautyW1.map
++libnautyW1_la_LD_VERSION_SCRIPT += -Wl,--version-script=$(top_builddir)/$(libnautyW1_la_MAP)
++libnautyL0_la_MAP += nautyL0.map
++libnautyL0_la_LD_VERSION_SCRIPT += -Wl,--version-script=$(top_builddir)/$(libnautyL0_la_MAP)
++libnautyL1_la_MAP += nautyL1.map
++libnautyL1_la_LD_VERSION_SCRIPT += -Wl,--version-script=$(top_builddir)/$(libnautyL1_la_MAP)
++endif
++
++libnauty_la_LIBADD = $(threadlib)
++libnauty_la_LDFLAGS = -version-info $(LIBNAUTY_LT_VERSION) $(libnauty_la_LD_VERSION_SCRIPT)
++
++libnauty_la_SOURCES = \
++	nauty.c \
++	nautil.c \
++	nausparse.c \
++	naugraph.c \
++	naurng.c \
++	schreier.c \
++	traces.c \
++	gtools.c \
++	naututil.c \
++	nautinv.c \
++	gutil1.c \
++	gutil2.c \
++	gtnauty.c \
++	naugroup.c
++
++libnautyA1_la_DEPENDENCIES = $(libnautyA1_la_MAP)
++libnautyA1_la_CPPFLAGS = $(nautyA1_falvour_CPPFLAGS)
++libnautyA1_la_LIBADD = $(threadlib)
++libnautyA1_la_LDFLAGS = -version-info $(LIBNAUTY_LT_VERSION) $(libnautyA1_la_LD_VERSION_SCRIPT)
++libnautyA1_la_SOURCES =$(libnauty_la_SOURCES)
++
++libnautyS0_la_DEPENDENCIES = $(libnautyS0_la_MAP)
++libnautyS0_la_CPPFLAGS = $(nautyS0_falvour_CPPFLAGS)
++libnautyS0_la_LIBADD = $(threadlib)
++libnautyS0_la_LDFLAGS = -version-info $(LIBNAUTY_LT_VERSION) $(libnautyS0_la_LD_VERSION_SCRIPT)
++libnautyS0_la_SOURCES =$(libnauty_la_SOURCES)
++
++libnautyS1_la_DEPENDENCIES = $(libnautyS1_la_MAP)
++libnautyS1_la_CPPFLAGS = $(nautyS1_falvour_CPPFLAGS)
++libnautyS1_la_LIBADD = $(threadlib)
++libnautyS1_la_LDFLAGS = -version-info $(LIBNAUTY_LT_VERSION) $(libnautyS1_la_LD_VERSION_SCRIPT)
++libnautyS1_la_SOURCES =$(libnauty_la_SOURCES)
++
++libnautyW0_la_DEPENDENCIES = $(libnautyW0_la_MAP)
++libnautyW0_la_CPPFLAGS = $(nautyW0_falvour_CPPFLAGS)
++libnautyW0_la_LIBADD = $(threadlib)
++libnautyW0_la_LDFLAGS = -version-info $(LIBNAUTY_LT_VERSION) $(libnautyW0_la_LD_VERSION_SCRIPT)
++libnautyW0_la_SOURCES =$(libnauty_la_SOURCES)
++
++libnautyW1_la_DEPENDENCIES = $(libnautyW1_la_MAP)
++libnautyW1_la_CPPFLAGS = $(nautyW1_falvour_CPPFLAGS)
++libnautyW1_la_LIBADD = $(threadlib)
++libnautyW1_la_LDFLAGS = -version-info $(LIBNAUTY_LT_VERSION) $(libnautyW1_la_LD_VERSION_SCRIPT)
++libnautyW1_la_SOURCES =$(libnauty_la_SOURCES)
++
++libnautyL0_la_DEPENDENCIES = $(libnautyL0_la_MAP)
++libnautyL0_la_CPPFLAGS = $(nautyL0_falvour_CPPFLAGS)
++libnautyL0_la_LIBADD = $(threadlib)
++libnautyL0_la_LDFLAGS = -version-info $(LIBNAUTY_LT_VERSION) $(libnautyL0_la_LD_VERSION_SCRIPT)
++libnautyL0_la_SOURCES =$(libnauty_la_SOURCES)
++
++libnautyL1_la_DEPENDENCIES = $(libnautyL1_la_MAP)
++libnautyL1_la_CPPFLAGS = $(nautyL1_falvour_CPPFLAGS)
++libnautyL1_la_LIBADD = $(threadlib)
++libnautyL1_la_LDFLAGS = -version-info $(LIBNAUTY_LT_VERSION) $(libnautyL1_la_LD_VERSION_SCRIPT)
++libnautyL1_la_SOURCES =$(libnauty_la_SOURCES)
++
++dreadtest_CPPFLAGS =   $(dreadnaut_CPPFLAGS) -DDREADTEST
++dreadtest1_CPPFLAGS =  $(dreadtest_CPPFLAGS) $(nautyA1_falvour_CPPFLAGS)
++dreadtestS_CPPFLAGS =  $(dreadtest_CPPFLAGS) $(nautyS0_falvour_CPPFLAGS)
++dreadtestS1_CPPFLAGS = $(dreadtest_CPPFLAGS) $(nautyS1_falvour_CPPFLAGS)
++dreadtestW_CPPFLAGS =  $(dreadtest_CPPFLAGS) $(nautyW0_falvour_CPPFLAGS)
++dreadtestW1_CPPFLAGS = $(dreadtest_CPPFLAGS) $(nautyW1_falvour_CPPFLAGS)
++dreadtestL_CPPFLAGS =  $(dreadtest_CPPFLAGS) $(nautyL0_falvour_CPPFLAGS)
++dreadtestL1_CPPFLAGS = $(dreadtest_CPPFLAGS) $(nautyL1_falvour_CPPFLAGS)
++dreadtest4K_CPPFLAGS = $(dreadtest_CPPFLAGS) -DMAXN=4096
++
++dreadtest_SOURCES =   $(dreadnaut_SOURCES)
++dreadtest1_SOURCES =  $(dreadnaut_SOURCES)
++dreadtestS1_SOURCES = $(dreadnaut_SOURCES)
++dreadtestS_SOURCES =  $(dreadnaut_SOURCES)
++dreadtestW_SOURCES =  $(dreadnaut_SOURCES)
++dreadtestW1_SOURCES = $(dreadnaut_SOURCES)
++dreadtestL_SOURCES =  $(dreadnaut_SOURCES)
++dreadtestL1_SOURCES = $(dreadnaut_SOURCES)
++dreadtest4K_SOURCES = $(dreadnaut_SOURCES) $(libnauty_la_SOURCES)
++
++dreadtest_LDADD =   $(NAUTY_LDADD)
++dreadtest1_LDADD =  $(top_builddir)/libnautyA1.la $(threadlib)
++dreadtestS_LDADD =  $(top_builddir)/libnautyS0.la $(threadlib)
++dreadtestS1_LDADD = $(top_builddir)/libnautyS1.la $(threadlib)
++dreadtestW_LDADD =  $(top_builddir)/libnautyW0.la $(threadlib)
++dreadtestW1_LDADD = $(top_builddir)/libnautyW1.la $(threadlib)
++dreadtestL_LDADD =  $(top_builddir)/libnautyL0.la $(threadlib)
++dreadtestL1_LDADD = $(top_builddir)/libnautyL1.la $(threadlib)
++dreadtest4K_LDADD = $(threadlib)
++
++CLEANFILES = \
++	$(man_MANS) \
++	$(libnautyA1_la_MAP) \
++	$(libnautyS0_la_MAP) \
++	$(libnautyS1_la_MAP) \
++	$(libnautyW0_la_MAP) \
++	$(libnautyW1_la_MAP) \
++	$(libnautyL0_la_MAP) \
++	$(libnautyL1_la_MAP) \
++	runtest-*.data \
++	runtest-*.atad
+--- /dev/null
++++ b/m4/ld-version-script.m4
+@@ -0,0 +1,53 @@
++# ld-version-script.m4 serial 3
++dnl Copyright (C) 2008-2012 Free Software Foundation, Inc.
++dnl This file is free software; the Free Software Foundation
++dnl gives unlimited permission to copy and/or distribute it,
++dnl with or without modifications, as long as this notice is preserved.
++
++dnl From Simon Josefsson
++
++# FIXME: The test below returns a false positive for mingw
++# cross-compiles, 'local:' statements does not reduce number of
++# exported symbols in a DLL.  Use --disable-ld-version-script to work
++# around the problem.
++
++# gl_LD_VERSION_SCRIPT
++# --------------------
++# Check if LD supports linker scripts, and define automake conditional
++# HAVE_LD_VERSION_SCRIPT if so.
++AC_DEFUN([gl_LD_VERSION_SCRIPT],
++[
++  AC_ARG_ENABLE([ld-version-script],
++    AS_HELP_STRING([--enable-ld-version-script],
++      [enable linker version script (default is enabled when possible)]),
++      [have_ld_version_script=$enableval], [])
++  if test -z "$have_ld_version_script"; then
++    AC_MSG_CHECKING([if LD -Wl,--version-script works])
++    save_LDFLAGS="$LDFLAGS"
++    LDFLAGS="$LDFLAGS -Wl,--version-script=conftest.map"
++    cat > conftest.map <<EOF
++foo
++EOF
++    AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
++                   [accepts_syntax_errors=yes], [accepts_syntax_errors=no])
++    if test "$accepts_syntax_errors" = no; then
++      cat > conftest.map <<EOF
++VERS_1 {
++        global: sym;
++};
++
++VERS_2 {
++        global: sym;
++} VERS_1;
++EOF
++      AC_LINK_IFELSE([AC_LANG_PROGRAM([], [])],
++                     [have_ld_version_script=yes], [have_ld_version_script=no])
++    else
++      have_ld_version_script=no
++    fi
++    rm -f conftest.map
++    LDFLAGS="$save_LDFLAGS"
++    AC_MSG_RESULT($have_ld_version_script)
++  fi
++  AM_CONDITIONAL(HAVE_LD_VERSION_SCRIPT, test "$have_ld_version_script" = "yes")
++])
+--- a/runalltests
++++ b/runalltests
+@@ -1,12 +1,16 @@
+ #!/bin/sh
+ # Run all nauty checks
+ 
++top_workingdir=$(pwd)
++
++tdx=0
++
+ runonetest() {
+ cmd="$1"
+ in="$2"
+ ok="$3"
+ printf "%s %s %s  " "$cmd" "$in" "$ok"
+- 
++
+ if [ "X$in" = "X" ] ; then
+    in=/dev/null
+ elif [ ! -r "$in" ] ; then
+@@ -19,10 +23,16 @@
+    exit 1
+ fi
+ 
+-out1=`mktemp runtest.XXXXXX`
+-out2=`mktemp runtest.XXXXXX`
++tdx=`expr $tdx + 1`
++out1=`printf "runtest-%02d.data" $tdx`
++out2=`printf "runtest-%02d.atad" $tdx`
+ 
+ eval $cmd <"$in" 2>$out2 >$out1
++
++if [ -d $top_workingdir/.libs ]; then
++   sed -i 's@'$top_workingdir'/.libs/lt-@./@' $out2
++fi
++
+ LC_COLLATE=C sort $out2 >>$out1
+ if ./naucompare "$out1" "$ok" ; then
+    rm $out1 $out2
+@@ -74,7 +84,9 @@
+ 
+ runonetest "./geng -ud1D7t 11" "" nautesta.ans
+ runonetest "./geng -cd1f 10 | ./labelg -q" "" nautestb.ans
+-runonetest "./genrang -r3 114 100 | ./countg --nedDr -q" "" nautestc.ans
++runonetest "./genrang -r3 114 100 | ./countg --nedDr -q | sed '/^:/d'" "" nautestc.ans
++
++echo
++echo "${0##*/}: $fails test(s) failed over $tdx tests"
+ 
+-echo " "
+-echo $fails tests failed
++exit $fails
+--- /dev/null
++++ b/nauty.map
+@@ -0,0 +1,247 @@
++LIBNAUTY_2.5 {
++global:
++## nauty.h
++labelorg;
++alloc_error;
++breakout;
++cheapautom;
++doref;
++extra_autom;
++extra_level;
++isautom;
++dispatch_graph;
++itos;
++fmperm;
++fmptn;
++longprune;
++nauty;
++maketargetcell;
++nextelement;
++orbjoin;
++permset;
++putstring;
++refine;
++refine1;
++shortprune;
++targetcell;
++testcanlab;
++updatecan;
++writeperm;
++nauty_freedyn;
++nauty_check;
++naugraph_check;
++nautil_check;
++nautil_freedyn;
++naugraph_freedyn;
++densenauty;
++writegroupsize;
++## nautinv.h
++adjacencies;
++adjtriang;
++cellcliq;
++cellfano;
++cellfano2;
++cellind;
++cellquads;
++cellquins;
++celltrips;
++cellstarts;
++cliques;
++distances;
++getbigcells;
++indsets;
++nautinv_check;
++nautinv_freedyn;
++quadruples;
++refinvar;
++setnbhd;
++triples;
++twopaths;
++## naurng.h
++ran_init;
++ran_nextran;
++## nausparse.h
++dispatch_sparse;
++targetcell_sg;
++cheapautom_sg;
++distvals;
++isautom_sg;
++refine_sg;
++testcanlab_sg;
++updatecan_sg;
++testcanlab_tr;
++comparelab_tr;
++updatecan_tr;
++init_sg;
++nausparse_freedyn;
++nausparse_check;
++nauty_to_sg;
++sg_to_nauty;
++sortlists_sg;
++aresame_sg;
++put_sg;
++copy_sg;
++sparsenauty;
++adjacencies_sg;
++distances_sg;
++## naututil.h
++complement;
++converse;
++converse_sg;
++copycomment;
++complement_sg;
++flushline;
++fixit;
++getint;
++hash;
++hashgraph;
++hashgraph_sg;
++individualise;
++listhash;
++mathon;
++mathon_sg;
++naututil_check;
++naututil_freedyn;
++putcanon;
++putcanon_sg;
++putdegs;
++putdegs_sg;
++putgraph;
++putgraph_sg;
++putmapping;
++putorbits;
++putorbitsplus;
++putptn;
++putquotient;
++putquotient_sg;
++putset;
++putset_firstbold;
++rangraph;
++rangraph2;
++rangraph2_sg;
++ranreg_sg;
++ranperm;
++readgraph;
++readgraph_sg;
++readinteger;
++readperm;
++readptn;
++readvperm;
++readstring;
++relabel;
++relabel_sg;
++sethash;
++setinter;
++setsize;
++sublabel;
++sublabel_sg;
++unitptn;
++## naugroup.h
++freepermrec;
++groupptr;
++newpermrec;
++groupautomproc;
++grouplevelproc;
++makecosetreps;
++permcycles;
++allgroup;
++allgroup2;
++## schreier.h
++freeschreier;
++addpermutation;
++findpermutation;
++addgenerator;
++condaddgenerator;
++expandschreier;
++getorbits;
++getorbitsmin;
++pruneset;
++newgroup;
++schreier_freedyn;
++schreier_fails;
++dumpschreier;
++schreier_gens;
++deleteunmarked;
++grouporder;
++schreier_check;
++## traces.h
++Traces;
++refine_tr;
++traces_freedyn;
++## gtools.h
++gtools_check;
++opengraphfile;
++writeline;
++gtools_getline;
++graphsize;
++stringcounts;
++stringtograph;
++edgecount;
++readg;
++ntog6;
++ntos6;
++sgtos6;
++sgtog6;
++writeg6;
++writes6;
++writeg6_sg;
++writes6_sg;
++writepc_sg;
++stringtosparsegraph;
++read_sg;
++read_sg_loops;
++readpc_sg;
++readpcle_sg;
++getecline;
++writelast;
++longval;
++arg_int;
++arg_long;
++arg_range;
++writerange;
++gt_abort;
++stringcopy;
++strhaschar;
++fcanonise;
++fcanonise_inv;
++fcanonise_inv_sg;
++fgroup;
++fgroup_inv;
++istransitive;
++tg_canonise;
++readg_code;
++readg_line;
++ogf_linelen;
++is_pipe;
++gt_numorbits;
++## gutils.h
++degstats;
++diamstats;
++find_dist;
++find_dist2;
++girth;
++isbiconnected1;
++isbiconnected;
++isbipartite;
++twocolouring;
++isconnected1;
++isconnected;
++issubconnected;
++maxcliques;
++delete1;
++conncontent;
++loopcount;
++pathcount1;
++cyclecount1;
++cyclecount;
++indpathcount1;
++indcyclecount1;
++indcyclecount;
++commonnbrs;
++contract1;
++cstarcontent;
++numtriangles1;
++numtriangles;
++
++local: *;
++};
+--- /dev/null
++++ b/m4/gmp.m4
+@@ -0,0 +1,168 @@
++dnl Configure paths for GMP
++dnl Based on macros by Owen Taylor.
++dnl Hans Petter Jansson     2001-04-29
++dnl Modified slightly by Allin Cottrell, April 2003
++dnl modified by Jerome Benoit <calculus@rezozer.net> 2013/11/26
++
++dnl AM_PATH_GMP([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
++dnl Test for GMP, and define GMP_CFLAGS and GMP_LIBS.
++dnl
++AC_DEFUN([AM_PATH_GMP],
++[dnl
++
++		AC_ARG_WITH([gmp],
++		[AS_HELP_STRING([--without-gmp],[Disable support for GMP])],
++		[],[with_gmp=yes])
++
++	AC_MSG_CHECKING(whether GMP is disabled)
++	if test x"$with_gmp" != xno ; then
++
++		AC_MSG_RESULT(no)
++
++		AC_ARG_WITH(gmp-prefix,[  --with-gmp-prefix=PFX   Prefix where GMP is installed (optional)],
++            gmp_config_prefix="$withval", gmp_config_prefix="")
++
++  if test x$gmp_config_prefix != x ; then
++     gmp_config_args="$gmp_config_args --prefix=$gmp_config_prefix"
++  fi
++
++  min_gmp_version=ifelse([$1], ,1.0.0,$1)
++
++  AC_MSG_CHECKING(for GMP - version >= $min_gmp_version)
++
++  GMP_CFLAGS="-I$gmp_config_prefix/include"
++  GMP_LIBS="-L$gmp_config_prefix/lib -lgmp"
++
++  ac_save_CFLAGS="$CFLAGS"
++  ac_save_LIBS="$LIBS"
++  CFLAGS="$CFLAGS $GMP_CFLAGS"
++  LIBS="$GMP_LIBS $LIBS"
++
++dnl
++dnl Now check if the installed GMP is sufficiently new.
++dnl
++  rm -f conf.gmptest
++  AC_TRY_RUN([
++#include <gmp.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++int
++main ()
++{
++  int gmp_major_version = 0, gmp_minor_version = 0, gmp_micro_version = 0;
++  int major, minor, micro;
++  char *tmp_version;
++  mpz_t a, b, c;
++
++  mpz_init (a);
++  mpz_init (b);
++  mpz_init (c);
++  mpz_mul (c, a, b);
++
++  system ("touch conf.gmptest");
++
++#ifdef __GNU_MP_VERSION
++  gmp_major_version = __GNU_MP_VERSION;
++#endif
++
++#ifdef __GNU_MP_VERSION_MINOR
++  gmp_minor_version = __GNU_MP_VERSION_MINOR;
++#endif
++
++#ifdef __GNU_MP_VERSION_PATCHLEVEL
++  gmp_micro_version = __GNU_MP_VERSION_PATCHLEVEL;
++#endif
++
++  /* HP/UX 9 (%@#!) writes to sscanf strings */
++  tmp_version = strdup("$min_gmp_version");
++  if (sscanf(tmp_version, "%d.%d.%d", &major, &minor, &micro) != 3) {
++     printf("%s, bad version string\n", "$min_gmp_version");
++     exit(1);
++  }
++
++  if ((gmp_major_version > major) ||
++     ((gmp_major_version == major) && (gmp_minor_version > minor)) ||
++     ((gmp_major_version == major) && (gmp_minor_version == minor) && (gmp_micro_version >= micro)))
++  {
++    return 0;
++  }
++  else
++  {
++    printf("\n*** An old version of GNU MP (%d.%d.%d) was found.\n",
++           gmp_major_version, gmp_minor_version, gmp_micro_version);
++    printf("*** You need a version of GNU MP newer than %d.%d.%d. The latest version of\n",
++           major, minor, micro);
++
++    printf("*** GNU MP is always available from http://gmplib.org.\n");
++    printf("***\n");
++  }
++
++  return 1;
++}
++],, no_gmp=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
++  CFLAGS="$ac_save_CFLAGS"
++  LIBS="$ac_save_LIBS"
++
++  if test "x$no_gmp" = x ; then
++     AC_MSG_RESULT(yes)
++     ifelse([$2], , :, [$2])
++  else
++     AC_MSG_RESULT(no)
++     if test -f conf.gmptest ; then
++       :
++     else
++       echo "*** Could not run GNU MP test program, checking why..."
++       CFLAGS="$CFLAGS $GMP_CFLAGS"
++       LIBS="$LIBS $GMP_LIBS"
++       AC_TRY_LINK([
++#include <gmp.h>
++#include <stdio.h>
++],     [ return (1); ],
++       [ echo "*** The test program compiled, but did not run. This usually means"
++         echo "*** that the run-time linker is not finding GNU MP or finding the wrong"
++         echo "*** version of GNU MP. If it is not finding GNU MP, you'll need to set your"
++         echo "*** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point"
++         echo "*** to the installed location. Also, make sure you have run ldconfig if that"
++         echo "*** is required on your system"
++         echo "***"
++         echo "*** If you have an old version installed, it is best to remove it, although"
++         echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"
++         echo "***" ],
++       [ echo "*** The test program failed to compile or link. See the file config.log for the"
++         echo "*** exact error that occured. This usually means GNU MP was incorrectly installed"
++         echo "*** or that you have moved GNU MP since it was installed." ])
++         CFLAGS="$ac_save_CFLAGS"
++         LIBS="$ac_save_LIBS"
++     fi
++     GMP_CFLAGS=""
++     GMP_LIBS=""
++     ifelse([$3], , :, [$3])
++  fi
++  if test "$GMP_CFLAGS" = "-I/include" ; then
++     GMP_CFLAGS=""
++  fi
++  if test "$GMP_LIBS" = "-L/lib -lgmp" ; then
++     GMP_LIBS="-lgmp"
++  fi
++
++  rm -f conf.gmptest
++
++	else
++
++		AC_MSG_RESULT(yes)
++
++		AC_DEFINE([WITHOUT_GMP],[1],[GMP is disabled])
++
++		GMP_CFLAGS=""
++    GMP_LIBS=""
++
++	fi
++
++	AC_SUBST(GMP_CFLAGS)
++	AC_SUBST(GMP_LIBS)
++
++	AM_CONDITIONAL([WITH_GMP_IS_YES],[test x"$with_gmp" != xno])
++
++])
+--- a/gtools-h.in
++++ b/gtools-h.in
+@@ -50,8 +50,8 @@
+      This twisted expression works up to n=227023 in 32-bit arithmetic
+      and for larger n if size_t has 64 bits.  */
+ 
+-#include "naututil.h"      /* which includes stdio.h */
+-#include "nausparse.h"
++#include <nauty/naututil.h>      /* which includes stdio.h */
++#include <nauty/nausparse.h>
+ 
+ #if HAVE_ERRNO_H
+ #include <errno.h>
+--- a/naugroup.h
++++ b/naugroup.h
+@@ -3,7 +3,10 @@
+ Procedures for handling groups found by nauty.
+ */
+ 
+-#include "nauty.h"
++#ifndef  _NAUGROUP_H_    /* only process this file once */
++#define  _NAUGROUP_H_
++
++#include <nauty/nauty.h>
+ 
+ typedef struct perm_struct
+ {
+@@ -51,3 +54,5 @@
+ #ifdef __cplusplus
+ }
+ #endif
++
++#endif /* _NAUGROUP_H_  */
+--- a/gutils.h
++++ b/gutils.h
+@@ -1,5 +1,12 @@
+ /* gutils.h - procedure declarations for gutil1.c and gutil2.c */
+ 
++#ifndef  _GUTILS_H_    /* only process this file once */
++#define  _GUTILS_H_
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
+ extern void degstats(graph*,int,int,
+                      unsigned long*,int*,int*,int*,int*,boolean*);
+ extern void diamstats(graph*,int,int,int*,int*);
+@@ -12,7 +19,7 @@
+ extern boolean twocolouring(graph*,int*,int,int);
+ extern boolean isconnected1(graph*,int);
+ extern boolean isconnected(graph*,int,int);
+-extern boolean issubconnected(graph*,set*,int,int); 
++extern boolean issubconnected(graph*,set*,int,int);
+ extern long maxcliques(graph*,int,int);
+ extern void delete1(graph*,graph*,int,int);
+ extern int conncontent(graph*,int,int);
+@@ -29,3 +36,9 @@
+ extern int cstarcontent(graph*,int,int);
+ extern long numtriangles1(graph*,int);
+ extern long numtriangles(graph*,int,int);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* _GUTILS_H_  */
+--- a/naurng.h
++++ b/naurng.h
+@@ -11,8 +11,10 @@
+          random number 0..k-1.
+ */
+ 
+-#ifndef NAURNG_H
+-#include "nauty.h"
++#ifndef _NAURNG_H_     /* only process this file once */
++#define _NAURNG_H_
++
++#include <nauty/nauty.h>
+ 
+ #ifdef __cplusplus
+ extern "C" {
+@@ -36,5 +38,4 @@
+     var = __getkran % (k);}
+ #define INITRANBYTIME ran_init((long)time(NULL))
+ 
+-#define NAURNG_H
+-#endif
++#endif /* _NAURNG_H_ */
+--- a/nausparse.h
++++ b/nausparse.h
+@@ -21,7 +21,7 @@
+ #ifndef  _NAUSPARSE_H_    /* only process this file once */
+ #define  _NAUSPARSE_H_
+ 
+-#include "nauty.h"
++#include <nauty/nauty.h>
+ 
+ #ifndef SG_WEIGHT
+ #define SG_WEIGHT int
+@@ -99,4 +99,4 @@
+ }
+ #endif
+ 
+-#endif
++#endif /* _NAUSPARSE_H_ */
+--- a/nautinv.h
++++ b/nautinv.h
+@@ -10,7 +10,10 @@
+ *                                                                            *
+ *****************************************************************************/
+ 
+-#include "nauty.h"              /* which includes stdio.h */
++#ifndef  _NAUTINV_H_    /* only process this file once */
++#define  _NAUTINV_H_
++
++#include <nauty/nauty.h>              /* which includes stdio.h */
+ 
+ #ifdef __cplusplus
+ extern "C" {
+@@ -40,3 +43,5 @@
+ #ifdef __cplusplus
+ }
+ #endif
++
++#endif /* _NAUTINV_H_ */
+--- a/naututil-h.in
++++ b/naututil-h.in
+@@ -111,9 +111,13 @@
+ *                                                                            *
+ *****************************************************************************/
+ 
+-#include "nauty.h"              /* which includes stdio.h */
+-#include "nausparse.h"
+-#include "naurng.h"
++#ifndef  _NAUTUTIL_H_    /* only process this file once */
++#define  _NAUTUTIL_H_
++
++#include <nauty/nauty.h>              /* which includes stdio.h */
++#include <nauty/nausparse.h>
++#include <nauty/naurng.h>
++
+ /* At this point we can assume that <sys/types.h>, <unistd.h>, <stddef.h>,
+    <stdlib.h>, <string.h> or <strings.h> and <malloc.h> if necessary have
+    been included if they exist. */
+@@ -276,3 +280,5 @@
+ #endif /*NAUTY_SEED_DEFINED*/
+ 
+ /* @edit_msg@ */
++
++#endif /* _NAUTUTIL_H_ */
+--- a/schreier.h
++++ b/schreier.h
+@@ -3,8 +3,8 @@
+ #ifndef  _SCHREIER_H_    /* only process this file once */
+ #define  _SCHREIER_H_
+ 
+-#include "nauty.h"
+-#include "naurng.h"
++#include <nauty/nauty.h>
++#include <nauty/naurng.h>
+ 
+ typedef struct permnodestruct
+ {
+--- a/traces.h
++++ b/traces.h
+@@ -10,8 +10,11 @@
+  *       28-Dec-12 : final changes for version 2.0                            *
+  *****************************************************************************/
+ 
+-#include "gtools.h"
+-#include "schreier.h" 
++#ifndef  _TRACES_H_    /* only process this file once */
++#define  _TRACES_H_
++
++#include <nauty/gtools.h>
++#include <nauty/schreier.h>
+ 
+ typedef struct TracesOptions {
+ 	boolean getcanon;
+@@ -42,7 +45,17 @@
+ 	unsigned long peaknodes;
+ } TracesStats;
+ 
++#ifdef __cplusplus
++extern "C" {
++#endif
++
+ extern void Traces(sparsegraph*,int*,int*,int*,TracesOptions*,
+-				   TracesStats*,sparsegraph*);									
+-extern void refine_tr(sparsegraph*,int*,int*,int*,int*,TracesOptions*);		
++				   TracesStats*,sparsegraph*);
++extern void refine_tr(sparsegraph*,int*,int*,int*,int*,TracesOptions*);
+ extern void traces_freedyn(void);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* _TRACES_H_ */
+--- /dev/null
++++ b/nauty/Makefile.am
+@@ -0,0 +1,29 @@
++
++header-links: remove-links
++	HEADERLIST=" \
++		$(top_builddir)/nauty.h \
++		$(top_builddir)/naututil.h \
++		$(top_builddir)/gtools.h \
++		$(top_srcdir)/nautinv.h \
++		$(top_srcdir)/naurng.h \
++		$(top_srcdir)/nausparse.h \
++		$(top_srcdir)/naugroup.h \
++		$(top_srcdir)/schreier.h \
++		$(top_srcdir)/traces.h \
++		$(top_srcdir)/gutils.h \
++		"; \
++	for h in $$HEADERLIST; do \
++		BASENAME=`basename $$h`; \
++		test -e $$BASENAME || $(LN_S) $$h $$BASENAME; \
++	done
++
++remove-links:
++	rm -f nauty.h nautinv.h naurng.h nausparse.h naututil.h naugroup.h schreier.h traces.h gtools.h gutils.h
++
++all-local: header-links
++
++clean-local: remove-links
++
++distclean-local: remove-links
++	-rm -f Makefile
++
+--- /dev/null
++++ b/nauty.pc.in
+@@ -0,0 +1,12 @@
++prefix=@prefix@
++exec_prefix=@exec_prefix@
++libdir=@libdir@
++includedir=@includedir@
++
++Name: nauty
++Description: nauty graph automorphism library
++Version: @PACKAGE_VERSION@
++URL: @PACKAGE_URL@
++Libs: -L${libdir} -l@PACKAGE@
++Libs.private: @threadlib@
++Cflags: -I${includedir}
+--- /dev/null
++++ b/m4/zlib.m4
+@@ -0,0 +1,28 @@
++dnl Configure paths for zlib
++dnl Jerome Benoit <calculus@rezozer.net> 2013/11/26
++
++AC_DEFUN([AM_PATH_ZLIB],
++[dnl
++	AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
++dnl	AC_REQUIRE([PKG_CHECK_MODULES])dnl
++
++	AC_ARG_WITH([zlib],
++		[AS_HELP_STRING([--without-zlib],[disable support for ZLIB])],
++		[],[with_zlib=yes])
++
++	AC_MSG_CHECKING([whether ZLIB is disabled])
++	AS_IF([test x"$with_zlib" != "xno"],[dnl then
++		AC_MSG_RESULT(no)
++		PKG_CHECK_MODULES(ZLIB,zlib >= $1,[$2],[$3])
++		],[dnl else
++		AC_MSG_RESULT(yes)
++		AC_DEFINE([WITHOUT_ZLIB],[1],[ZLIB is disabled])
++		ZLIB_CFLAGS=""
++		ZLIB_LIBS=""
++		AC_SUBST(ZLIB_CFLAGS)
++		AC_SUBST(ZLIB_LIBS)
++		])
++
++	AM_CONDITIONAL([WITH_ZLIB_IS_YES],[test x"$with_zlib" != xno])
++
++])

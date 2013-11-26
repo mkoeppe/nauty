@@ -1,0 +1,3 @@
+[SYNOPSIS]
+.B labelg
+[\fI\-qsg\fR] [\fI\-fxxx\fR] [\fI\-S|\-t\fR] [\fI\-i# \-I#:# \-K#\fR] [\fIinfile \fR[\fIoutfile\fR]]

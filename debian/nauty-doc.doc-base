@@ -1,0 +1,12 @@
+Document: nauty
+Title: Nauty and Traces User's Guide (Version 2.5)
+Author: Brendan D. McKay and Adolfo Piperno
+Abstract: nauty and Traces are programs for computing
+ automorphism groups of graphs and digraphs; they can
+ also produce a canonical labelling. They come with
+ a command line interface named dreadnaut, a suite of
+ programs called gtools, and a C API.
+Section: Science/Mathematics
+
+Format: PDF
+Files: /usr/share/doc/nauty-doc/nug25.pdf.gz

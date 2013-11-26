@@ -1,0 +1,3 @@
+[SYNOPSIS]
+.B genbg
+[\fI\-c \-ugs \-vq \-lzF\fR] [\fI\-Z#\fR] [\fI\-D#\fR] [\fI\-A\fR] [\fI\-d#|\-d#:#\fR] [\fI\-D#|\-D#:#\fR] \fIn1 n2 \fR[\fImine\fR[\fI:maxe\fR]] [\fIres/mod\fR] [\fIfile\fR]

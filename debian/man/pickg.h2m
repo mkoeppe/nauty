@@ -1,0 +1,3 @@
+[SYNOPSIS]
+.B [pickg|countg]
+[\fI\-fp#:#q \-V\fR] [\fI\--keys\fR] [\fI\-constraints \-v\fR] [\fIifile \fR[\fIofile\fR]]

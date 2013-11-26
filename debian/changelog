@@ -1,3 +1,47 @@
+nauty (2.5r6+ds-1) unstable; urgency=low
+
+  * New upstream version.
+  * New maintainer (Closes: #725407).
+  * Debianization:
+    - debian/copyright:
+      - refresh;
+      - bump format to DEP-5 .
+    - debian/control:
+      - introduce the debug symbols package libnauty-dbg;
+      - gather documentations (user guide and technical notes)
+        into the dedicated package nauty-doc;
+      - Description fields, refresh;
+      - debhelper build-dep, bump to >= 9;
+      - Standards Version, bump to 3.9.4;
+      - Vcs-* headers, canonicalize.
+    - debian/patches/ patches:
+      - autotoolize from scratch to permit a full dh integration
+        (Closes: #727929);
+      - prepend nauty- to the name of the nauty tools;
+      - bump format to DEP-3.
+    - debian/watch, update;
+    - debian/repack, repack script to clean up and gain weight;
+    - debian/rules:
+      - fully integrate dh;
+      - get-orig-source uscan based target which downloads the currently
+        packaged upstream tarball and repacks it;
+      - default target which basically queries package status with uscan
+        -- output in DEHS format;
+    - debian/ man pages, now generated on fly by help2man through the
+      autotools machinery.
+    - debian/*:
+      - propagate SONAME `current version' index change due to new ABI;
+      - introduce `version script' files to consolidate the ABI;
+      - explicit multi-arch support.
+  * Gather headers into a dedicated folder named after the package.
+  * Provide a library for each nauty `variant' wrt upstream source tarball.
+  * Provide pkg-config support (only for the nauty `automatic variant').
+  * Provide an ad hoc script to build (and clean) the upstream source examples.
+  * Minor fixes, enhancements and full autotools support have been submitted to
+    the upstream maintainers.
+
+ -- Jerome Benoit <calculus@rezozer.net>  Tue, 26 Nov 2013 20:27:57 +0000
+
 nauty (2.4r2-1) unstable; urgency=low
 
   * New upstream release
@@ -18,7 +62,7 @@ nauty (2.4-2) unstable; urgency=low
 nauty (2.4-1) unstable; urgency=low
 
   * New upstream version
-  * Fix FTBFS (Closes: #569626), (LP: #521190). 
+  * Fix FTBFS (Closes: #569626), (LP: #521190).
     - Caused by getline becoming visible in stdio.h by default
     - Rename getline to gtools_getline
     - Bump soname because of changed ABI
@@ -31,7 +75,7 @@ nauty (2.4-1) unstable; urgency=low
 nauty (2.4~b7-2) unstable; urgency=low
 
   * Fix FTBFS (amd64, and probably elsewhere) of packages build-depending
-    on libnauty-dev 
+    on libnauty-dev
     - add missing libnauty.so symlink to libnauty-dev (Closes: #546729)
     - add dependency on libnauty0d to libnauty-dev
 
@@ -40,6 +84,6 @@ nauty (2.4~b7-2) unstable; urgency=low
 nauty (2.4~b7-1) unstable; urgency=low
 
   * Initial release (Closes: #529094)
-  
+
  -- David Bremner <bremner@unb.ca>  Wed, 05 Aug 2009 22:40:14 -0300
 

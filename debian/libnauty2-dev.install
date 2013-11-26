@@ -1,0 +1,5 @@
+usr/lib/*/libnauty*.so
+usr/lib/*/libnauty*.a
+usr/lib/*/pkgconfig/*
+usr/include/*/nauty
+usr/include/nauty

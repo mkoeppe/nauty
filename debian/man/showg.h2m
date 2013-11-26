@@ -1,0 +1,3 @@
+[SYNOPSIS]
+.B showg
+[\fI\-p#:#l#o#Ftq\fR] [\fI\-a|\-A|\-c|\-d|\-e\fR] [\fIinfile \fR[\fIoutfile\fR]]
