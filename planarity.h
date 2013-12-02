@@ -41,7 +41,9 @@
 #define mem_free free
 
 #include "naututil.h"
+#ifdef CPUDEFS
 CPUDEFS
+#endif
 #define time_current_user() CPUTIME
 
 #endif  /* not  PLANAR_IN_MAGMA */
