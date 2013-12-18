@@ -1,3 +1,12 @@
+nauty (2.5r6+ds-2) unstable; urgency=low
+
+  * Debianization:
+    - debian/control:
+      - Standards Version, bump to 3.9.5;
+      - XS-Autobuild field, restore to yes.
+
+ -- Jerome Benoit <calculus@rezozer.net>  Wed, 18 Dec 2013 14:48:07 +0000
+
 nauty (2.5r6+ds-1) unstable; urgency=low
 
   * New upstream version.
