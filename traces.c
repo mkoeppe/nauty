@@ -3,16 +3,19 @@
  * This is the main file for traces() version 2.0, which is included into     *
  *   nauty() version 2.5.                                                     *
  *                                                                            *
- *   nauty is Copyright (1984-2013) Brendan McKay.  All rights reserved.      *
+ *   nauty is Copyright (1984-2014) Brendan McKay. All rights reserved.       *
  *   Subject to the waivers and disclaimers in nauty.h.                       *
- *   Traces is Copyright Adolfo Piperno, 2008-2013.  All rights reserved.     *
+ *   Traces is Copyright (2008-2014) Adolfo Piperno. All rights reserved.     *
  *                                                                            *
  *   CHANGE HISTORY                                                           *
  *       28-Dec-12 : final changes for version 2.0                            *
  *       29-Mar-13 : bug correction in automorphism mode                      *
  *       21-May-13 : bug correction (coloured lists)                          *
  *       29-Jun-13 : bug correction (coloured lists and cycles)               *
- *       01-Oct-13 : bug correction (overlapping memcpy)                      *
+ *       07-Dec-13 : bug correction in automorphism mode (wrong group size    *
+ *                   due to randomness in Schreier-Sims orbit computation)    *
+ *                   bug correction (discrete initial partition)              *
+ *       15-Feb-14 : CPUDEFS removed (already declared in gtools.h)           *
  *****************************************************************************/
 
 #include "traces.h"
@@ -532,11 +535,6 @@ if (tv->options->userautomproc) { \
 }
 
 #define UPDATEMIN(A, B) if (B < A) A = B;
-
-/* data decls. for CPUTIME */
-#ifdef  CPUDEFS
-CPUDEFS
-#endif
 
 #if !MAXN
 DYNALLSTAT(int, AUTPERM, AUTPERM_sz);
@@ -1120,6 +1118,7 @@ int traces_refine(sparsegraph *sg,
 	InvLab = Cand->invlab;
 	cls = Part->cls;
 	
+    UPDATEMIN(Part->active, n-1);
 	memcpy(CStack+1, TheTrace+SpineTL->trcstart, (Part->active)*sizeof(int));
 	CStackInd = Part->active;
 	for (i = 1; i <= CStackInd; i++) {
@@ -4260,6 +4259,7 @@ int traces_refine_sametrace(sparsegraph *sg,
 	InvLab = Cand->invlab;
 	cls = Part->cls;
 	
+	UPDATEMIN(Part->active, n-1);
 	memcpy(CStack+1, TheTrace+SpineTL->trcstart, (Part->active)*sizeof(int));
 	CStackInd = Part->active;
 	for (i = 1; i <= CStackInd; i++) {
@@ -5239,6 +5239,7 @@ int traces_refine_refine(sparsegraph *sg,
 	InvLab = Cand->invlab;
 	cls = Part->cls;
 	
+	UPDATEMIN(Part->active, n-1);
 	memcpy(CStack+1, TheTrace, (Part->active)*sizeof(int));
 	CStackInd = Part->active;
 	for (i = 1; i <= CStackInd; i++) {
@@ -7899,8 +7900,10 @@ void CompStage2(sparsegraph *g_arg, Partition *CurrPart, Partition *NextPart, Ca
 	Candidate *AuxCand;
     searchtrie *TreeNode, *TreeNode1, *TreeNode2;
     int *CuOrb;
+    boolean schreierwrong;
 	
 	autom = 0;
+    schreierwrong = FALSE;
 	
     TreeNode = CurrCand->stnode;
     tv->cand_level = 0;
@@ -8148,6 +8151,7 @@ void CompStage2(sparsegraph *g_arg, Partition *CurrPart, Partition *NextPart, Ca
                                         }
                                         TreeNode1 = TreeNode1->next_sibling;
                                     }
+                                    schreierwrong = FALSE;
                                     if (TreeNode1) {
                                         while (TreeNode1->goes_to) {
                                             TreeNode1 = TreeNode1->goes_to;
@@ -8164,6 +8168,7 @@ void CompStage2(sparsegraph *g_arg, Partition *CurrPart, Partition *NextPart, Ca
                                     }
                                     else {
                                         tv->currorbit = getorbits(fix, tv->nfix, gpB, &gensB, n);
+                                        schreierwrong = TRUE;
                                     }
                                 }
                             }
@@ -8213,10 +8218,10 @@ void CompStage2(sparsegraph *g_arg, Partition *CurrPart, Partition *NextPart, Ca
                             ti->thegrouphaschanged = FALSE;
                         }
                         
-                        
-                        if (CuOrb[CurrCand->lab[k]] != CurrCand->lab[k]) {
-                            
-                            continue;
+                        if (!schreierwrong) {
+                            if (CuOrb[CurrCand->lab[k]] != CurrCand->lab[k]) {
+                                continue;
+                            }
                         }
                         
                         memcpy(NextPart->cls, CurrPart->cls, n*sizeof(int));
@@ -9119,7 +9124,7 @@ grouporderplus(sparsegraph *sg, int *fix, int nfix, Candidate *Cand,
                                 SPECIALGENERATORS
                                 if (tv->options->generators || tv->options->writeautoms || tv->options->userautomproc) {
                                     memcpy(AUTPERM, IDENTITY_PERM, n*sizeof(int));
-                                    memmove(PERMSTACK+halfsize, PERMSTACK+halfsize+1, (halfsize-1)*sizeof(int));
+                                    memcpy(PERMSTACK+halfsize, PERMSTACK+halfsize+1, (halfsize-1)*sizeof(int));
                                     temp = PERMSTACK[1];
                                     for (j=1; j<SpineSDegLev.part->cls[i]-2; j++) {
                                         AUTPERM[PERMSTACK[j]] = PERMSTACK[j+1];
