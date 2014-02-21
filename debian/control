@@ -9,7 +9,7 @@ Build-Depends:
 Standards-Version: 3.9.5
 Homepage: http://pallini.di.uniroma1.it
 Vcs-Git: git://anonscm.debian.org/debian-science/packages/nauty.git
-Vcs-Browser: http://anonscm.debian.org/?p=debian-science/packages/nauty.git
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=debian-science/packages/nauty.git
 XS-Autobuild: yes
 
 Package: libnauty2

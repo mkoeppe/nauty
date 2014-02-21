@@ -1,3 +1,13 @@
+nauty (2.5r9+ds-1) unstable; urgency=low
+
+  * New upstream version.
+  * Debianization:
+    - debian/control:
+      - Vcs-Browser header field, correct.
+    - debian/patches/upstream-autotoolization.patch, update.
+
+ -- Jerome Benoit <calculus@rezozer.net>  Fri, 21 Feb 2014 04:37:00 +0000
+
 nauty (2.5r6+ds-2) unstable; urgency=low
 
   * Debianization:
