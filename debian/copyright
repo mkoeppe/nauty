@@ -13,25 +13,34 @@ Disclaimer:
 Comment:
  The upstream source tarball is repacked to drop off some weight
  by cleaning up material either generated or upgraded by autotools.
+Files-Excluded:
+ install-sh
+ config.guess
+ config.sub
+ configure
+ makefile
+ gtools.h
+ naututil.h
+ nauty.h
 
 Files: *
 Copyright:
- 1984-2013 Brendan McKay <bdm@cs.anu.edu.au>
+ 1984-2016 Brendan McKay <bdm@cs.anu.edu.au>
 License: BDM-adhoc
 
 Files: traces.c
 Copyright:
- 2008-2013 Adolfo Piperno <piperno@di.uniroma1.it>
+ 2008-2016 Adolfo Piperno <piperno@di.uniroma1.it>
 License: BDM-adhoc
 
 Files: watercluster2.c
 Copyright:
- 2009-2013 Gunnar Brinkmann <gunnar.brinkmann@ugent.be>
+ 2009-2016 Gunnar Brinkmann <gunnar.brinkmann@ugent.be>
 License: BDM-adhoc
 
 Files: planarity.c
 Copyright:
- 2001-2013 Magna project
+ 2001-2016 Magna project
 License: ad-hoc
  planarity.c - code for planarity testing of undirected graphs.
  Method of Boyer and Myrvold, programmed by Paulette Lieby.
@@ -40,7 +49,7 @@ License: ad-hoc
 
 Files: debian/*
 Copyright:
- 2013 Jerome Benoit <calculus@rezozer.net>
+ 2013-2016 Jerome Benoit <calculus@rezozer.net>
  2009-2012 David Bremner <bremner@unb.ca>
 License: MIT
 

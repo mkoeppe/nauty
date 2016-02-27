@@ -20,4 +20,4 @@ override_dh_strip:
 	dh_strip --dbg-package=libnauty2-dbg
 
 get-orig-source:
-	uscan --no-conf --download-current-version --verbose
+	uscan --no-conf --download-current-version --compression xz --verbose

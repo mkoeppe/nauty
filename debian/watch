@@ -1,4 +1,3 @@
-version=3
-opts=uversionmangle=s/^(\d)(\d*(?:(?:rc|r|beta|b)\d*)?)$/$1.$2/,dversionmangle=s/\+ds// \
-http://pallini.di.uniroma1.it/nauty(\d.*)\.tar\.(?:gz|bz2|xz) \
-debian sh debian/repack
+version=4
+opts=repack,uversionmangle=s/^(\d)(\d*(?:(?:rc|r|beta|b)\d*)?)$/$1.$2/,dversionmangle=s/\+ds//,repacksuffix=+ds \
+http://pallini.di.uniroma1.it/nauty(\d.*)\.tar\.(?:xz|bz2|gz)

@@ -1,3 +1,19 @@
+nauty (2.6r3+ds-0) UNRELEASED; urgency=medium
+
+  * New upstream version.
+  * Debianization:
+    - debian/copyright:
+      - repack by using the Files-Excluded machinery instead of the ad-hoc
+        script debian/repack;
+      - refresh;
+    - debian/repack, discard (see above);
+    - debian/watch:
+      - revisit (see above);
+    - debian/rules:
+      - get-orig-source target, revisit (see above).
+
+ -- Jerome Benoit <calculus@rezozer.net>  Fri, 18 Mar 2016 20:45:37 +0000
+
 nauty (2.5r9+ds-1) unstable; urgency=low
 
   * New upstream version.
