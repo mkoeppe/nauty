@@ -254,6 +254,8 @@ main(int argc, char *argv[])
     if (!infile) exit(1);
     if (!infilename) infilename = "stdin";
 
+    NODIGRAPHSYET(codetype);
+
     if (!nowrite)
     {
         if (!outfilename || outfilename[0] == '-')

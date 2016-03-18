@@ -1,4 +1,4 @@
-/* catg.c version 1.2; B D McKay, Mar 14 2011 */
+/* catg.c version 1.3; B D McKay, Jan 2013 */
 
 #define USAGE "catg [-xv] [infile]..."
 
@@ -50,7 +50,7 @@ openfile_head(char *filename, char **header)
     if (c == '>')
     {
         i = 0;
-        head[i++] = c;
+        head[i++] = (char)c;
 
         c = getc(f);
         if (c != '>')
@@ -59,7 +59,7 @@ openfile_head(char *filename, char **header)
             fclose(f);
             return NULL;
         }
-        head[i++] = c;
+        head[i++] = (char)c;
 
         do
         {
@@ -73,7 +73,7 @@ openfile_head(char *filename, char **header)
 
             if (i >= head_sz-1)
                 DYNREALLOC(char,head,head_sz,head_sz+100,"catg");
-            head[i++] = c;
+            head[i++] = (char)c;
         }
         while (c != '<' || head[i-2] != '<');
 
