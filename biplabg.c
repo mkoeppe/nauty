@@ -111,6 +111,8 @@ main(int argc, char *argv[])
 	    fflush(stderr);
 	}
 
+	NODIGRAPHSYET(codetype);
+
 	if (infilename && infilename[0] == '-') infilename = NULL;
 	infile = opengraphfile(infilename,&codetype,FALSE,1);
 	if (!infile) exit(1);
