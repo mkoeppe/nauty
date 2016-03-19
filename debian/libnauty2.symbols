@@ -7,12 +7,17 @@ libnauty.so.2 libnauty2 #MINVER#
  adjacencies_sg@LIBNAUTY_2.5 2.5r6
  adjtriang@LIBNAUTY_2.5 2.5r6
  allgroup2@LIBNAUTY_2.5 2.5r6
+ allgroup3@LIBNAUTY_2.5 2.6r2
  allgroup@LIBNAUTY_2.5 2.5r6
  alloc_error@LIBNAUTY_2.5 2.5r6
  aresame_sg@LIBNAUTY_2.5 2.5r6
+ arg_double@LIBNAUTY_2.5 2.6r2
+ arg_doublerange@LIBNAUTY_2.5 2.6r2
  arg_int@LIBNAUTY_2.5 2.5r6
  arg_long@LIBNAUTY_2.5 2.5r6
  arg_range@LIBNAUTY_2.5 2.5r6
+ arg_sequence@LIBNAUTY_2.5 2.6r2
+ bipartiteside@LIBNAUTY_2.5 2.6r2
  breakout@LIBNAUTY_2.5 2.5r6
  cellcliq@LIBNAUTY_2.5 2.5r6
  cellfano2@LIBNAUTY_2.5 2.5r6
@@ -24,6 +29,7 @@ libnauty.so.2 libnauty2 #MINVER#
  celltrips@LIBNAUTY_2.5 2.5r6
  cheapautom@LIBNAUTY_2.5 2.5r6
  cheapautom_sg@LIBNAUTY_2.5 2.5r6
+ checkgline@LIBNAUTY_2.5 2.6r2
  cliques@LIBNAUTY_2.5 2.5r6
  commonnbrs@LIBNAUTY_2.5 2.5r6
  comparelab_tr@LIBNAUTY_2.5 2.5r6
@@ -38,6 +44,7 @@ libnauty.so.2 libnauty2 #MINVER#
  copycomment@LIBNAUTY_2.5 2.5r6
  cyclecount1@LIBNAUTY_2.5 2.5r6
  cyclecount@LIBNAUTY_2.5 2.5r6
+ degstats2@LIBNAUTY_2.5 2.6r2
  degstats@LIBNAUTY_2.5 2.5r6
  delete1@LIBNAUTY_2.5 2.5r6
  deleteunmarked@LIBNAUTY_2.5 2.5r6
@@ -49,7 +56,9 @@ libnauty.so.2 libnauty2 #MINVER#
  distances_sg@LIBNAUTY_2.5 2.5r6
  distvals@LIBNAUTY_2.5 2.5r6
  doref@LIBNAUTY_2.5 2.5r6
+ doublevalue@LIBNAUTY_2.5 2.6r2
  dumpschreier@LIBNAUTY_2.5 2.5r6
+ encodegraphsize@LIBNAUTY_2.5 2.6r2
  expandschreier@LIBNAUTY_2.5 2.5r6
  extra_autom@LIBNAUTY_2.5 2.5r6
  extra_level@LIBNAUTY_2.5 2.5r6
@@ -65,11 +74,13 @@ libnauty.so.2 libnauty2 #MINVER#
  flushline@LIBNAUTY_2.5 2.5r6
  fmperm@LIBNAUTY_2.5 2.5r6
  fmptn@LIBNAUTY_2.5 2.5r6
+ freegroup@LIBNAUTY_2.5 2.6r2
  freepermrec@LIBNAUTY_2.5 2.5r6
  freeschreier@LIBNAUTY_2.5 2.5r6
  getbigcells@LIBNAUTY_2.5 2.5r6
  getecline@LIBNAUTY_2.5 2.5r6
  getint@LIBNAUTY_2.5 2.5r6
+ getint_sl@LIBNAUTY_2.5 2.6r2
  getorbits@LIBNAUTY_2.5 2.5r6
  getorbitsmin@LIBNAUTY_2.5 2.5r6
  girth@LIBNAUTY_2.5 2.5r6
@@ -124,12 +135,16 @@ libnauty.so.2 libnauty2 #MINVER#
  nauty@LIBNAUTY_2.5 2.5r6
  nauty_check@LIBNAUTY_2.5 2.5r6
  nauty_freedyn@LIBNAUTY_2.5 2.5r6
+ nauty_kill_request@LIBNAUTY_2.5 2.6r2
  nauty_to_sg@LIBNAUTY_2.5 2.5r6
  newgroup@LIBNAUTY_2.5 2.5r6
  newpermrec@LIBNAUTY_2.5 2.5r6
  nextelement@LIBNAUTY_2.5 2.5r6
+ ntod6@LIBNAUTY_2.5 2.6r2
  ntog6@LIBNAUTY_2.5 2.5r6
+ ntois6@LIBNAUTY_2.5 2.6r2
  ntos6@LIBNAUTY_2.5 2.5r6
+ numdirtriangles@LIBNAUTY_2.5 2.6r2
  numtriangles1@LIBNAUTY_2.5 2.5r6
  numtriangles@LIBNAUTY_2.5 2.5r6
  ogf_linelen@LIBNAUTY_2.5 2.5r6
@@ -144,6 +159,8 @@ libnauty.so.2 libnauty2 #MINVER#
  putcanon_sg@LIBNAUTY_2.5 2.5r6
  putdegs@LIBNAUTY_2.5 2.5r6
  putdegs_sg@LIBNAUTY_2.5 2.5r6
+ putdegseq@LIBNAUTY_2.5 2.6r2
+ putdegseq_sg@LIBNAUTY_2.5 2.6r2
  putgraph@LIBNAUTY_2.5 2.5r6
  putgraph_sg@LIBNAUTY_2.5 2.5r6
  putmapping@LIBNAUTY_2.5 2.5r6
@@ -165,12 +182,18 @@ libnauty.so.2 libnauty2 #MINVER#
  ranreg_sg@LIBNAUTY_2.5 2.5r6
  read_sg@LIBNAUTY_2.5 2.5r6
  read_sg_loops@LIBNAUTY_2.5 2.5r6
+ read_sgg_loops@LIBNAUTY_2.5 2.6r2
  readg@LIBNAUTY_2.5 2.5r6
  readg_code@LIBNAUTY_2.5 2.5r6
+ readg_inc@LIBNAUTY_2.5 2.6r2
  readg_line@LIBNAUTY_2.5 2.5r6
+ readgg@LIBNAUTY_2.5 2.6r2
+ readgg_inc@LIBNAUTY_2.5 2.6r2
  readgraph@LIBNAUTY_2.5 2.5r6
  readgraph_sg@LIBNAUTY_2.5 2.5r6
+ readgraph_swg@LIBNAUTY_2.5 2.6r2
  readinteger@LIBNAUTY_2.5 2.5r6
+ readinteger_sl@LIBNAUTY_2.5 2.6r2
  readpc_sg@LIBNAUTY_2.5 2.5r6
  readpcle_sg@LIBNAUTY_2.5 2.5r6
  readperm@LIBNAUTY_2.5 2.5r6
@@ -190,9 +213,11 @@ libnauty.so.2 libnauty2 #MINVER#
  schreier_gens@LIBNAUTY_2.5 2.5r6
  sethash@LIBNAUTY_2.5 2.5r6
  setinter@LIBNAUTY_2.5 2.5r6
+ setlabptn@LIBNAUTY_2.5 2.6r2
  setnbhd@LIBNAUTY_2.5 2.5r6
  setsize@LIBNAUTY_2.5 2.5r6
  sg_to_nauty@LIBNAUTY_2.5 2.5r6
+ sgtod6@LIBNAUTY_2.5 2.6r2
  sgtog6@LIBNAUTY_2.5 2.5r6
  sgtos6@LIBNAUTY_2.5 2.5r6
  shortprune@LIBNAUTY_2.5 2.5r6
@@ -202,9 +227,12 @@ libnauty.so.2 libnauty2 #MINVER#
  stringcopy@LIBNAUTY_2.5 2.5r6
  stringcounts@LIBNAUTY_2.5 2.5r6
  stringtograph@LIBNAUTY_2.5 2.5r6
+ stringtograph_inc@LIBNAUTY_2.5 2.6r2
  stringtosparsegraph@LIBNAUTY_2.5 2.5r6
+ stronglyconnected@LIBNAUTY_2.5 2.6r2
  sublabel@LIBNAUTY_2.5 2.5r6
  sublabel_sg@LIBNAUTY_2.5 2.5r6
+ subpartition@LIBNAUTY_2.5 2.6r2
  targetcell@LIBNAUTY_2.5 2.5r6
  targetcell_sg@LIBNAUTY_2.5 2.5r6
  testcanlab@LIBNAUTY_2.5 2.5r6
@@ -219,9 +247,12 @@ libnauty.so.2 libnauty2 #MINVER#
  updatecan@LIBNAUTY_2.5 2.5r6
  updatecan_sg@LIBNAUTY_2.5 2.5r6
  updatecan_tr@LIBNAUTY_2.5 2.5r6
+ writed6@LIBNAUTY_2.5 2.6r2
+ writed6_sg@LIBNAUTY_2.5 2.6r2
  writeg6@LIBNAUTY_2.5 2.5r6
  writeg6_sg@LIBNAUTY_2.5 2.5r6
  writegroupsize@LIBNAUTY_2.5 2.5r6
+ writeis6@LIBNAUTY_2.5 2.6r2
  writelast@LIBNAUTY_2.5 2.5r6
  writeline@LIBNAUTY_2.5 2.5r6
  writepc_sg@LIBNAUTY_2.5 2.5r6
@@ -238,12 +269,17 @@ libnautyA1.so.2 libnauty2 #MINVER#
  adjacencies_sg@LIBNAUTYA1_2.5 2.5r6
  adjtriang@LIBNAUTYA1_2.5 2.5r6
  allgroup2@LIBNAUTYA1_2.5 2.5r6
+ allgroup3@LIBNAUTYA1_2.5 2.6r2
  allgroup@LIBNAUTYA1_2.5 2.5r6
  alloc_error@LIBNAUTYA1_2.5 2.5r6
  aresame_sg@LIBNAUTYA1_2.5 2.5r6
+ arg_double@LIBNAUTYA1_2.5 2.6r2
+ arg_doublerange@LIBNAUTYA1_2.5 2.6r2
  arg_int@LIBNAUTYA1_2.5 2.5r6
  arg_long@LIBNAUTYA1_2.5 2.5r6
  arg_range@LIBNAUTYA1_2.5 2.5r6
+ arg_sequence@LIBNAUTYA1_2.5 2.6r2
+ bipartiteside@LIBNAUTYA1_2.5 2.6r2
  breakout@LIBNAUTYA1_2.5 2.5r6
  cellcliq@LIBNAUTYA1_2.5 2.5r6
  cellfano2@LIBNAUTYA1_2.5 2.5r6
@@ -255,6 +291,7 @@ libnautyA1.so.2 libnauty2 #MINVER#
  celltrips@LIBNAUTYA1_2.5 2.5r6
  cheapautom@LIBNAUTYA1_2.5 2.5r6
  cheapautom_sg@LIBNAUTYA1_2.5 2.5r6
+ checkgline@LIBNAUTYA1_2.5 2.6r2
  cliques@LIBNAUTYA1_2.5 2.5r6
  commonnbrs@LIBNAUTYA1_2.5 2.5r6
  comparelab_tr@LIBNAUTYA1_2.5 2.5r6
@@ -269,6 +306,7 @@ libnautyA1.so.2 libnauty2 #MINVER#
  copycomment@LIBNAUTYA1_2.5 2.5r6
  cyclecount1@LIBNAUTYA1_2.5 2.5r6
  cyclecount@LIBNAUTYA1_2.5 2.5r6
+ degstats2@LIBNAUTYA1_2.5 2.6r2
  degstats@LIBNAUTYA1_2.5 2.5r6
  delete1@LIBNAUTYA1_2.5 2.5r6
  deleteunmarked@LIBNAUTYA1_2.5 2.5r6
@@ -280,7 +318,9 @@ libnautyA1.so.2 libnauty2 #MINVER#
  distances_sg@LIBNAUTYA1_2.5 2.5r6
  distvals@LIBNAUTYA1_2.5 2.5r6
  doref@LIBNAUTYA1_2.5 2.5r6
+ doublevalue@LIBNAUTYA1_2.5 2.6r2
  dumpschreier@LIBNAUTYA1_2.5 2.5r6
+ encodegraphsize@LIBNAUTYA1_2.5 2.6r2
  expandschreier@LIBNAUTYA1_2.5 2.5r6
  extra_autom@LIBNAUTYA1_2.5 2.5r6
  extra_level@LIBNAUTYA1_2.5 2.5r6
@@ -296,11 +336,13 @@ libnautyA1.so.2 libnauty2 #MINVER#
  flushline@LIBNAUTYA1_2.5 2.5r6
  fmperm@LIBNAUTYA1_2.5 2.5r6
  fmptn@LIBNAUTYA1_2.5 2.5r6
+ freegroup@LIBNAUTYA1_2.5 2.6r2
  freepermrec@LIBNAUTYA1_2.5 2.5r6
  freeschreier@LIBNAUTYA1_2.5 2.5r6
  getbigcells@LIBNAUTYA1_2.5 2.5r6
  getecline@LIBNAUTYA1_2.5 2.5r6
  getint@LIBNAUTYA1_2.5 2.5r6
+ getint_sl@LIBNAUTYA1_2.5 2.6r2
  getorbits@LIBNAUTYA1_2.5 2.5r6
  getorbitsmin@LIBNAUTYA1_2.5 2.5r6
  girth@LIBNAUTYA1_2.5 2.5r6
@@ -355,12 +397,16 @@ libnautyA1.so.2 libnauty2 #MINVER#
  nauty@LIBNAUTYA1_2.5 2.5r6
  nauty_check@LIBNAUTYA1_2.5 2.5r6
  nauty_freedyn@LIBNAUTYA1_2.5 2.5r6
+ nauty_kill_request@LIBNAUTYA1_2.5 2.6r2
  nauty_to_sg@LIBNAUTYA1_2.5 2.5r6
  newgroup@LIBNAUTYA1_2.5 2.5r6
  newpermrec@LIBNAUTYA1_2.5 2.5r6
  nextelement@LIBNAUTYA1_2.5 2.5r6
+ ntod6@LIBNAUTYA1_2.5 2.6r2
  ntog6@LIBNAUTYA1_2.5 2.5r6
+ ntois6@LIBNAUTYA1_2.5 2.6r2
  ntos6@LIBNAUTYA1_2.5 2.5r6
+ numdirtriangles@LIBNAUTYA1_2.5 2.6r2
  numtriangles1@LIBNAUTYA1_2.5 2.5r6
  numtriangles@LIBNAUTYA1_2.5 2.5r6
  ogf_linelen@LIBNAUTYA1_2.5 2.5r6
@@ -375,6 +421,8 @@ libnautyA1.so.2 libnauty2 #MINVER#
  putcanon_sg@LIBNAUTYA1_2.5 2.5r6
  putdegs@LIBNAUTYA1_2.5 2.5r6
  putdegs_sg@LIBNAUTYA1_2.5 2.5r6
+ putdegseq@LIBNAUTYA1_2.5 2.6r2
+ putdegseq_sg@LIBNAUTYA1_2.5 2.6r2
  putgraph@LIBNAUTYA1_2.5 2.5r6
  putgraph_sg@LIBNAUTYA1_2.5 2.5r6
  putmapping@LIBNAUTYA1_2.5 2.5r6
@@ -396,12 +444,18 @@ libnautyA1.so.2 libnauty2 #MINVER#
  ranreg_sg@LIBNAUTYA1_2.5 2.5r6
  read_sg@LIBNAUTYA1_2.5 2.5r6
  read_sg_loops@LIBNAUTYA1_2.5 2.5r6
+ read_sgg_loops@LIBNAUTYA1_2.5 2.6r2
  readg@LIBNAUTYA1_2.5 2.5r6
  readg_code@LIBNAUTYA1_2.5 2.5r6
+ readg_inc@LIBNAUTYA1_2.5 2.6r2
  readg_line@LIBNAUTYA1_2.5 2.5r6
+ readgg@LIBNAUTYA1_2.5 2.6r2
+ readgg_inc@LIBNAUTYA1_2.5 2.6r2
  readgraph@LIBNAUTYA1_2.5 2.5r6
  readgraph_sg@LIBNAUTYA1_2.5 2.5r6
+ readgraph_swg@LIBNAUTYA1_2.5 2.6r2
  readinteger@LIBNAUTYA1_2.5 2.5r6
+ readinteger_sl@LIBNAUTYA1_2.5 2.6r2
  readpc_sg@LIBNAUTYA1_2.5 2.5r6
  readpcle_sg@LIBNAUTYA1_2.5 2.5r6
  readperm@LIBNAUTYA1_2.5 2.5r6
@@ -421,9 +475,11 @@ libnautyA1.so.2 libnauty2 #MINVER#
  schreier_gens@LIBNAUTYA1_2.5 2.5r6
  sethash@LIBNAUTYA1_2.5 2.5r6
  setinter@LIBNAUTYA1_2.5 2.5r6
+ setlabptn@LIBNAUTYA1_2.5 2.6r2
  setnbhd@LIBNAUTYA1_2.5 2.5r6
  setsize@LIBNAUTYA1_2.5 2.5r6
  sg_to_nauty@LIBNAUTYA1_2.5 2.5r6
+ sgtod6@LIBNAUTYA1_2.5 2.6r2
  sgtog6@LIBNAUTYA1_2.5 2.5r6
  sgtos6@LIBNAUTYA1_2.5 2.5r6
  shortprune@LIBNAUTYA1_2.5 2.5r6
@@ -433,9 +489,12 @@ libnautyA1.so.2 libnauty2 #MINVER#
  stringcopy@LIBNAUTYA1_2.5 2.5r6
  stringcounts@LIBNAUTYA1_2.5 2.5r6
  stringtograph@LIBNAUTYA1_2.5 2.5r6
+ stringtograph_inc@LIBNAUTYA1_2.5 2.6r2
  stringtosparsegraph@LIBNAUTYA1_2.5 2.5r6
+ stronglyconnected@LIBNAUTYA1_2.5 2.6r2
  sublabel@LIBNAUTYA1_2.5 2.5r6
  sublabel_sg@LIBNAUTYA1_2.5 2.5r6
+ subpartition@LIBNAUTYA1_2.5 2.6r2
  targetcell@LIBNAUTYA1_2.5 2.5r6
  targetcell_sg@LIBNAUTYA1_2.5 2.5r6
  testcanlab@LIBNAUTYA1_2.5 2.5r6
@@ -450,9 +509,12 @@ libnautyA1.so.2 libnauty2 #MINVER#
  updatecan@LIBNAUTYA1_2.5 2.5r6
  updatecan_sg@LIBNAUTYA1_2.5 2.5r6
  updatecan_tr@LIBNAUTYA1_2.5 2.5r6
+ writed6@LIBNAUTYA1_2.5 2.6r2
+ writed6_sg@LIBNAUTYA1_2.5 2.6r2
  writeg6@LIBNAUTYA1_2.5 2.5r6
  writeg6_sg@LIBNAUTYA1_2.5 2.5r6
  writegroupsize@LIBNAUTYA1_2.5 2.5r6
+ writeis6@LIBNAUTYA1_2.5 2.6r2
  writelast@LIBNAUTYA1_2.5 2.5r6
  writeline@LIBNAUTYA1_2.5 2.5r6
  writepc_sg@LIBNAUTYA1_2.5 2.5r6
@@ -469,12 +531,17 @@ libnautyL0.so.2 libnauty2 #MINVER#
  adjacencies_sg@LIBNAUTYL0_2.5 2.5r6
  adjtriang@LIBNAUTYL0_2.5 2.5r6
  allgroup2@LIBNAUTYL0_2.5 2.5r6
+ allgroup3@LIBNAUTYL0_2.5 2.6r2
  allgroup@LIBNAUTYL0_2.5 2.5r6
  alloc_error@LIBNAUTYL0_2.5 2.5r6
  aresame_sg@LIBNAUTYL0_2.5 2.5r6
+ arg_double@LIBNAUTYL0_2.5 2.6r2
+ arg_doublerange@LIBNAUTYL0_2.5 2.6r2
  arg_int@LIBNAUTYL0_2.5 2.5r6
  arg_long@LIBNAUTYL0_2.5 2.5r6
  arg_range@LIBNAUTYL0_2.5 2.5r6
+ arg_sequence@LIBNAUTYL0_2.5 2.6r2
+ bipartiteside@LIBNAUTYL0_2.5 2.6r2
  breakout@LIBNAUTYL0_2.5 2.5r6
  cellcliq@LIBNAUTYL0_2.5 2.5r6
  cellfano2@LIBNAUTYL0_2.5 2.5r6
@@ -486,6 +553,7 @@ libnautyL0.so.2 libnauty2 #MINVER#
  celltrips@LIBNAUTYL0_2.5 2.5r6
  cheapautom@LIBNAUTYL0_2.5 2.5r6
  cheapautom_sg@LIBNAUTYL0_2.5 2.5r6
+ checkgline@LIBNAUTYL0_2.5 2.6r2
  cliques@LIBNAUTYL0_2.5 2.5r6
  commonnbrs@LIBNAUTYL0_2.5 2.5r6
  comparelab_tr@LIBNAUTYL0_2.5 2.5r6
@@ -500,6 +568,7 @@ libnautyL0.so.2 libnauty2 #MINVER#
  copycomment@LIBNAUTYL0_2.5 2.5r6
  cyclecount1@LIBNAUTYL0_2.5 2.5r6
  cyclecount@LIBNAUTYL0_2.5 2.5r6
+ degstats2@LIBNAUTYL0_2.5 2.6r2
  degstats@LIBNAUTYL0_2.5 2.5r6
  delete1@LIBNAUTYL0_2.5 2.5r6
  deleteunmarked@LIBNAUTYL0_2.5 2.5r6
@@ -511,7 +580,9 @@ libnautyL0.so.2 libnauty2 #MINVER#
  distances_sg@LIBNAUTYL0_2.5 2.5r6
  distvals@LIBNAUTYL0_2.5 2.5r6
  doref@LIBNAUTYL0_2.5 2.5r6
+ doublevalue@LIBNAUTYL0_2.5 2.6r2
  dumpschreier@LIBNAUTYL0_2.5 2.5r6
+ encodegraphsize@LIBNAUTYL0_2.5 2.6r2
  expandschreier@LIBNAUTYL0_2.5 2.5r6
  extra_autom@LIBNAUTYL0_2.5 2.5r6
  extra_level@LIBNAUTYL0_2.5 2.5r6
@@ -527,11 +598,13 @@ libnautyL0.so.2 libnauty2 #MINVER#
  flushline@LIBNAUTYL0_2.5 2.5r6
  fmperm@LIBNAUTYL0_2.5 2.5r6
  fmptn@LIBNAUTYL0_2.5 2.5r6
+ freegroup@LIBNAUTYL0_2.5 2.6r2
  freepermrec@LIBNAUTYL0_2.5 2.5r6
  freeschreier@LIBNAUTYL0_2.5 2.5r6
  getbigcells@LIBNAUTYL0_2.5 2.5r6
  getecline@LIBNAUTYL0_2.5 2.5r6
  getint@LIBNAUTYL0_2.5 2.5r6
+ getint_sl@LIBNAUTYL0_2.5 2.6r2
  getorbits@LIBNAUTYL0_2.5 2.5r6
  getorbitsmin@LIBNAUTYL0_2.5 2.5r6
  girth@LIBNAUTYL0_2.5 2.5r6
@@ -586,12 +659,16 @@ libnautyL0.so.2 libnauty2 #MINVER#
  nauty@LIBNAUTYL0_2.5 2.5r6
  nauty_check@LIBNAUTYL0_2.5 2.5r6
  nauty_freedyn@LIBNAUTYL0_2.5 2.5r6
+ nauty_kill_request@LIBNAUTYL0_2.5 2.6r2
  nauty_to_sg@LIBNAUTYL0_2.5 2.5r6
  newgroup@LIBNAUTYL0_2.5 2.5r6
  newpermrec@LIBNAUTYL0_2.5 2.5r6
  nextelement@LIBNAUTYL0_2.5 2.5r6
+ ntod6@LIBNAUTYL0_2.5 2.6r2
  ntog6@LIBNAUTYL0_2.5 2.5r6
+ ntois6@LIBNAUTYL0_2.5 2.6r2
  ntos6@LIBNAUTYL0_2.5 2.5r6
+ numdirtriangles@LIBNAUTYL0_2.5 2.6r2
  numtriangles1@LIBNAUTYL0_2.5 2.5r6
  numtriangles@LIBNAUTYL0_2.5 2.5r6
  ogf_linelen@LIBNAUTYL0_2.5 2.5r6
@@ -606,6 +683,8 @@ libnautyL0.so.2 libnauty2 #MINVER#
  putcanon_sg@LIBNAUTYL0_2.5 2.5r6
  putdegs@LIBNAUTYL0_2.5 2.5r6
  putdegs_sg@LIBNAUTYL0_2.5 2.5r6
+ putdegseq@LIBNAUTYL0_2.5 2.6r2
+ putdegseq_sg@LIBNAUTYL0_2.5 2.6r2
  putgraph@LIBNAUTYL0_2.5 2.5r6
  putgraph_sg@LIBNAUTYL0_2.5 2.5r6
  putmapping@LIBNAUTYL0_2.5 2.5r6
@@ -627,12 +706,18 @@ libnautyL0.so.2 libnauty2 #MINVER#
  ranreg_sg@LIBNAUTYL0_2.5 2.5r6
  read_sg@LIBNAUTYL0_2.5 2.5r6
  read_sg_loops@LIBNAUTYL0_2.5 2.5r6
+ read_sgg_loops@LIBNAUTYL0_2.5 2.6r2
  readg@LIBNAUTYL0_2.5 2.5r6
  readg_code@LIBNAUTYL0_2.5 2.5r6
+ readg_inc@LIBNAUTYL0_2.5 2.6r2
  readg_line@LIBNAUTYL0_2.5 2.5r6
+ readgg@LIBNAUTYL0_2.5 2.6r2
+ readgg_inc@LIBNAUTYL0_2.5 2.6r2
  readgraph@LIBNAUTYL0_2.5 2.5r6
  readgraph_sg@LIBNAUTYL0_2.5 2.5r6
+ readgraph_swg@LIBNAUTYL0_2.5 2.6r2
  readinteger@LIBNAUTYL0_2.5 2.5r6
+ readinteger_sl@LIBNAUTYL0_2.5 2.6r2
  readpc_sg@LIBNAUTYL0_2.5 2.5r6
  readpcle_sg@LIBNAUTYL0_2.5 2.5r6
  readperm@LIBNAUTYL0_2.5 2.5r6
@@ -652,9 +737,11 @@ libnautyL0.so.2 libnauty2 #MINVER#
  schreier_gens@LIBNAUTYL0_2.5 2.5r6
  sethash@LIBNAUTYL0_2.5 2.5r6
  setinter@LIBNAUTYL0_2.5 2.5r6
+ setlabptn@LIBNAUTYL0_2.5 2.6r2
  setnbhd@LIBNAUTYL0_2.5 2.5r6
  setsize@LIBNAUTYL0_2.5 2.5r6
  sg_to_nauty@LIBNAUTYL0_2.5 2.5r6
+ sgtod6@LIBNAUTYL0_2.5 2.6r2
  sgtog6@LIBNAUTYL0_2.5 2.5r6
  sgtos6@LIBNAUTYL0_2.5 2.5r6
  shortprune@LIBNAUTYL0_2.5 2.5r6
@@ -664,9 +751,12 @@ libnautyL0.so.2 libnauty2 #MINVER#
  stringcopy@LIBNAUTYL0_2.5 2.5r6
  stringcounts@LIBNAUTYL0_2.5 2.5r6
  stringtograph@LIBNAUTYL0_2.5 2.5r6
+ stringtograph_inc@LIBNAUTYL0_2.5 2.6r2
  stringtosparsegraph@LIBNAUTYL0_2.5 2.5r6
+ stronglyconnected@LIBNAUTYL0_2.5 2.6r2
  sublabel@LIBNAUTYL0_2.5 2.5r6
  sublabel_sg@LIBNAUTYL0_2.5 2.5r6
+ subpartition@LIBNAUTYL0_2.5 2.6r2
  targetcell@LIBNAUTYL0_2.5 2.5r6
  targetcell_sg@LIBNAUTYL0_2.5 2.5r6
  testcanlab@LIBNAUTYL0_2.5 2.5r6
@@ -681,9 +771,12 @@ libnautyL0.so.2 libnauty2 #MINVER#
  updatecan@LIBNAUTYL0_2.5 2.5r6
  updatecan_sg@LIBNAUTYL0_2.5 2.5r6
  updatecan_tr@LIBNAUTYL0_2.5 2.5r6
+ writed6@LIBNAUTYL0_2.5 2.6r2
+ writed6_sg@LIBNAUTYL0_2.5 2.6r2
  writeg6@LIBNAUTYL0_2.5 2.5r6
  writeg6_sg@LIBNAUTYL0_2.5 2.5r6
  writegroupsize@LIBNAUTYL0_2.5 2.5r6
+ writeis6@LIBNAUTYL0_2.5 2.6r2
  writelast@LIBNAUTYL0_2.5 2.5r6
  writeline@LIBNAUTYL0_2.5 2.5r6
  writepc_sg@LIBNAUTYL0_2.5 2.5r6
@@ -700,12 +793,17 @@ libnautyL1.so.2 libnauty2 #MINVER#
  adjacencies_sg@LIBNAUTYL1_2.5 2.5r6
  adjtriang@LIBNAUTYL1_2.5 2.5r6
  allgroup2@LIBNAUTYL1_2.5 2.5r6
+ allgroup3@LIBNAUTYL1_2.5 2.6r2
  allgroup@LIBNAUTYL1_2.5 2.5r6
  alloc_error@LIBNAUTYL1_2.5 2.5r6
  aresame_sg@LIBNAUTYL1_2.5 2.5r6
+ arg_double@LIBNAUTYL1_2.5 2.6r2
+ arg_doublerange@LIBNAUTYL1_2.5 2.6r2
  arg_int@LIBNAUTYL1_2.5 2.5r6
  arg_long@LIBNAUTYL1_2.5 2.5r6
  arg_range@LIBNAUTYL1_2.5 2.5r6
+ arg_sequence@LIBNAUTYL1_2.5 2.6r2
+ bipartiteside@LIBNAUTYL1_2.5 2.6r2
  breakout@LIBNAUTYL1_2.5 2.5r6
  cellcliq@LIBNAUTYL1_2.5 2.5r6
  cellfano2@LIBNAUTYL1_2.5 2.5r6
@@ -717,6 +815,7 @@ libnautyL1.so.2 libnauty2 #MINVER#
  celltrips@LIBNAUTYL1_2.5 2.5r6
  cheapautom@LIBNAUTYL1_2.5 2.5r6
  cheapautom_sg@LIBNAUTYL1_2.5 2.5r6
+ checkgline@LIBNAUTYL1_2.5 2.6r2
  cliques@LIBNAUTYL1_2.5 2.5r6
  commonnbrs@LIBNAUTYL1_2.5 2.5r6
  comparelab_tr@LIBNAUTYL1_2.5 2.5r6
@@ -731,6 +830,7 @@ libnautyL1.so.2 libnauty2 #MINVER#
  copycomment@LIBNAUTYL1_2.5 2.5r6
  cyclecount1@LIBNAUTYL1_2.5 2.5r6
  cyclecount@LIBNAUTYL1_2.5 2.5r6
+ degstats2@LIBNAUTYL1_2.5 2.6r2
  degstats@LIBNAUTYL1_2.5 2.5r6
  delete1@LIBNAUTYL1_2.5 2.5r6
  deleteunmarked@LIBNAUTYL1_2.5 2.5r6
@@ -742,7 +842,9 @@ libnautyL1.so.2 libnauty2 #MINVER#
  distances_sg@LIBNAUTYL1_2.5 2.5r6
  distvals@LIBNAUTYL1_2.5 2.5r6
  doref@LIBNAUTYL1_2.5 2.5r6
+ doublevalue@LIBNAUTYL1_2.5 2.6r2
  dumpschreier@LIBNAUTYL1_2.5 2.5r6
+ encodegraphsize@LIBNAUTYL1_2.5 2.6r2
  expandschreier@LIBNAUTYL1_2.5 2.5r6
  extra_autom@LIBNAUTYL1_2.5 2.5r6
  extra_level@LIBNAUTYL1_2.5 2.5r6
@@ -758,11 +860,13 @@ libnautyL1.so.2 libnauty2 #MINVER#
  flushline@LIBNAUTYL1_2.5 2.5r6
  fmperm@LIBNAUTYL1_2.5 2.5r6
  fmptn@LIBNAUTYL1_2.5 2.5r6
+ freegroup@LIBNAUTYL1_2.5 2.6r2
  freepermrec@LIBNAUTYL1_2.5 2.5r6
  freeschreier@LIBNAUTYL1_2.5 2.5r6
  getbigcells@LIBNAUTYL1_2.5 2.5r6
  getecline@LIBNAUTYL1_2.5 2.5r6
  getint@LIBNAUTYL1_2.5 2.5r6
+ getint_sl@LIBNAUTYL1_2.5 2.6r2
  getorbits@LIBNAUTYL1_2.5 2.5r6
  getorbitsmin@LIBNAUTYL1_2.5 2.5r6
  girth@LIBNAUTYL1_2.5 2.5r6
@@ -817,12 +921,16 @@ libnautyL1.so.2 libnauty2 #MINVER#
  nauty@LIBNAUTYL1_2.5 2.5r6
  nauty_check@LIBNAUTYL1_2.5 2.5r6
  nauty_freedyn@LIBNAUTYL1_2.5 2.5r6
+ nauty_kill_request@LIBNAUTYL1_2.5 2.6r2
  nauty_to_sg@LIBNAUTYL1_2.5 2.5r6
  newgroup@LIBNAUTYL1_2.5 2.5r6
  newpermrec@LIBNAUTYL1_2.5 2.5r6
  nextelement@LIBNAUTYL1_2.5 2.5r6
+ ntod6@LIBNAUTYL1_2.5 2.6r2
  ntog6@LIBNAUTYL1_2.5 2.5r6
+ ntois6@LIBNAUTYL1_2.5 2.6r2
  ntos6@LIBNAUTYL1_2.5 2.5r6
+ numdirtriangles@LIBNAUTYL1_2.5 2.6r2
  numtriangles1@LIBNAUTYL1_2.5 2.5r6
  numtriangles@LIBNAUTYL1_2.5 2.5r6
  ogf_linelen@LIBNAUTYL1_2.5 2.5r6
@@ -837,6 +945,8 @@ libnautyL1.so.2 libnauty2 #MINVER#
  putcanon_sg@LIBNAUTYL1_2.5 2.5r6
  putdegs@LIBNAUTYL1_2.5 2.5r6
  putdegs_sg@LIBNAUTYL1_2.5 2.5r6
+ putdegseq@LIBNAUTYL1_2.5 2.6r2
+ putdegseq_sg@LIBNAUTYL1_2.5 2.6r2
  putgraph@LIBNAUTYL1_2.5 2.5r6
  putgraph_sg@LIBNAUTYL1_2.5 2.5r6
  putmapping@LIBNAUTYL1_2.5 2.5r6
@@ -858,12 +968,18 @@ libnautyL1.so.2 libnauty2 #MINVER#
  ranreg_sg@LIBNAUTYL1_2.5 2.5r6
  read_sg@LIBNAUTYL1_2.5 2.5r6
  read_sg_loops@LIBNAUTYL1_2.5 2.5r6
+ read_sgg_loops@LIBNAUTYL1_2.5 2.6r2
  readg@LIBNAUTYL1_2.5 2.5r6
  readg_code@LIBNAUTYL1_2.5 2.5r6
+ readg_inc@LIBNAUTYL1_2.5 2.6r2
  readg_line@LIBNAUTYL1_2.5 2.5r6
+ readgg@LIBNAUTYL1_2.5 2.6r2
+ readgg_inc@LIBNAUTYL1_2.5 2.6r2
  readgraph@LIBNAUTYL1_2.5 2.5r6
  readgraph_sg@LIBNAUTYL1_2.5 2.5r6
+ readgraph_swg@LIBNAUTYL1_2.5 2.6r2
  readinteger@LIBNAUTYL1_2.5 2.5r6
+ readinteger_sl@LIBNAUTYL1_2.5 2.6r2
  readpc_sg@LIBNAUTYL1_2.5 2.5r6
  readpcle_sg@LIBNAUTYL1_2.5 2.5r6
  readperm@LIBNAUTYL1_2.5 2.5r6
@@ -883,9 +999,11 @@ libnautyL1.so.2 libnauty2 #MINVER#
  schreier_gens@LIBNAUTYL1_2.5 2.5r6
  sethash@LIBNAUTYL1_2.5 2.5r6
  setinter@LIBNAUTYL1_2.5 2.5r6
+ setlabptn@LIBNAUTYL1_2.5 2.6r2
  setnbhd@LIBNAUTYL1_2.5 2.5r6
  setsize@LIBNAUTYL1_2.5 2.5r6
  sg_to_nauty@LIBNAUTYL1_2.5 2.5r6
+ sgtod6@LIBNAUTYL1_2.5 2.6r2
  sgtog6@LIBNAUTYL1_2.5 2.5r6
  sgtos6@LIBNAUTYL1_2.5 2.5r6
  shortprune@LIBNAUTYL1_2.5 2.5r6
@@ -895,9 +1013,12 @@ libnautyL1.so.2 libnauty2 #MINVER#
  stringcopy@LIBNAUTYL1_2.5 2.5r6
  stringcounts@LIBNAUTYL1_2.5 2.5r6
  stringtograph@LIBNAUTYL1_2.5 2.5r6
+ stringtograph_inc@LIBNAUTYL1_2.5 2.6r2
  stringtosparsegraph@LIBNAUTYL1_2.5 2.5r6
+ stronglyconnected@LIBNAUTYL1_2.5 2.6r2
  sublabel@LIBNAUTYL1_2.5 2.5r6
  sublabel_sg@LIBNAUTYL1_2.5 2.5r6
+ subpartition@LIBNAUTYL1_2.5 2.6r2
  targetcell@LIBNAUTYL1_2.5 2.5r6
  targetcell_sg@LIBNAUTYL1_2.5 2.5r6
  testcanlab@LIBNAUTYL1_2.5 2.5r6
@@ -912,9 +1033,12 @@ libnautyL1.so.2 libnauty2 #MINVER#
  updatecan@LIBNAUTYL1_2.5 2.5r6
  updatecan_sg@LIBNAUTYL1_2.5 2.5r6
  updatecan_tr@LIBNAUTYL1_2.5 2.5r6
+ writed6@LIBNAUTYL1_2.5 2.6r2
+ writed6_sg@LIBNAUTYL1_2.5 2.6r2
  writeg6@LIBNAUTYL1_2.5 2.5r6
  writeg6_sg@LIBNAUTYL1_2.5 2.5r6
  writegroupsize@LIBNAUTYL1_2.5 2.5r6
+ writeis6@LIBNAUTYL1_2.5 2.6r2
  writelast@LIBNAUTYL1_2.5 2.5r6
  writeline@LIBNAUTYL1_2.5 2.5r6
  writepc_sg@LIBNAUTYL1_2.5 2.5r6
@@ -931,12 +1055,17 @@ libnautyS0.so.2 libnauty2 #MINVER#
  adjacencies_sg@LIBNAUTYS0_2.5 2.5r6
  adjtriang@LIBNAUTYS0_2.5 2.5r6
  allgroup2@LIBNAUTYS0_2.5 2.5r6
+ allgroup3@LIBNAUTYS0_2.5 2.6r2
  allgroup@LIBNAUTYS0_2.5 2.5r6
  alloc_error@LIBNAUTYS0_2.5 2.5r6
  aresame_sg@LIBNAUTYS0_2.5 2.5r6
+ arg_double@LIBNAUTYS0_2.5 2.6r2
+ arg_doublerange@LIBNAUTYS0_2.5 2.6r2
  arg_int@LIBNAUTYS0_2.5 2.5r6
  arg_long@LIBNAUTYS0_2.5 2.5r6
  arg_range@LIBNAUTYS0_2.5 2.5r6
+ arg_sequence@LIBNAUTYS0_2.5 2.6r2
+ bipartiteside@LIBNAUTYS0_2.5 2.6r2
  breakout@LIBNAUTYS0_2.5 2.5r6
  cellcliq@LIBNAUTYS0_2.5 2.5r6
  cellfano2@LIBNAUTYS0_2.5 2.5r6
@@ -948,6 +1077,7 @@ libnautyS0.so.2 libnauty2 #MINVER#
  celltrips@LIBNAUTYS0_2.5 2.5r6
  cheapautom@LIBNAUTYS0_2.5 2.5r6
  cheapautom_sg@LIBNAUTYS0_2.5 2.5r6
+ checkgline@LIBNAUTYS0_2.5 2.6r2
  cliques@LIBNAUTYS0_2.5 2.5r6
  commonnbrs@LIBNAUTYS0_2.5 2.5r6
  comparelab_tr@LIBNAUTYS0_2.5 2.5r6
@@ -962,6 +1092,7 @@ libnautyS0.so.2 libnauty2 #MINVER#
  copycomment@LIBNAUTYS0_2.5 2.5r6
  cyclecount1@LIBNAUTYS0_2.5 2.5r6
  cyclecount@LIBNAUTYS0_2.5 2.5r6
+ degstats2@LIBNAUTYS0_2.5 2.6r2
  degstats@LIBNAUTYS0_2.5 2.5r6
  delete1@LIBNAUTYS0_2.5 2.5r6
  deleteunmarked@LIBNAUTYS0_2.5 2.5r6
@@ -973,7 +1104,9 @@ libnautyS0.so.2 libnauty2 #MINVER#
  distances_sg@LIBNAUTYS0_2.5 2.5r6
  distvals@LIBNAUTYS0_2.5 2.5r6
  doref@LIBNAUTYS0_2.5 2.5r6
+ doublevalue@LIBNAUTYS0_2.5 2.6r2
  dumpschreier@LIBNAUTYS0_2.5 2.5r6
+ encodegraphsize@LIBNAUTYS0_2.5 2.6r2
  expandschreier@LIBNAUTYS0_2.5 2.5r6
  extra_autom@LIBNAUTYS0_2.5 2.5r6
  extra_level@LIBNAUTYS0_2.5 2.5r6
@@ -989,11 +1122,13 @@ libnautyS0.so.2 libnauty2 #MINVER#
  flushline@LIBNAUTYS0_2.5 2.5r6
  fmperm@LIBNAUTYS0_2.5 2.5r6
  fmptn@LIBNAUTYS0_2.5 2.5r6
+ freegroup@LIBNAUTYS0_2.5 2.6r2
  freepermrec@LIBNAUTYS0_2.5 2.5r6
  freeschreier@LIBNAUTYS0_2.5 2.5r6
  getbigcells@LIBNAUTYS0_2.5 2.5r6
  getecline@LIBNAUTYS0_2.5 2.5r6
  getint@LIBNAUTYS0_2.5 2.5r6
+ getint_sl@LIBNAUTYS0_2.5 2.6r2
  getorbits@LIBNAUTYS0_2.5 2.5r6
  getorbitsmin@LIBNAUTYS0_2.5 2.5r6
  girth@LIBNAUTYS0_2.5 2.5r6
@@ -1048,12 +1183,16 @@ libnautyS0.so.2 libnauty2 #MINVER#
  nauty@LIBNAUTYS0_2.5 2.5r6
  nauty_check@LIBNAUTYS0_2.5 2.5r6
  nauty_freedyn@LIBNAUTYS0_2.5 2.5r6
+ nauty_kill_request@LIBNAUTYS0_2.5 2.6r2
  nauty_to_sg@LIBNAUTYS0_2.5 2.5r6
  newgroup@LIBNAUTYS0_2.5 2.5r6
  newpermrec@LIBNAUTYS0_2.5 2.5r6
  nextelement@LIBNAUTYS0_2.5 2.5r6
+ ntod6@LIBNAUTYS0_2.5 2.6r2
  ntog6@LIBNAUTYS0_2.5 2.5r6
+ ntois6@LIBNAUTYS0_2.5 2.6r2
  ntos6@LIBNAUTYS0_2.5 2.5r6
+ numdirtriangles@LIBNAUTYS0_2.5 2.6r2
  numtriangles1@LIBNAUTYS0_2.5 2.5r6
  numtriangles@LIBNAUTYS0_2.5 2.5r6
  ogf_linelen@LIBNAUTYS0_2.5 2.5r6
@@ -1068,6 +1207,8 @@ libnautyS0.so.2 libnauty2 #MINVER#
  putcanon_sg@LIBNAUTYS0_2.5 2.5r6
  putdegs@LIBNAUTYS0_2.5 2.5r6
  putdegs_sg@LIBNAUTYS0_2.5 2.5r6
+ putdegseq@LIBNAUTYS0_2.5 2.6r2
+ putdegseq_sg@LIBNAUTYS0_2.5 2.6r2
  putgraph@LIBNAUTYS0_2.5 2.5r6
  putgraph_sg@LIBNAUTYS0_2.5 2.5r6
  putmapping@LIBNAUTYS0_2.5 2.5r6
@@ -1089,12 +1230,18 @@ libnautyS0.so.2 libnauty2 #MINVER#
  ranreg_sg@LIBNAUTYS0_2.5 2.5r6
  read_sg@LIBNAUTYS0_2.5 2.5r6
  read_sg_loops@LIBNAUTYS0_2.5 2.5r6
+ read_sgg_loops@LIBNAUTYS0_2.5 2.6r2
  readg@LIBNAUTYS0_2.5 2.5r6
  readg_code@LIBNAUTYS0_2.5 2.5r6
+ readg_inc@LIBNAUTYS0_2.5 2.6r2
  readg_line@LIBNAUTYS0_2.5 2.5r6
+ readgg@LIBNAUTYS0_2.5 2.6r2
+ readgg_inc@LIBNAUTYS0_2.5 2.6r2
  readgraph@LIBNAUTYS0_2.5 2.5r6
  readgraph_sg@LIBNAUTYS0_2.5 2.5r6
+ readgraph_swg@LIBNAUTYS0_2.5 2.6r2
  readinteger@LIBNAUTYS0_2.5 2.5r6
+ readinteger_sl@LIBNAUTYS0_2.5 2.6r2
  readpc_sg@LIBNAUTYS0_2.5 2.5r6
  readpcle_sg@LIBNAUTYS0_2.5 2.5r6
  readperm@LIBNAUTYS0_2.5 2.5r6
@@ -1114,9 +1261,11 @@ libnautyS0.so.2 libnauty2 #MINVER#
  schreier_gens@LIBNAUTYS0_2.5 2.5r6
  sethash@LIBNAUTYS0_2.5 2.5r6
  setinter@LIBNAUTYS0_2.5 2.5r6
+ setlabptn@LIBNAUTYS0_2.5 2.6r2
  setnbhd@LIBNAUTYS0_2.5 2.5r6
  setsize@LIBNAUTYS0_2.5 2.5r6
  sg_to_nauty@LIBNAUTYS0_2.5 2.5r6
+ sgtod6@LIBNAUTYS0_2.5 2.6r2
  sgtog6@LIBNAUTYS0_2.5 2.5r6
  sgtos6@LIBNAUTYS0_2.5 2.5r6
  shortprune@LIBNAUTYS0_2.5 2.5r6
@@ -1126,9 +1275,12 @@ libnautyS0.so.2 libnauty2 #MINVER#
  stringcopy@LIBNAUTYS0_2.5 2.5r6
  stringcounts@LIBNAUTYS0_2.5 2.5r6
  stringtograph@LIBNAUTYS0_2.5 2.5r6
+ stringtograph_inc@LIBNAUTYS0_2.5 2.6r2
  stringtosparsegraph@LIBNAUTYS0_2.5 2.5r6
+ stronglyconnected@LIBNAUTYS0_2.5 2.6r2
  sublabel@LIBNAUTYS0_2.5 2.5r6
  sublabel_sg@LIBNAUTYS0_2.5 2.5r6
+ subpartition@LIBNAUTYS0_2.5 2.6r2
  targetcell@LIBNAUTYS0_2.5 2.5r6
  targetcell_sg@LIBNAUTYS0_2.5 2.5r6
  testcanlab@LIBNAUTYS0_2.5 2.5r6
@@ -1143,9 +1295,12 @@ libnautyS0.so.2 libnauty2 #MINVER#
  updatecan@LIBNAUTYS0_2.5 2.5r6
  updatecan_sg@LIBNAUTYS0_2.5 2.5r6
  updatecan_tr@LIBNAUTYS0_2.5 2.5r6
+ writed6@LIBNAUTYS0_2.5 2.6r2
+ writed6_sg@LIBNAUTYS0_2.5 2.6r2
  writeg6@LIBNAUTYS0_2.5 2.5r6
  writeg6_sg@LIBNAUTYS0_2.5 2.5r6
  writegroupsize@LIBNAUTYS0_2.5 2.5r6
+ writeis6@LIBNAUTYS0_2.5 2.6r2
  writelast@LIBNAUTYS0_2.5 2.5r6
  writeline@LIBNAUTYS0_2.5 2.5r6
  writepc_sg@LIBNAUTYS0_2.5 2.5r6
@@ -1162,12 +1317,17 @@ libnautyS1.so.2 libnauty2 #MINVER#
  adjacencies_sg@LIBNAUTYS1_2.5 2.5r6
  adjtriang@LIBNAUTYS1_2.5 2.5r6
  allgroup2@LIBNAUTYS1_2.5 2.5r6
+ allgroup3@LIBNAUTYS1_2.5 2.6r2
  allgroup@LIBNAUTYS1_2.5 2.5r6
  alloc_error@LIBNAUTYS1_2.5 2.5r6
  aresame_sg@LIBNAUTYS1_2.5 2.5r6
+ arg_double@LIBNAUTYS1_2.5 2.6r2
+ arg_doublerange@LIBNAUTYS1_2.5 2.6r2
  arg_int@LIBNAUTYS1_2.5 2.5r6
  arg_long@LIBNAUTYS1_2.5 2.5r6
  arg_range@LIBNAUTYS1_2.5 2.5r6
+ arg_sequence@LIBNAUTYS1_2.5 2.6r2
+ bipartiteside@LIBNAUTYS1_2.5 2.6r2
  breakout@LIBNAUTYS1_2.5 2.5r6
  cellcliq@LIBNAUTYS1_2.5 2.5r6
  cellfano2@LIBNAUTYS1_2.5 2.5r6
@@ -1179,6 +1339,7 @@ libnautyS1.so.2 libnauty2 #MINVER#
  celltrips@LIBNAUTYS1_2.5 2.5r6
  cheapautom@LIBNAUTYS1_2.5 2.5r6
  cheapautom_sg@LIBNAUTYS1_2.5 2.5r6
+ checkgline@LIBNAUTYS1_2.5 2.6r2
  cliques@LIBNAUTYS1_2.5 2.5r6
  commonnbrs@LIBNAUTYS1_2.5 2.5r6
  comparelab_tr@LIBNAUTYS1_2.5 2.5r6
@@ -1193,6 +1354,7 @@ libnautyS1.so.2 libnauty2 #MINVER#
  copycomment@LIBNAUTYS1_2.5 2.5r6
  cyclecount1@LIBNAUTYS1_2.5 2.5r6
  cyclecount@LIBNAUTYS1_2.5 2.5r6
+ degstats2@LIBNAUTYS1_2.5 2.6r2
  degstats@LIBNAUTYS1_2.5 2.5r6
  delete1@LIBNAUTYS1_2.5 2.5r6
  deleteunmarked@LIBNAUTYS1_2.5 2.5r6
@@ -1204,7 +1366,9 @@ libnautyS1.so.2 libnauty2 #MINVER#
  distances_sg@LIBNAUTYS1_2.5 2.5r6
  distvals@LIBNAUTYS1_2.5 2.5r6
  doref@LIBNAUTYS1_2.5 2.5r6
+ doublevalue@LIBNAUTYS1_2.5 2.6r2
  dumpschreier@LIBNAUTYS1_2.5 2.5r6
+ encodegraphsize@LIBNAUTYS1_2.5 2.6r2
  expandschreier@LIBNAUTYS1_2.5 2.5r6
  extra_autom@LIBNAUTYS1_2.5 2.5r6
  extra_level@LIBNAUTYS1_2.5 2.5r6
@@ -1220,11 +1384,13 @@ libnautyS1.so.2 libnauty2 #MINVER#
  flushline@LIBNAUTYS1_2.5 2.5r6
  fmperm@LIBNAUTYS1_2.5 2.5r6
  fmptn@LIBNAUTYS1_2.5 2.5r6
+ freegroup@LIBNAUTYS1_2.5 2.6r2
  freepermrec@LIBNAUTYS1_2.5 2.5r6
  freeschreier@LIBNAUTYS1_2.5 2.5r6
  getbigcells@LIBNAUTYS1_2.5 2.5r6
  getecline@LIBNAUTYS1_2.5 2.5r6
  getint@LIBNAUTYS1_2.5 2.5r6
+ getint_sl@LIBNAUTYS1_2.5 2.6r2
  getorbits@LIBNAUTYS1_2.5 2.5r6
  getorbitsmin@LIBNAUTYS1_2.5 2.5r6
  girth@LIBNAUTYS1_2.5 2.5r6
@@ -1279,12 +1445,16 @@ libnautyS1.so.2 libnauty2 #MINVER#
  nauty@LIBNAUTYS1_2.5 2.5r6
  nauty_check@LIBNAUTYS1_2.5 2.5r6
  nauty_freedyn@LIBNAUTYS1_2.5 2.5r6
+ nauty_kill_request@LIBNAUTYS1_2.5 2.6r2
  nauty_to_sg@LIBNAUTYS1_2.5 2.5r6
  newgroup@LIBNAUTYS1_2.5 2.5r6
  newpermrec@LIBNAUTYS1_2.5 2.5r6
  nextelement@LIBNAUTYS1_2.5 2.5r6
+ ntod6@LIBNAUTYS1_2.5 2.6r2
  ntog6@LIBNAUTYS1_2.5 2.5r6
+ ntois6@LIBNAUTYS1_2.5 2.6r2
  ntos6@LIBNAUTYS1_2.5 2.5r6
+ numdirtriangles@LIBNAUTYS1_2.5 2.6r2
  numtriangles1@LIBNAUTYS1_2.5 2.5r6
  numtriangles@LIBNAUTYS1_2.5 2.5r6
  ogf_linelen@LIBNAUTYS1_2.5 2.5r6
@@ -1299,6 +1469,8 @@ libnautyS1.so.2 libnauty2 #MINVER#
  putcanon_sg@LIBNAUTYS1_2.5 2.5r6
  putdegs@LIBNAUTYS1_2.5 2.5r6
  putdegs_sg@LIBNAUTYS1_2.5 2.5r6
+ putdegseq@LIBNAUTYS1_2.5 2.6r2
+ putdegseq_sg@LIBNAUTYS1_2.5 2.6r2
  putgraph@LIBNAUTYS1_2.5 2.5r6
  putgraph_sg@LIBNAUTYS1_2.5 2.5r6
  putmapping@LIBNAUTYS1_2.5 2.5r6
@@ -1320,12 +1492,18 @@ libnautyS1.so.2 libnauty2 #MINVER#
  ranreg_sg@LIBNAUTYS1_2.5 2.5r6
  read_sg@LIBNAUTYS1_2.5 2.5r6
  read_sg_loops@LIBNAUTYS1_2.5 2.5r6
+ read_sgg_loops@LIBNAUTYS1_2.5 2.6r2
  readg@LIBNAUTYS1_2.5 2.5r6
  readg_code@LIBNAUTYS1_2.5 2.5r6
+ readg_inc@LIBNAUTYS1_2.5 2.6r2
  readg_line@LIBNAUTYS1_2.5 2.5r6
+ readgg@LIBNAUTYS1_2.5 2.6r2
+ readgg_inc@LIBNAUTYS1_2.5 2.6r2
  readgraph@LIBNAUTYS1_2.5 2.5r6
  readgraph_sg@LIBNAUTYS1_2.5 2.5r6
+ readgraph_swg@LIBNAUTYS1_2.5 2.6r2
  readinteger@LIBNAUTYS1_2.5 2.5r6
+ readinteger_sl@LIBNAUTYS1_2.5 2.6r2
  readpc_sg@LIBNAUTYS1_2.5 2.5r6
  readpcle_sg@LIBNAUTYS1_2.5 2.5r6
  readperm@LIBNAUTYS1_2.5 2.5r6
@@ -1345,9 +1523,11 @@ libnautyS1.so.2 libnauty2 #MINVER#
  schreier_gens@LIBNAUTYS1_2.5 2.5r6
  sethash@LIBNAUTYS1_2.5 2.5r6
  setinter@LIBNAUTYS1_2.5 2.5r6
+ setlabptn@LIBNAUTYS1_2.5 2.6r2
  setnbhd@LIBNAUTYS1_2.5 2.5r6
  setsize@LIBNAUTYS1_2.5 2.5r6
  sg_to_nauty@LIBNAUTYS1_2.5 2.5r6
+ sgtod6@LIBNAUTYS1_2.5 2.6r2
  sgtog6@LIBNAUTYS1_2.5 2.5r6
  sgtos6@LIBNAUTYS1_2.5 2.5r6
  shortprune@LIBNAUTYS1_2.5 2.5r6
@@ -1357,9 +1537,12 @@ libnautyS1.so.2 libnauty2 #MINVER#
  stringcopy@LIBNAUTYS1_2.5 2.5r6
  stringcounts@LIBNAUTYS1_2.5 2.5r6
  stringtograph@LIBNAUTYS1_2.5 2.5r6
+ stringtograph_inc@LIBNAUTYS1_2.5 2.6r2
  stringtosparsegraph@LIBNAUTYS1_2.5 2.5r6
+ stronglyconnected@LIBNAUTYS1_2.5 2.6r2
  sublabel@LIBNAUTYS1_2.5 2.5r6
  sublabel_sg@LIBNAUTYS1_2.5 2.5r6
+ subpartition@LIBNAUTYS1_2.5 2.6r2
  targetcell@LIBNAUTYS1_2.5 2.5r6
  targetcell_sg@LIBNAUTYS1_2.5 2.5r6
  testcanlab@LIBNAUTYS1_2.5 2.5r6
@@ -1374,9 +1557,12 @@ libnautyS1.so.2 libnauty2 #MINVER#
  updatecan@LIBNAUTYS1_2.5 2.5r6
  updatecan_sg@LIBNAUTYS1_2.5 2.5r6
  updatecan_tr@LIBNAUTYS1_2.5 2.5r6
+ writed6@LIBNAUTYS1_2.5 2.6r2
+ writed6_sg@LIBNAUTYS1_2.5 2.6r2
  writeg6@LIBNAUTYS1_2.5 2.5r6
  writeg6_sg@LIBNAUTYS1_2.5 2.5r6
  writegroupsize@LIBNAUTYS1_2.5 2.5r6
+ writeis6@LIBNAUTYS1_2.5 2.6r2
  writelast@LIBNAUTYS1_2.5 2.5r6
  writeline@LIBNAUTYS1_2.5 2.5r6
  writepc_sg@LIBNAUTYS1_2.5 2.5r6
@@ -1393,12 +1579,17 @@ libnautyW0.so.2 libnauty2 #MINVER#
  adjacencies_sg@LIBNAUTYW0_2.5 2.5r6
  adjtriang@LIBNAUTYW0_2.5 2.5r6
  allgroup2@LIBNAUTYW0_2.5 2.5r6
+ allgroup3@LIBNAUTYW0_2.5 2.6r2
  allgroup@LIBNAUTYW0_2.5 2.5r6
  alloc_error@LIBNAUTYW0_2.5 2.5r6
  aresame_sg@LIBNAUTYW0_2.5 2.5r6
+ arg_double@LIBNAUTYW0_2.5 2.6r2
+ arg_doublerange@LIBNAUTYW0_2.5 2.6r2
  arg_int@LIBNAUTYW0_2.5 2.5r6
  arg_long@LIBNAUTYW0_2.5 2.5r6
  arg_range@LIBNAUTYW0_2.5 2.5r6
+ arg_sequence@LIBNAUTYW0_2.5 2.6r2
+ bipartiteside@LIBNAUTYW0_2.5 2.6r2
  breakout@LIBNAUTYW0_2.5 2.5r6
  cellcliq@LIBNAUTYW0_2.5 2.5r6
  cellfano2@LIBNAUTYW0_2.5 2.5r6
@@ -1410,6 +1601,7 @@ libnautyW0.so.2 libnauty2 #MINVER#
  celltrips@LIBNAUTYW0_2.5 2.5r6
  cheapautom@LIBNAUTYW0_2.5 2.5r6
  cheapautom_sg@LIBNAUTYW0_2.5 2.5r6
+ checkgline@LIBNAUTYW0_2.5 2.6r2
  cliques@LIBNAUTYW0_2.5 2.5r6
  commonnbrs@LIBNAUTYW0_2.5 2.5r6
  comparelab_tr@LIBNAUTYW0_2.5 2.5r6
@@ -1424,6 +1616,7 @@ libnautyW0.so.2 libnauty2 #MINVER#
  copycomment@LIBNAUTYW0_2.5 2.5r6
  cyclecount1@LIBNAUTYW0_2.5 2.5r6
  cyclecount@LIBNAUTYW0_2.5 2.5r6
+ degstats2@LIBNAUTYW0_2.5 2.6r2
  degstats@LIBNAUTYW0_2.5 2.5r6
  delete1@LIBNAUTYW0_2.5 2.5r6
  deleteunmarked@LIBNAUTYW0_2.5 2.5r6
@@ -1435,7 +1628,9 @@ libnautyW0.so.2 libnauty2 #MINVER#
  distances_sg@LIBNAUTYW0_2.5 2.5r6
  distvals@LIBNAUTYW0_2.5 2.5r6
  doref@LIBNAUTYW0_2.5 2.5r6
+ doublevalue@LIBNAUTYW0_2.5 2.6r2
  dumpschreier@LIBNAUTYW0_2.5 2.5r6
+ encodegraphsize@LIBNAUTYW0_2.5 2.6r2
  expandschreier@LIBNAUTYW0_2.5 2.5r6
  extra_autom@LIBNAUTYW0_2.5 2.5r6
  extra_level@LIBNAUTYW0_2.5 2.5r6
@@ -1451,11 +1646,13 @@ libnautyW0.so.2 libnauty2 #MINVER#
  flushline@LIBNAUTYW0_2.5 2.5r6
  fmperm@LIBNAUTYW0_2.5 2.5r6
  fmptn@LIBNAUTYW0_2.5 2.5r6
+ freegroup@LIBNAUTYW0_2.5 2.6r2
  freepermrec@LIBNAUTYW0_2.5 2.5r6
  freeschreier@LIBNAUTYW0_2.5 2.5r6
  getbigcells@LIBNAUTYW0_2.5 2.5r6
  getecline@LIBNAUTYW0_2.5 2.5r6
  getint@LIBNAUTYW0_2.5 2.5r6
+ getint_sl@LIBNAUTYW0_2.5 2.6r2
  getorbits@LIBNAUTYW0_2.5 2.5r6
  getorbitsmin@LIBNAUTYW0_2.5 2.5r6
  girth@LIBNAUTYW0_2.5 2.5r6
@@ -1510,12 +1707,16 @@ libnautyW0.so.2 libnauty2 #MINVER#
  nauty@LIBNAUTYW0_2.5 2.5r6
  nauty_check@LIBNAUTYW0_2.5 2.5r6
  nauty_freedyn@LIBNAUTYW0_2.5 2.5r6
+ nauty_kill_request@LIBNAUTYW0_2.5 2.6r2
  nauty_to_sg@LIBNAUTYW0_2.5 2.5r6
  newgroup@LIBNAUTYW0_2.5 2.5r6
  newpermrec@LIBNAUTYW0_2.5 2.5r6
  nextelement@LIBNAUTYW0_2.5 2.5r6
+ ntod6@LIBNAUTYW0_2.5 2.6r2
  ntog6@LIBNAUTYW0_2.5 2.5r6
+ ntois6@LIBNAUTYW0_2.5 2.6r2
  ntos6@LIBNAUTYW0_2.5 2.5r6
+ numdirtriangles@LIBNAUTYW0_2.5 2.6r2
  numtriangles1@LIBNAUTYW0_2.5 2.5r6
  numtriangles@LIBNAUTYW0_2.5 2.5r6
  ogf_linelen@LIBNAUTYW0_2.5 2.5r6
@@ -1530,6 +1731,8 @@ libnautyW0.so.2 libnauty2 #MINVER#
  putcanon_sg@LIBNAUTYW0_2.5 2.5r6
  putdegs@LIBNAUTYW0_2.5 2.5r6
  putdegs_sg@LIBNAUTYW0_2.5 2.5r6
+ putdegseq@LIBNAUTYW0_2.5 2.6r2
+ putdegseq_sg@LIBNAUTYW0_2.5 2.6r2
  putgraph@LIBNAUTYW0_2.5 2.5r6
  putgraph_sg@LIBNAUTYW0_2.5 2.5r6
  putmapping@LIBNAUTYW0_2.5 2.5r6
@@ -1551,12 +1754,18 @@ libnautyW0.so.2 libnauty2 #MINVER#
  ranreg_sg@LIBNAUTYW0_2.5 2.5r6
  read_sg@LIBNAUTYW0_2.5 2.5r6
  read_sg_loops@LIBNAUTYW0_2.5 2.5r6
+ read_sgg_loops@LIBNAUTYW0_2.5 2.6r2
  readg@LIBNAUTYW0_2.5 2.5r6
  readg_code@LIBNAUTYW0_2.5 2.5r6
+ readg_inc@LIBNAUTYW0_2.5 2.6r2
  readg_line@LIBNAUTYW0_2.5 2.5r6
+ readgg@LIBNAUTYW0_2.5 2.6r2
+ readgg_inc@LIBNAUTYW0_2.5 2.6r2
  readgraph@LIBNAUTYW0_2.5 2.5r6
  readgraph_sg@LIBNAUTYW0_2.5 2.5r6
+ readgraph_swg@LIBNAUTYW0_2.5 2.6r2
  readinteger@LIBNAUTYW0_2.5 2.5r6
+ readinteger_sl@LIBNAUTYW0_2.5 2.6r2
  readpc_sg@LIBNAUTYW0_2.5 2.5r6
  readpcle_sg@LIBNAUTYW0_2.5 2.5r6
  readperm@LIBNAUTYW0_2.5 2.5r6
@@ -1576,9 +1785,11 @@ libnautyW0.so.2 libnauty2 #MINVER#
  schreier_gens@LIBNAUTYW0_2.5 2.5r6
  sethash@LIBNAUTYW0_2.5 2.5r6
  setinter@LIBNAUTYW0_2.5 2.5r6
+ setlabptn@LIBNAUTYW0_2.5 2.6r2
  setnbhd@LIBNAUTYW0_2.5 2.5r6
  setsize@LIBNAUTYW0_2.5 2.5r6
  sg_to_nauty@LIBNAUTYW0_2.5 2.5r6
+ sgtod6@LIBNAUTYW0_2.5 2.6r2
  sgtog6@LIBNAUTYW0_2.5 2.5r6
  sgtos6@LIBNAUTYW0_2.5 2.5r6
  shortprune@LIBNAUTYW0_2.5 2.5r6
@@ -1588,9 +1799,12 @@ libnautyW0.so.2 libnauty2 #MINVER#
  stringcopy@LIBNAUTYW0_2.5 2.5r6
  stringcounts@LIBNAUTYW0_2.5 2.5r6
  stringtograph@LIBNAUTYW0_2.5 2.5r6
+ stringtograph_inc@LIBNAUTYW0_2.5 2.6r2
  stringtosparsegraph@LIBNAUTYW0_2.5 2.5r6
+ stronglyconnected@LIBNAUTYW0_2.5 2.6r2
  sublabel@LIBNAUTYW0_2.5 2.5r6
  sublabel_sg@LIBNAUTYW0_2.5 2.5r6
+ subpartition@LIBNAUTYW0_2.5 2.6r2
  targetcell@LIBNAUTYW0_2.5 2.5r6
  targetcell_sg@LIBNAUTYW0_2.5 2.5r6
  testcanlab@LIBNAUTYW0_2.5 2.5r6
@@ -1605,9 +1819,12 @@ libnautyW0.so.2 libnauty2 #MINVER#
  updatecan@LIBNAUTYW0_2.5 2.5r6
  updatecan_sg@LIBNAUTYW0_2.5 2.5r6
  updatecan_tr@LIBNAUTYW0_2.5 2.5r6
+ writed6@LIBNAUTYW0_2.5 2.6r2
+ writed6_sg@LIBNAUTYW0_2.5 2.6r2
  writeg6@LIBNAUTYW0_2.5 2.5r6
  writeg6_sg@LIBNAUTYW0_2.5 2.5r6
  writegroupsize@LIBNAUTYW0_2.5 2.5r6
+ writeis6@LIBNAUTYW0_2.5 2.6r2
  writelast@LIBNAUTYW0_2.5 2.5r6
  writeline@LIBNAUTYW0_2.5 2.5r6
  writepc_sg@LIBNAUTYW0_2.5 2.5r6
@@ -1624,12 +1841,17 @@ libnautyW1.so.2 libnauty2 #MINVER#
  adjacencies_sg@LIBNAUTYW1_2.5 2.5r6
  adjtriang@LIBNAUTYW1_2.5 2.5r6
  allgroup2@LIBNAUTYW1_2.5 2.5r6
+ allgroup3@LIBNAUTYW1_2.5 2.6r2
  allgroup@LIBNAUTYW1_2.5 2.5r6
  alloc_error@LIBNAUTYW1_2.5 2.5r6
  aresame_sg@LIBNAUTYW1_2.5 2.5r6
+ arg_double@LIBNAUTYW1_2.5 2.6r2
+ arg_doublerange@LIBNAUTYW1_2.5 2.6r2
  arg_int@LIBNAUTYW1_2.5 2.5r6
  arg_long@LIBNAUTYW1_2.5 2.5r6
  arg_range@LIBNAUTYW1_2.5 2.5r6
+ arg_sequence@LIBNAUTYW1_2.5 2.6r2
+ bipartiteside@LIBNAUTYW1_2.5 2.6r2
  breakout@LIBNAUTYW1_2.5 2.5r6
  cellcliq@LIBNAUTYW1_2.5 2.5r6
  cellfano2@LIBNAUTYW1_2.5 2.5r6
@@ -1641,6 +1863,7 @@ libnautyW1.so.2 libnauty2 #MINVER#
  celltrips@LIBNAUTYW1_2.5 2.5r6
  cheapautom@LIBNAUTYW1_2.5 2.5r6
  cheapautom_sg@LIBNAUTYW1_2.5 2.5r6
+ checkgline@LIBNAUTYW1_2.5 2.6r2
  cliques@LIBNAUTYW1_2.5 2.5r6
  commonnbrs@LIBNAUTYW1_2.5 2.5r6
  comparelab_tr@LIBNAUTYW1_2.5 2.5r6
@@ -1655,6 +1878,7 @@ libnautyW1.so.2 libnauty2 #MINVER#
  copycomment@LIBNAUTYW1_2.5 2.5r6
  cyclecount1@LIBNAUTYW1_2.5 2.5r6
  cyclecount@LIBNAUTYW1_2.5 2.5r6
+ degstats2@LIBNAUTYW1_2.5 2.6r2
  degstats@LIBNAUTYW1_2.5 2.5r6
  delete1@LIBNAUTYW1_2.5 2.5r6
  deleteunmarked@LIBNAUTYW1_2.5 2.5r6
@@ -1666,7 +1890,9 @@ libnautyW1.so.2 libnauty2 #MINVER#
  distances_sg@LIBNAUTYW1_2.5 2.5r6
  distvals@LIBNAUTYW1_2.5 2.5r6
  doref@LIBNAUTYW1_2.5 2.5r6
+ doublevalue@LIBNAUTYW1_2.5 2.6r2
  dumpschreier@LIBNAUTYW1_2.5 2.5r6
+ encodegraphsize@LIBNAUTYW1_2.5 2.6r2
  expandschreier@LIBNAUTYW1_2.5 2.5r6
  extra_autom@LIBNAUTYW1_2.5 2.5r6
  extra_level@LIBNAUTYW1_2.5 2.5r6
@@ -1682,11 +1908,13 @@ libnautyW1.so.2 libnauty2 #MINVER#
  flushline@LIBNAUTYW1_2.5 2.5r6
  fmperm@LIBNAUTYW1_2.5 2.5r6
  fmptn@LIBNAUTYW1_2.5 2.5r6
+ freegroup@LIBNAUTYW1_2.5 2.6r2
  freepermrec@LIBNAUTYW1_2.5 2.5r6
  freeschreier@LIBNAUTYW1_2.5 2.5r6
  getbigcells@LIBNAUTYW1_2.5 2.5r6
  getecline@LIBNAUTYW1_2.5 2.5r6
  getint@LIBNAUTYW1_2.5 2.5r6
+ getint_sl@LIBNAUTYW1_2.5 2.6r2
  getorbits@LIBNAUTYW1_2.5 2.5r6
  getorbitsmin@LIBNAUTYW1_2.5 2.5r6
  girth@LIBNAUTYW1_2.5 2.5r6
@@ -1741,12 +1969,16 @@ libnautyW1.so.2 libnauty2 #MINVER#
  nauty@LIBNAUTYW1_2.5 2.5r6
  nauty_check@LIBNAUTYW1_2.5 2.5r6
  nauty_freedyn@LIBNAUTYW1_2.5 2.5r6
+ nauty_kill_request@LIBNAUTYW1_2.5 2.6r2
  nauty_to_sg@LIBNAUTYW1_2.5 2.5r6
  newgroup@LIBNAUTYW1_2.5 2.5r6
  newpermrec@LIBNAUTYW1_2.5 2.5r6
  nextelement@LIBNAUTYW1_2.5 2.5r6
+ ntod6@LIBNAUTYW1_2.5 2.6r2
  ntog6@LIBNAUTYW1_2.5 2.5r6
+ ntois6@LIBNAUTYW1_2.5 2.6r2
  ntos6@LIBNAUTYW1_2.5 2.5r6
+ numdirtriangles@LIBNAUTYW1_2.5 2.6r2
  numtriangles1@LIBNAUTYW1_2.5 2.5r6
  numtriangles@LIBNAUTYW1_2.5 2.5r6
  ogf_linelen@LIBNAUTYW1_2.5 2.5r6
@@ -1761,6 +1993,8 @@ libnautyW1.so.2 libnauty2 #MINVER#
  putcanon_sg@LIBNAUTYW1_2.5 2.5r6
  putdegs@LIBNAUTYW1_2.5 2.5r6
  putdegs_sg@LIBNAUTYW1_2.5 2.5r6
+ putdegseq@LIBNAUTYW1_2.5 2.6r2
+ putdegseq_sg@LIBNAUTYW1_2.5 2.6r2
  putgraph@LIBNAUTYW1_2.5 2.5r6
  putgraph_sg@LIBNAUTYW1_2.5 2.5r6
  putmapping@LIBNAUTYW1_2.5 2.5r6
@@ -1782,12 +2016,18 @@ libnautyW1.so.2 libnauty2 #MINVER#
  ranreg_sg@LIBNAUTYW1_2.5 2.5r6
  read_sg@LIBNAUTYW1_2.5 2.5r6
  read_sg_loops@LIBNAUTYW1_2.5 2.5r6
+ read_sgg_loops@LIBNAUTYW1_2.5 2.6r2
  readg@LIBNAUTYW1_2.5 2.5r6
  readg_code@LIBNAUTYW1_2.5 2.5r6
+ readg_inc@LIBNAUTYW1_2.5 2.6r2
  readg_line@LIBNAUTYW1_2.5 2.5r6
+ readgg@LIBNAUTYW1_2.5 2.6r2
+ readgg_inc@LIBNAUTYW1_2.5 2.6r2
  readgraph@LIBNAUTYW1_2.5 2.5r6
  readgraph_sg@LIBNAUTYW1_2.5 2.5r6
+ readgraph_swg@LIBNAUTYW1_2.5 2.6r2
  readinteger@LIBNAUTYW1_2.5 2.5r6
+ readinteger_sl@LIBNAUTYW1_2.5 2.6r2
  readpc_sg@LIBNAUTYW1_2.5 2.5r6
  readpcle_sg@LIBNAUTYW1_2.5 2.5r6
  readperm@LIBNAUTYW1_2.5 2.5r6
@@ -1807,9 +2047,11 @@ libnautyW1.so.2 libnauty2 #MINVER#
  schreier_gens@LIBNAUTYW1_2.5 2.5r6
  sethash@LIBNAUTYW1_2.5 2.5r6
  setinter@LIBNAUTYW1_2.5 2.5r6
+ setlabptn@LIBNAUTYW1_2.5 2.6r2
  setnbhd@LIBNAUTYW1_2.5 2.5r6
  setsize@LIBNAUTYW1_2.5 2.5r6
  sg_to_nauty@LIBNAUTYW1_2.5 2.5r6
+ sgtod6@LIBNAUTYW1_2.5 2.6r2
  sgtog6@LIBNAUTYW1_2.5 2.5r6
  sgtos6@LIBNAUTYW1_2.5 2.5r6
  shortprune@LIBNAUTYW1_2.5 2.5r6
@@ -1819,9 +2061,12 @@ libnautyW1.so.2 libnauty2 #MINVER#
  stringcopy@LIBNAUTYW1_2.5 2.5r6
  stringcounts@LIBNAUTYW1_2.5 2.5r6
  stringtograph@LIBNAUTYW1_2.5 2.5r6
+ stringtograph_inc@LIBNAUTYW1_2.5 2.6r2
  stringtosparsegraph@LIBNAUTYW1_2.5 2.5r6
+ stronglyconnected@LIBNAUTYW1_2.5 2.6r2
  sublabel@LIBNAUTYW1_2.5 2.5r6
  sublabel_sg@LIBNAUTYW1_2.5 2.5r6
+ subpartition@LIBNAUTYW1_2.5 2.6r2
  targetcell@LIBNAUTYW1_2.5 2.5r6
  targetcell_sg@LIBNAUTYW1_2.5 2.5r6
  testcanlab@LIBNAUTYW1_2.5 2.5r6
@@ -1836,9 +2081,12 @@ libnautyW1.so.2 libnauty2 #MINVER#
  updatecan@LIBNAUTYW1_2.5 2.5r6
  updatecan_sg@LIBNAUTYW1_2.5 2.5r6
  updatecan_tr@LIBNAUTYW1_2.5 2.5r6
+ writed6@LIBNAUTYW1_2.5 2.6r2
+ writed6_sg@LIBNAUTYW1_2.5 2.6r2
  writeg6@LIBNAUTYW1_2.5 2.5r6
  writeg6_sg@LIBNAUTYW1_2.5 2.5r6
  writegroupsize@LIBNAUTYW1_2.5 2.5r6
+ writeis6@LIBNAUTYW1_2.5 2.6r2
  writelast@LIBNAUTYW1_2.5 2.5r6
  writeline@LIBNAUTYW1_2.5 2.5r6
  writepc_sg@LIBNAUTYW1_2.5 2.5r6

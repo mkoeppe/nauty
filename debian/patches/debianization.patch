@@ -6,7 +6,7 @@ Last-Update: 2013-11-24
 
 --- a/dreadnaut.c
 +++ b/dreadnaut.c
-@@ -395,7 +395,11 @@
+@@ -476,7 +476,11 @@
  
      if (prompt)
      {
@@ -39,7 +39,7 @@ Last-Update: 2013-11-24
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA= nauty.pc
  
-@@ -130,7 +133,7 @@
+@@ -153,7 +156,7 @@
  	$(HELP2MAN) \
  			-s 1 \
  			$(AM_H2MFLAGS) \
@@ -48,7 +48,7 @@ Last-Update: 2013-11-24
  			-n $(if $($*_DESCRIPTION), $($*_DESCRIPTION), "manual page for $*") \
  			-o $@ \
  		$(top_builddir)/$<
-@@ -183,7 +186,7 @@
+@@ -217,7 +220,7 @@
  checks6_DESCRIPTION =       "check a file of graphs and optionally perform corrections"
  sumlines_DESCRIPTION =      "sum lines matching specified graph formats"
  

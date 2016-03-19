@@ -1,5 +1,5 @@
 Document: nauty
-Title: Nauty and Traces User's Guide (Version 2.5)
+Title: Nauty and Traces User's Guide (Version 2.6)
 Author: Brendan D. McKay and Adolfo Piperno
 Abstract: nauty and Traces are programs for computing
  automorphism groups of graphs and digraphs; they can
@@ -9,4 +9,4 @@ Abstract: nauty and Traces are programs for computing
 Section: Science/Mathematics
 
 Format: PDF
-Files: /usr/share/doc/nauty-doc/nug25.pdf.gz
+Files: /usr/share/doc/nauty-doc/nug26.pdf

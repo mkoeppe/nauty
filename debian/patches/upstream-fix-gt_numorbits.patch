@@ -5,7 +5,7 @@ Last-Update: 2013-11-22
 
 --- a/labelg.c
 +++ b/labelg.c
-@@ -78,7 +78,6 @@
+@@ -88,7 +88,6 @@
  
  static nauty_counter orbtotal;
  static double unorbtotal;
@@ -15,7 +15,7 @@ Last-Update: 2013-11-22
  
 --- a/gtools-h.in
 +++ b/gtools-h.in
-@@ -226,6 +226,7 @@
+@@ -267,6 +267,7 @@
  extern TLS_ATTR char *readg_line;
  extern TLS_ATTR size_t ogf_linelen;
  extern TLS_ATTR boolean is_pipe;
@@ -25,7 +25,7 @@ Last-Update: 2013-11-22
  }
 --- a/gtnauty.c
 +++ b/gtnauty.c
-@@ -17,7 +17,7 @@
+@@ -18,7 +18,7 @@
  static int fuzz2[] = {006532,070236,035523,062437};
  #define FUZZ2(x) ((x) ^ fuzz2[(x)&3])
  

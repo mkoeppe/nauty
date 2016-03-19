@@ -1,2 +1,2 @@
-debian/adhoc/examples/build.sh
+debian/adhoc/examples/Makefile
 nautyex*.c

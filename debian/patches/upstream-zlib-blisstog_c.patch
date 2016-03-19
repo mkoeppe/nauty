@@ -3,13 +3,13 @@ Description: implement zlib support to blisstog utility
  for the blisstog nauty tool.
 Origin: debian
 Author: Jerome Benoit <calculus@rezozer.net>
-Last-Update: 2013-11-25
+Last-Update: 2016-03-18
 
 --- a/blisstog.c
 +++ b/blisstog.c
-@@ -6,45 +6,39 @@
- " Read files of graphs in Bliss (Dimacs) format and write\n\
-   them to stdout in sparse6 format.\n"
+@@ -9,45 +9,39 @@
+   -n#:#  Specify a range of n values for output\n\
+   Input files with name *.gz are ungzipped\n"
  
 -#define ZCAT "gunzip -c"  /* name of zcat command (might be "gunzip -c") */
 -
@@ -66,7 +66,7 @@ Last-Update: 2013-11-25
  	    break;
  
  	case 'p':
-@@ -53,7 +47,7 @@
+@@ -56,7 +50,7 @@
  		fprintf(stderr,"Duplicate p line\n");
  		exit(1);
  	    }
@@ -75,7 +75,7 @@ Last-Update: 2013-11-25
  	    {
  		fprintf(stderr,"Bad p line\n");
  		return FALSE;
-@@ -67,8 +61,8 @@
+@@ -70,8 +64,8 @@
  	    {
                  fprintf(stderr,"Missing p line\n");
                  return FALSE;
@@ -86,7 +86,7 @@ Last-Update: 2013-11-25
              {
                  fprintf(stderr,"Bad n line\n");
                  return FALSE;
-@@ -81,7 +75,7 @@
+@@ -84,7 +78,7 @@
  		fprintf(stderr,"Missing p line or too many e lines\n");
  		return FALSE;
  	    }
@@ -95,7 +95,7 @@ Last-Update: 2013-11-25
  	    {
  		fprintf(stderr,"Bad e line\n");
  		return FALSE;
-@@ -91,10 +85,20 @@
+@@ -94,10 +88,20 @@
  	    break;
  
  	default:
@@ -117,7 +117,7 @@ Last-Update: 2013-11-25
  
      if (j != ne)
      {
-@@ -107,7 +111,7 @@
+@@ -110,7 +114,7 @@
      g->nde = 2*ne;
  
      for (i = 0; i < n; ++i) g->d[i] = 0;
@@ -126,7 +126,7 @@ Last-Update: 2013-11-25
      {
  	++(g->d[elist[j].v]);
  	++(g->d[elist[j].w]);
-@@ -116,7 +120,7 @@
+@@ -119,7 +123,7 @@
      for (i = 1; i < n; ++i) g->v[i] = g->v[i-1] + g->d[i-1];
      for (i = 0; i < n; ++i) g->d[i] = 0;
  
@@ -135,34 +135,68 @@ Last-Update: 2013-11-25
      {
  	v = elist[j].v;
  	w = elist[j].w;
-@@ -132,63 +136,53 @@
+@@ -135,80 +139,69 @@
  int
  main(int argc, char *argv[])
  {
 -    FILE *infile;
-+    gzFile infile;
-     int j;
++		gzFile infile;
+     int j,firstarg;
      SG_DECL(g);
 -    size_t flen;
 -    boolean ispipe;
+     int nmin,nmax;
 -    char zcmd[515];
  
      HELP;
  
--    if (argc == 1)
+     nmax = -1;
+     if (argc >= 2 && argv[1][0] == '-' && argv[1][1] == 'n')
+     {
+-	if (sscanf(argv[1]+2,"%d:%d",&nmin,&nmax) == 2) {}
++				if (sscanf(argv[1]+2,"%d:%d",&nmin,&nmax) == 2) {}
+         else if (sscanf(argv[1]+2,":%d",&nmax) == 1) { nmin = 1; }
+         else if (sscanf(argv[1]+2,"%d:",&nmin) == 1) { nmax = NAUTY_INFINITY; }
+         else  gt_abort(">E blisstog: bad -n switch\n");
+-        
+-	firstarg = 2;
++				firstarg = 2;
+     }
+     else
+-	firstarg = 1;
++			firstarg = 1;
+ 
+-    if (argc == firstarg)
 -    {
 -	if (!readblissgraph(stdin,&g))
--	{
++	if (argc == firstarg)
+ 	{
 -	    fprintf(stderr,">E Bliss error in file %s\n","stdin");
 -	    gt_abort(NULL);
--	}
--	else
++		if ((infile = gzdopen(STDIN_FILENO,"r")) == NULL)
++		{
++			fprintf(stderr,">E Can't open stdin\n");
++			gt_abort(NULL);
++		}
++		else
++		{
++			if (!readblissgraph(infile,&g))
++			{
++				fprintf(stderr,">E Bliss error in stdin\n");
++				gt_abort(NULL);
++			}
++			else
++				writes6_sg(stdout,&g);
++		gzclose(infile);
++		}
+ 	}
+ 	else
 -	    writes6_sg(stdout,&g);
 -    }
 -    else
 -    {
--        for (j = 1; j < argc; ++j)
--	{
+-        for (j = firstarg; j < argc; ++j)
+ 	{
 -	    flen = strlen(argv[j]);
 -            if (flen >= 3 && strcmp(argv[j]+flen-3,".gz") == 0)
 -            {
@@ -191,55 +225,40 @@ Last-Update: 2013-11-25
 -	        fprintf(stderr,">E Bliss error in file %s\n",argv[j]);
 -		gt_abort(NULL);
 -	    }
--	    else
+-	    else if (nmax < 0 || (g.nv >= nmin && g.nv <= nmax))
+-            {
+-		sortlists_sg(&g);
 -	        writes6_sg(stdout,&g);
-+		if (argc == 1)
+-	    }
+-
+-	    if (ispipe) pclose(infile); else fclose(infile);
+-        }
+-    }
++		for (j = firstarg; j < argc; ++j)
 +		{
-+			if ((infile = gzdopen(STDIN_FILENO,"r")) == NULL)
++			if ((infile = gzopen(argv[j],"r")) == NULL)
 +			{
-+				fprintf(stderr,">E Can't open stdin\n");
++				fprintf(stderr,">E Can't open file %s\n",argv[j]);
 +				gt_abort(NULL);
 +			}
 +			else
 +			{
 +				if (!readblissgraph(infile,&g))
 +				{
-+					fprintf(stderr,">E Bliss error in stdin\n");
++					fprintf(stderr,">E Bliss error in file %s\n",argv[j]);
 +					gt_abort(NULL);
 +				}
-+				else
++				else if (nmax < 0 || (g.nv >= nmin && g.nv <= nmax))
++				{
++					sortlists_sg(&g);
 +					writes6_sg(stdout,&g);
++				}
 +			gzclose(infile);
 +			}
 +		}
-+		else
-+		{
-+			for (j = 1; j < argc; ++j)
-+			{
-+				if ((infile = gzopen(argv[j],"r")) == NULL)
-+				{
-+					fprintf(stderr,">E Can't open file %s\n",argv[j]);
-+					gt_abort(NULL);
-+				}
-+				else
-+				{
-+					if (!readblissgraph(infile,&g))
-+					{
-+						fprintf(stderr,">E Bliss error in file %s\n",argv[j]);
-+						gt_abort(NULL);
-+					}
-+					else
-+						writes6_sg(stdout,&g);
-+				gzclose(infile);
-+				}
-+			}
-+		}
++	}
  
--	    if (ispipe) pclose(infile); else fclose(infile);
--        }
--    }
--
 -    exit(0);
 -}    
-+		exit(0);
++	exit(0);
 +}

@@ -1,7 +1,6 @@
 #!/usr/bin/make -f
 
-DEB_PKG_DIR = $(abspath $(dir $(MAKEFILE_LIST)))
-export DEB_PKG_VERSION = "\"$(shell dpkg-parsechangelog -l$(DEB_PKG_DIR)/changelog | sed -n -e '/^Version:/s/Version: //p')\""
+export DEB_PKG_VERSION = "\"$(shell dpkg-parsechangelog -S Version)\""
 export DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
 default:
@@ -14,10 +13,10 @@ override_dh_auto_configure:
 	dh_auto_configure -- --enable-clz --enable-tls --disable-ansicontrols
 
 override_dh_installchangelogs:
-	dh_installchangelogs --keep changes24-25.txt
+	dh_installchangelogs --keep changes24-26.txt
 
-override_dh_strip:
-	dh_strip --dbg-package=libnauty2-dbg
+override_dh_compress-indep:
+	dh_compress -X.pdf -Xexamples
 
 get-orig-source:
 	uscan --no-conf --download-current-version --compression xz --verbose

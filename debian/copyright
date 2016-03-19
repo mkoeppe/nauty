@@ -1,15 +1,9 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0
 Upstream-Name: nauty
 Upstream-Contact:
- Brendan McKay <bdm@cs.anu.edu.au>
+ Brendan McKay <brendan.mckay@anu.edu.au>
  Adolfo Piperno <piperno@di.uniroma1.it>
-Source: http://pallini.di.uniroma1.it
-Disclaimer:
- This program is not part of Debian, because the license discriminates
- against forbids selling for profit fields of endeavour, which violates
- the Debian Free Software Guidelines part 1 and 6 respectively
- (see www.debian.org/social_contract ). Neither of these conditions
- impedes the autobuilding of the package.
+Source: http://pallini.di.uniroma1.it/
 Comment:
  The upstream source tarball is repacked to drop off some weight
  by cleaning up material either generated or upgraded by autotools.
@@ -25,67 +19,42 @@ Files-Excluded:
 
 Files: *
 Copyright:
- 1984-2016 Brendan McKay <bdm@cs.anu.edu.au>
-License: BDM-adhoc
+ 1984-2016 Brendan McKay (Australian National University) <brendan.mckay@anu.edu.au>
+License: Apache-2.0
 
-Files: traces.c
+Files: traces.h traces.c dretodot.c
 Copyright:
- 2008-2016 Adolfo Piperno <piperno@di.uniroma1.it>
-License: BDM-adhoc
+ 2008-2016 Adolfo Piperno (University of Rome "Sapienza") <piperno@di.uniroma1.it>
+License: Apache-2.0
 
 Files: watercluster2.c
 Copyright:
- 2009-2016 Gunnar Brinkmann <gunnar.brinkmann@ugent.be>
-License: BDM-adhoc
+ 2009-2016 Gunnar Brinkmann (University of Ghent) <gunnar.brinkmann@ugent.be>
+License: Apache-2.0
 
-Files: planarity.c
+Files: planarity.h planarity.c
 Copyright:
- 2001-2016 Magna project
-License: ad-hoc
- planarity.c - code for planarity testing of undirected graphs.
- Method of Boyer and Myrvold, programmed by Paulette Lieby.
- The copyright of this program is owned by the Magma project.
- Distributed with nauty by permission.
+ 2001-2016 Magna project (University of Sydney) <admin@maths.usyd.edu.au>
+License: Apache-2.0
 
 Files: debian/*
 Copyright:
  2013-2016 Jerome Benoit <calculus@rezozer.net>
  2009-2012 David Bremner <bremner@unb.ca>
-License: MIT
+License: Apache-2.0
 
-License: BDM-adhoc
- All rights reserved.
+License: Apache-2.0
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
  .
- Permission is hereby given for use and/or distribution with the exception
- of sale for profit or application with nontrivial military significance.
- You must not remove this copyright notice, and you must document any
- changes that you make to this program.
- This software is subject to this copyright only, irrespective of any
- copyright attached to any package of which this is a part.
+ http://www.apache.org/licenses/LICENSE-2.0
  .
- This program is only provided "as is".  No responsibility will be taken
- by the author, his employer or his pet rabbit* for any misfortune which
- befalls you because of its use.  I don't think it will delete all your
- files, burn down your computer room or turn your children against you,
- but if it does: stiff cheddar.  On the other hand, I very much welcome
- bug reports, or at least I would if there were any bugs.
-
-License: MIT
- Permission is hereby granted, free of charge, to any person obtaining
- a copy of this software and associated documentation files (the
- "Software"), to deal in the Software without restriction, including
- without limitation the rights to use, copy, modify, merge, publish,
- distribute, sublicense, and/or sell copies of the Software, and to
- permit persons to whom the Software is furnished to do so, subject to
- the following conditions:
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
  .
- The above copyright notice and this permission notice shall be included
- in all copies or substantial portions of the Software.
- .
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
- CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ On Debian systems, the complete text of the Apache version 2.0 license
+ can be found in "/usr/share/common-licenses/Apache-2.0".

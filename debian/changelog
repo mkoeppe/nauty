@@ -1,18 +1,32 @@
-nauty (2.6r3+ds-0) UNRELEASED; urgency=medium
+nauty (2.6r3+ds-1) unstable; urgency=medium
 
-  * New upstream version.
+  * New upstream minor version:
+    - new copyright notice, move from an ad-hoc license to Apache-2.0.
   * Debianization:
     - debian/copyright:
       - repack by using the Files-Excluded machinery instead of the ad-hoc
         script debian/repack;
-      - refresh;
+      - move from non-free to main;
+      - license, fellow the upstream move by adopting Apache-2.0;
+    - debian/control:
+      - Standards Version, bump to 3.9.7;
+      - Vcs-* fileds, secure;
+      - debug symbol package, drop off in favour of automatic generation;
+    - debian/patches/*, refresh;
     - debian/repack, discard (see above);
     - debian/watch:
       - revisit (see above);
     - debian/rules:
-      - get-orig-source target, revisit (see above).
+      - get-orig-source target, revisit (see above);
+      - debug symbol package, drop off (see above);
+      - refresh;
+    - debian/tests:
+      - initiate;
+    - debian/adhoc/examples:
+      - d/a/e/build.sh, discard;
+      - d/a/e/Makefile, introduce.
 
- -- Jerome Benoit <calculus@rezozer.net>  Fri, 18 Mar 2016 20:45:37 +0000
+ -- Jerome Benoit <calculus@rezozer.net>  Sat, 19 Mar 2016 16:22:51 +0000
 
 nauty (2.5r9+ds-1) unstable; urgency=low
 
