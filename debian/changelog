@@ -1,3 +1,13 @@
+nauty (2.6r3+ds-2) unstable; urgency=medium
+
+  * FTBFS bug fix release (Closes: #819430):
+    - build without TLS support on armhf architecture.
+  * Debianization:
+    - debian/rules:
+      - dpkg-buildflags, add hardening=+all.
+
+ -- Jerome Benoit <calculus@rezozer.net>  Mon, 28 Mar 2016 13:32:54 +0000
+
 nauty (2.6r3+ds-1) unstable; urgency=medium
 
   * New upstream minor version:

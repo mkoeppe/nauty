@@ -1,7 +1,16 @@
 #!/usr/bin/make -f
 
+export DEB_BUILD_MAINT_OPTIONS=hardening=+all
+
 export DEB_PKG_VERSION = "\"$(shell dpkg-parsechangelog -S Version)\""
 export DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
+
+ifeq ($(DEB_HOST_ARCH),armhf)
+	DEB_DH_AUTO_CONFIGURE_OPTS__ENABLE_TLS := --disable-tls
+else
+	DEB_DH_AUTO_CONFIGURE_OPTS__ENABLE_TLS := --enable-tls
+endif
 
 default:
 	@uscan --no-conf --dehs --report || true
@@ -10,7 +19,7 @@ default:
 	dh $@ --with autoreconf
 
 override_dh_auto_configure:
-	dh_auto_configure -- --enable-clz --enable-tls --disable-ansicontrols
+	dh_auto_configure -- --enable-clz $(DEB_DH_AUTO_CONFIGURE_OPTS__ENABLE_TLS) --disable-ansicontrols
 
 override_dh_installchangelogs:
 	dh_installchangelogs --keep changes24-26.txt
