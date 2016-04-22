@@ -66,6 +66,8 @@
 #include "nautinv.h"
 
 /*
+Available letters: hkwxy AGNOPWX
+
 How to add a new property:
 
  1. Add entries to constraint[], following the examples there.
@@ -829,7 +831,7 @@ main(int argc, char *argv[])
 	boolean havecon,neg,doflush;
 	double t;
 
-	HELP;
+	HELP; PUTVERSION;
 
 	if (sizeof(void*) > sizeof(long))
 	{

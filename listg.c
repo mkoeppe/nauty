@@ -455,7 +455,7 @@ main(int argc, char *argv[])
     int linelength;
     char *infilename,*outfilename,*yarg;
 
-    HELP;
+    HELP; PUTVERSION;
 
     fswitch = pswitch = cswitch = dswitch = FALSE;
     aswitch = lswitch = oswitch = Fswitch = FALSE;

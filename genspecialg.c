@@ -871,7 +871,7 @@ main(int argc, char *argv[])
     long Pargs[2],bargs[2],Jargs[2];
     int nPargs,nbargs,nCargs,nGargs,nJargs,nTargs;
 
-    HELP;
+    HELP; PUTVERSION;
 
     gswitch = sswitch = zswitch = Pswitch = FALSE;
     pswitch = cswitch = eswitch = kswitch = FALSE;

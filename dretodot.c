@@ -268,7 +268,7 @@ main(int argc, char *argv[])
     list *liststart, *listend;
     int nodescale, distance, StInd, StIndDist, RnkInd, RnkIndDist;
     
-	HELP;
+	HELP; PUTVERSION;
     
     liststart = listend = NULL;
 	rswitch = dswitch = mswitch = nswitch = oswitch = iswitch = xswitch = Sswitch = gswitch = fswitch = vswitch = rswitch1 = Vswitch = Eswitch = FALSE;

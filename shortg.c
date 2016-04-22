@@ -302,7 +302,7 @@ main(int argc, char *argv[])
     DYNALLSTAT(int,orbits,orbits_sz);
 #endif
 
-    HELP;
+    HELP; PUTVERSION;
 
     nauty_check(WORDSIZE,1,1,NAUTYVERSIONID);
 

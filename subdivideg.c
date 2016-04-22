@@ -128,7 +128,7 @@ main(int argc, char *argv[])
     char *arg,sw;
     double t;
 
-    HELP;
+    HELP; PUTVERSION;
 
     infilename = outfilename = NULL;
     quiet = kswitch = FALSE;

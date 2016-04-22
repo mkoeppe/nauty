@@ -102,7 +102,7 @@ main(int argc, char *argv[])
 	DYNALLSTAT(int,dist,dist_sz);
 #endif
 
-	HELP;
+	HELP; PUTVERSION;
 
         infilename = outfilename = NULL;
 	Dswitch = dolabel = quiet = zswitch = FALSE;

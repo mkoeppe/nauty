@@ -36,7 +36,8 @@ static char* special[] =   /* Make sure to use \n */
     "%d cells; code = %d; cpu time = %*f seconds\n",
     ">Z %d graphs read from stdin; %d coloured graphs written to stdout; %*f sec\n",
     ">Z %d graphs read from stdin; %d written to stdout; %*f sec\n",
-    "%d graphs altogether from %d read; cpu=%*f sec\n"
+    "%d graphs altogether from %d read; cpu=%*f sec\n",
+    ">A %*s %s\n"
 };
 #define NUMSPECIALS (sizeof(special)/sizeof(*special))
 

@@ -911,7 +911,7 @@ main(int argc, char *argv[])
     DYNALLSTAT(int,ham1,ham1_sz);
     DYNALLSTAT(int,ham2,ham2_sz);
 
-    HELP;
+    HELP; PUTVERSION;
 
     INITSEED;
     ran_init(seed);

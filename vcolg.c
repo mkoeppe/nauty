@@ -373,7 +373,7 @@ main(int argc, char *argv[])
     char msg[201];
     int msglen;
 
-    HELP;
+    HELP; PUTVERSION;
 
     nauty_check(WORDSIZE,1,1,NAUTYVERSIONID);
 
