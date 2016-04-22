@@ -143,7 +143,7 @@ main(int argc, char *argv[])
     int nmin,nmax;
     char zcmd[515];
 
-    HELP;
+    HELP; PUTVERSION;
 
     nmax = -1;
     if (argc >= 2 && argv[1][0] == '-' && argv[1][1] == 'n')

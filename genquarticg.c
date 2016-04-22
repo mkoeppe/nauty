@@ -32,8 +32,7 @@ static void (*outproc)(FILE*, graph*, int);
 extern void OUTPROC(FILE*, graph*, int);
 #endif
 
-CPUDEFS
-static DEFAULTOPTIONS(options);
+static DEFAULTOPTIONS_GRAPH(options);
 static int perm[MAXN];
 static setword workspace[50];
 static statsblk(stats);
@@ -1312,7 +1311,7 @@ int main(int argc, char *argv[])
     char        *arg;
     char        msg[201];
 
-    HELP;
+    HELP; PUTVERSION;
     nauty_check(WORDSIZE,1,MAXN,NAUTYVERSIONID);   ////?????
 
     if( MAXN > WORDSIZE )

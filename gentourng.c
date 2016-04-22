@@ -1192,7 +1192,7 @@ main(int argc, char *argv[])
         double t1,t2;
 	char msg[201];
 
-	HELP;
+	HELP; PUTVERSION;
 	nauty_check(WORDSIZE,1,MAXN,NAUTYVERSIONID);
 
 	if (MAXN > 32 || MAXN > WORDSIZE || MAXN > 8*sizeof(xword))

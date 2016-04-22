@@ -187,7 +187,7 @@ main(int argc, char *argv[])
     DYNALLSTAT(t_ver_sparse_rep,V,V_sz);
     DYNALLSTAT(t_adjl_sparse_rep,A,A_sz);
 
-    HELP;
+    HELP; PUTVERSION;
 
     infilename = outfilename = NULL;
     quiet = nowrite = planarcode = FALSE;

@@ -218,7 +218,7 @@ main(int argc, char *argv[])
     char *arg,sw;
     double t;
 
-    HELP;
+    HELP; PUTVERSION;
 
     SG_INIT(g);
     SG_INIT(h);

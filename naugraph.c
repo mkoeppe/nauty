@@ -2,7 +2,7 @@
 *                                                                            *
 *  Graph-specific auxiliary source file for version 2.6 of nauty.            *
 *                                                                            *
-*   Copyright (1984-2013) Brendan McKay.  All rights reserved.               *
+*   Copyright (1984-2016) Brendan McKay.  All rights reserved.               *
 *   Subject to waivers and disclaimers in nauty.h.                           *
 *                                                                            *
 *   CHANGE HISTORY                                                           *

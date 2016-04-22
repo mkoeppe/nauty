@@ -1395,7 +1395,7 @@ main(int argc, char *argv[])
     char *outfilename;
     char msg[201];
 
-    HELP;
+    HELP; PUTVERSION;
     nauty_check(WORDSIZE,1,MAXN,NAUTYVERSIONID);
 
     if (MAXN > WORDSIZE || MAXN1 > 8*sizeof(int)-2)

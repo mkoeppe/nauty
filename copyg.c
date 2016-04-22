@@ -48,7 +48,7 @@ main(int argc, char *argv[])
     boolean badargs,digraph;
     long pval1,pval2,maxin,refresh,inclines;
 
-    HELP;
+    HELP; PUTVERSION;
 
     iswitch = Iswitch = sswitch = fswitch = pswitch = FALSE;
     gswitch = qswitch = xswitch = hswitch = zswitch = FALSE;

@@ -398,7 +398,7 @@ main(int argc, char *argv[])
     char *ap,*parameters;
     boolean flushing;
 
-    HELP;
+    HELP; PUTVERSION;
 
     if (argc == 3 && strcmp(argv[1],"-o") == 0)
 	parameters = argv[2];
@@ -924,13 +924,13 @@ main(int argc, char *argv[])
                 else if (minus)
                 {
                     sublabel(g,perm+nperm,n-nperm,canong,m,n);
-                    if (pvalid) subpartition(lab,ptn,n,perm+nperm,n-nperm);
+                    if (pvalid) numcells = subpartition(lab,ptn,n,perm+nperm,n-nperm);
                     n = n - nperm;
                 }
                 else
                 {
                     sublabel(g,perm,nperm,canong,m,n);
-                    if (pvalid) subpartition(lab,ptn,n,perm,nperm);
+                    if (pvalid) numcells = subpartition(lab,ptn,n,perm,nperm);
                     n = nperm;
                 }
                 cvalid = FALSE;
@@ -948,13 +948,13 @@ main(int argc, char *argv[])
                 else if (minus)
                 {
                     sublabel_sg(&g_sg,perm+nperm,n-nperm,&canong_sg);
-                    if (pvalid) subpartition(lab,ptn,n,perm+nperm,n-nperm);
+                    if (pvalid) numcells = subpartition(lab,ptn,n,perm+nperm,n-nperm);
                     n = n - nperm;
                 }
                 else
                 {
                     sublabel_sg(&g_sg,perm,nperm,&canong_sg);
-                    if (pvalid) subpartition(lab,ptn,n,perm,nperm);
+                    if (pvalid) numcells = subpartition(lab,ptn,n,perm,nperm);
                     n = nperm;
                 }
                 cvalid_sg = FALSE;

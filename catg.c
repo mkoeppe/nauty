@@ -105,7 +105,7 @@ main(int argc, char *argv[])
     size_t nr;
     DYNALLSTAT(char*,filename,filename_sz);
 
-    HELP;
+    HELP; PUTVERSION;
 
     DYNALLOC1(char*,filename,filename_sz,200,"catg");
 

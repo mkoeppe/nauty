@@ -418,7 +418,7 @@ main(int argc, char *argv[])
 	char msg[201];
         int vpar1[2];
 
-	HELP;
+	HELP; PUTVERSION;
 
         badargs = FALSE;
 	uswitch = sswitch = pswitch = lswitch = Zswitch = FALSE;

@@ -130,7 +130,7 @@ main(int argc, char *argv[])
     DYNALLSTAT(boolean,del,del_sz);
 #endif
 
-    HELP;
+    HELP; PUTVERSION;
 
     infilename = outfilename = NULL;
     badargs = FALSE;

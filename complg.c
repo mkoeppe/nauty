@@ -75,7 +75,7 @@ main(int argc, char *argv[])
     DYNALLSTAT(graph,hc,hc_sz);
 #endif
 
-    HELP;
+    HELP; PUTVERSION;
 
     infilename = outfilename = NULL;
     dolabel = badargs = FALSE;

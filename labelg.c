@@ -126,7 +126,7 @@ main(int argc, char *argv[])
 #endif
         DYNALLSTAT(nauty_counter,tab,tab_sz);
 
-	HELP;
+	HELP; PUTVERSION;
 
 	nauty_check(WORDSIZE,1,1,NAUTYVERSIONID);
 

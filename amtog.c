@@ -55,7 +55,7 @@ main(int argc, char *argv[])
     DYNALLSTAT(graph,g,g_sz);
 #endif
 
-    HELP;
+    HELP; PUTVERSION;
 
     sswitch = gswitch = zswitch = oswitch = FALSE;
     nowarn = qswitch = nswitch = hswitch = FALSE;

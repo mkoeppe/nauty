@@ -264,7 +264,7 @@ main(int argc, char *argv[])
     int status;
     DYNALLSTAT(int,cyc,cyc_sz);
 
-    HELP;
+    HELP; PUTVERSION;
 
     INITSEED;
     ran_init(seed);

@@ -42,7 +42,7 @@ main(int argc, char *argv[])
     DYNALLSTAT(int,deg,deg_sz);
 #endif
 
-    HELP;
+    HELP; PUTVERSION;
 
     infilename = outfilename = NULL;
     badargs = FALSE;

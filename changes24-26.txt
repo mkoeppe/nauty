@@ -184,6 +184,8 @@ Extra options in existing utilities:
     what is different between two different programs that generate
     almost the same output.
 * linegraphg has -t for making the total graph.
+* Most utilities can take a single argument --version, which will
+  print a message stating which nauty&traces package they belong to.
 
 Other changes:
 * Traces has substantial improvements.

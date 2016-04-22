@@ -923,7 +923,7 @@ main(int argc, char *argv[])
     DYNALLSTAT(int,perm,perm_sz);
 #endif
 
-    HELP;
+    HELP; PUTVERSION;
 
     gswitch = sswitch = qswitch = Sswitch = Rswitch = FALSE;
     aswitch = P1switch = P2switch = eswitch = rswitch = FALSE;

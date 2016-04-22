@@ -76,6 +76,7 @@
 *       17-Dec-15 : add readgraph_swg() and update putgraph_sg()             *
 *       22-Jan-16 : add readintger_sl() and getint_sl()                      *
 *       29-Feb-16 : add subpartition()                                       *
+*        6-Apr-16 : add countcells(), make subpartition return a count       *
 *                                                                            *
 *****************************************************************************/
 
@@ -2352,15 +2353,34 @@ sublabel(graph *g, int *perm, int nperm, graph *workg, int m, int n)
 
 /*****************************************************************************
 *                                                                            *
+*  countcells(ptn,level,n) finds the number of elements of ptn[0..n-1]       *
+*  that are <= level.                                                        *
+*                                                                            *
+*****************************************************************************/
+
+int
+countcells(int *ptn, int level, int n)
+{
+    int i,cnt;
+
+    cnt = 0;
+    for (i = 0; i < n; ++i) if (ptn[i] <= level) ++cnt;
+
+    return cnt;
+}
+
+/*****************************************************************************
+*                                                                            *
 *  subpartion(lab,ptn,n,perm,nperm) replaces the partition (lab,ptn) of      *
 *  0..n-1 by the induced partition of 0..nperm-1, using the partial          *
 *  ordering of 0..n-1 given in perm[0..nperm-1].                             *
+*  Return the new number of cells.                                           *
 *                                                                            *
 *****************************************************************************/
 
 #define DEB(str,x) fprintf(stderr,"%s=%d\n",str,x);
 
-void
+int
 subpartition(int *lab, int *ptn, int n, int *perm, int nperm)
 {
     int i,j;
@@ -2373,6 +2393,7 @@ subpartition(int *lab, int *ptn, int n, int *perm, int nperm)
 
     j = -1;
     for (i = 0; i < n; ++i)
+    {
 	if (workperm[lab[i]] >= 0)
 	{      
 	    ++j;     
@@ -2381,6 +2402,9 @@ subpartition(int *lab, int *ptn, int n, int *perm, int nperm)
 	}
 	else if (j >= 0 && ptn[i] < ptn[j])
 	    ptn[j] = ptn[i];
+    }
+
+    return countcells(ptn,0,nperm);
 }
 
 /*****************************************************************************

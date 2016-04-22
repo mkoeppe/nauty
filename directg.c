@@ -542,7 +542,7 @@ main(int argc, char *argv[])
     int msglen;
     long lsplitres,lsplitmod;
 
-    HELP;
+    HELP; PUTVERSION;
 
 /* Put 2 in the following to catch incorrect uses of naut*1. */
     nauty_check(WORDSIZE,2,2*WORDSIZE,NAUTYVERSIONID);

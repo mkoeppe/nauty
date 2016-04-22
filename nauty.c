@@ -2,7 +2,7 @@
 *                                                                            *
 *  Main source file for version 2.6 of nauty.                                *
 *                                                                            *
-*   Copyright (1984-2013) Brendan McKay.  All rights reserved.  Permission   *
+*   Copyright (1984-2016) Brendan McKay.  All rights reserved.  Permission   *
 *   Subject to the waivers and disclaimers in nauty.h.                       *
 *                                                                            *
 *   CHANGE HISTORY                                                           *
