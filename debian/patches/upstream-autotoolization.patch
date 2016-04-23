@@ -2,14 +2,14 @@ Description: upstream autotoolization
  Attempt to autotoolize nauty source.
 Origin: debian
 Author: Jerome Benoit <calculus@rezozer.net>
-Last-Update: 2016-03-19
+Last-Update: 2016-04-22
 
 --- a/configure.ac
 +++ b/configure.ac
 @@ -1,5 +1,22 @@
  dnl Process this file with autoconf to produce a configure script.
 -AC_INIT(nauty-h.in)
-+AC_INIT([nauty],[2.6.3],[bdm@cs.anu.edu.au],[nauty],[http://pallini.di.uniroma1.it/])
++AC_INIT([nauty],[2.6.5],[bdm@cs.anu.edu.au],[nauty],[http://pallini.di.uniroma1.it/])
 +AC_CONFIG_MACRO_DIR([m4])
 +AC_CONFIG_AUX_DIR([autotool])
 +AC_CONFIG_SRCDIR([dreadnaut.c])
@@ -801,7 +801,7 @@ Last-Update: 2016-03-19
     rm $out1 $out2
 --- /dev/null
 +++ b/nauty.map
-@@ -0,0 +1,278 @@
+@@ -0,0 +1,279 @@
 +LIBNAUTY_2.5 {
 +global:
 +## nauty.h
@@ -895,6 +895,7 @@ Last-Update: 2016-03-19
 +converse_sg;
 +copycomment;
 +complement_sg;
++countcells;
 +flushline;
 +fixit;
 +getint;
@@ -1345,7 +1346,7 @@ Last-Update: 2016-03-19
 +#endif /* _NAUTINV_H_ */
 --- a/naututil-h.in
 +++ b/naututil-h.in
-@@ -114,9 +114,13 @@
+@@ -115,9 +115,13 @@
  *                                                                            *
  *****************************************************************************/
  
@@ -1362,7 +1363,7 @@ Last-Update: 2016-03-19
  /* At this point we can assume that <sys/types.h>, <unistd.h>, <stddef.h>,
     <stdlib.h>, <string.h> or <strings.h> and <malloc.h> if necessary have
     been included if they exist. */
-@@ -285,3 +289,5 @@
+@@ -287,3 +291,5 @@
  #endif /*NAUTY_SEED_DEFINED*/
  
  /* @edit_msg@ */
@@ -1488,7 +1489,7 @@ Last-Update: 2016-03-19
  #ifdef __cplusplus
  extern "C" {
  #endif
-@@ -42,3 +45,5 @@
+@@ -44,3 +47,5 @@
  #ifdef __cplusplus
  }
  #endif

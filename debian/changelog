@@ -1,3 +1,15 @@
+nauty (2.6r5+ds-1) unstable; urgency=medium
+
+  * New upstream version.
+  * Debianization:
+    - debian/patches/*:
+      - d/p/upstream-autotoolization.patch, update;
+    - debian/libnauty2.symbols, update;
+    - debian/tests/*:
+      - d/t/make-check, introduce.
+
+ -- Jerome Benoit <calculus@rezozer.net>  Sat, 23 Apr 2016 01:36:48 +0000
+
 nauty (2.6r3+ds-2) unstable; urgency=medium
 
   * FTBFS bug fix release (Closes: #819430):

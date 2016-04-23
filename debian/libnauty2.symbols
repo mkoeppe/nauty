@@ -42,6 +42,7 @@ libnauty.so.2 libnauty2 #MINVER#
  converse_sg@LIBNAUTY_2.5 2.5r6
  copy_sg@LIBNAUTY_2.5 2.5r6
  copycomment@LIBNAUTY_2.5 2.5r6
+ countcells@LIBNAUTY_2.5 2.6r5
  cyclecount1@LIBNAUTY_2.5 2.5r6
  cyclecount@LIBNAUTY_2.5 2.5r6
  degstats2@LIBNAUTY_2.5 2.6r2
@@ -304,6 +305,7 @@ libnautyA1.so.2 libnauty2 #MINVER#
  converse_sg@LIBNAUTYA1_2.5 2.5r6
  copy_sg@LIBNAUTYA1_2.5 2.5r6
  copycomment@LIBNAUTYA1_2.5 2.5r6
+ countcells@LIBNAUTYA1_2.5 2.6r5
  cyclecount1@LIBNAUTYA1_2.5 2.5r6
  cyclecount@LIBNAUTYA1_2.5 2.5r6
  degstats2@LIBNAUTYA1_2.5 2.6r2
@@ -566,6 +568,7 @@ libnautyL0.so.2 libnauty2 #MINVER#
  converse_sg@LIBNAUTYL0_2.5 2.5r6
  copy_sg@LIBNAUTYL0_2.5 2.5r6
  copycomment@LIBNAUTYL0_2.5 2.5r6
+ countcells@LIBNAUTYL0_2.5 2.6r5
  cyclecount1@LIBNAUTYL0_2.5 2.5r6
  cyclecount@LIBNAUTYL0_2.5 2.5r6
  degstats2@LIBNAUTYL0_2.5 2.6r2
@@ -828,6 +831,7 @@ libnautyL1.so.2 libnauty2 #MINVER#
  converse_sg@LIBNAUTYL1_2.5 2.5r6
  copy_sg@LIBNAUTYL1_2.5 2.5r6
  copycomment@LIBNAUTYL1_2.5 2.5r6
+ countcells@LIBNAUTYL1_2.5 2.6r5
  cyclecount1@LIBNAUTYL1_2.5 2.5r6
  cyclecount@LIBNAUTYL1_2.5 2.5r6
  degstats2@LIBNAUTYL1_2.5 2.6r2
@@ -1090,6 +1094,7 @@ libnautyS0.so.2 libnauty2 #MINVER#
  converse_sg@LIBNAUTYS0_2.5 2.5r6
  copy_sg@LIBNAUTYS0_2.5 2.5r6
  copycomment@LIBNAUTYS0_2.5 2.5r6
+ countcells@LIBNAUTYS0_2.5 2.6r5
  cyclecount1@LIBNAUTYS0_2.5 2.5r6
  cyclecount@LIBNAUTYS0_2.5 2.5r6
  degstats2@LIBNAUTYS0_2.5 2.6r2
@@ -1352,6 +1357,7 @@ libnautyS1.so.2 libnauty2 #MINVER#
  converse_sg@LIBNAUTYS1_2.5 2.5r6
  copy_sg@LIBNAUTYS1_2.5 2.5r6
  copycomment@LIBNAUTYS1_2.5 2.5r6
+ countcells@LIBNAUTYS1_2.5 2.6r5
  cyclecount1@LIBNAUTYS1_2.5 2.5r6
  cyclecount@LIBNAUTYS1_2.5 2.5r6
  degstats2@LIBNAUTYS1_2.5 2.6r2
@@ -1614,6 +1620,7 @@ libnautyW0.so.2 libnauty2 #MINVER#
  converse_sg@LIBNAUTYW0_2.5 2.5r6
  copy_sg@LIBNAUTYW0_2.5 2.5r6
  copycomment@LIBNAUTYW0_2.5 2.5r6
+ countcells@LIBNAUTYW0_2.5 2.6r5
  cyclecount1@LIBNAUTYW0_2.5 2.5r6
  cyclecount@LIBNAUTYW0_2.5 2.5r6
  degstats2@LIBNAUTYW0_2.5 2.6r2
@@ -1876,6 +1883,7 @@ libnautyW1.so.2 libnauty2 #MINVER#
  converse_sg@LIBNAUTYW1_2.5 2.5r6
  copy_sg@LIBNAUTYW1_2.5 2.5r6
  copycomment@LIBNAUTYW1_2.5 2.5r6
+ countcells@LIBNAUTYW1_2.5 2.6r5
  cyclecount1@LIBNAUTYW1_2.5 2.5r6
  cyclecount@LIBNAUTYW1_2.5 2.5r6
  degstats2@LIBNAUTYW1_2.5 2.6r2

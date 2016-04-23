@@ -1,0 +1,47 @@
+#!/bin/bash
+# autopkgtest check based on upstream check script runalltests
+set -ue
+
+tcc naucompare.c -o $ADTTMP/naucompare
+
+cp -p nautest[abcdefg].ans $ADTTMP
+
+cd $ADTTMP
+
+tdx=0
+
+runonetest() {
+	local cmd="$1"
+	local ok="$2"
+
+	printf "%-83s %s  " "$cmd" "$ok"
+
+	if [ ! -r "$ok" ] ; then
+		echo "File $ok not found or not readable."
+		exit 1
+	fi
+
+	tdx=$(( $tdx + 1 ))
+	out1=$(printf "runtest-%02d.data" $tdx)
+	out2=$(printf "runtest-%02d.atad" $tdx)
+
+	eval $cmd 2>$out2 >$out1
+
+	LC_COLLATE=C sort $out2 >>$out1
+	if ./naucompare "$out1" "$ok" ; then
+		rm $out1 $out2
+	else
+		echo "Output file is $out1" 1>&2
+		rm $out2
+	fi
+	}
+
+runonetest "nauty-geng -ud1D7t 11" nautesta.ans
+runonetest "nauty-geng -cd1f 10 | nauty-labelg -q" nautestb.ans
+runonetest "nauty-genrang -r3 114 100 | nauty-countg --nedDr -q" nautestc.ans
+runonetest "nauty-gentourng -q -z 8 | nauty-pickg -T3" nautestd.ans
+runonetest "nauty-gentreeg -q -s 18 | nauty-countg -z6 --o" nauteste.ans
+runonetest "nauty-geng -c -q 8 8 | nauty-directg -q -o | nauty-converseg -q | nauty-labelg -q" nautestf.ans
+runonetest "nauty-genbg -q 4 3 10 | nauty-vcolg -m6 -T" nautestg.ans
+
+exit 0

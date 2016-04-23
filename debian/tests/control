@@ -1,2 +1,6 @@
+Tests: make-check
+Restrictions: needs-recommends
+Depends: nauty, tcc
+
 Tests: build-examples
 Depends: nauty-doc, libnauty2-dev, build-essential, pkg-config
