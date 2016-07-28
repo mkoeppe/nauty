@@ -90,6 +90,7 @@ if test x"$user_cflags" = x"" -o x"$user_cflags" = x-m32 ; then
       gccver=0.0.0
   fi
 
+  is_powerpc=0
   case "$host" in
    *i686-apple-darwin*)
 	AC_TRY_CFLAGS([-fast],[CFLAGS="$MORECFLAGS -fast"]);;
@@ -102,6 +103,7 @@ if test x"$user_cflags" = x"" -o x"$user_cflags" = x-m32 ; then
    *pentium2*|*i586*)
 	AC_TRY_CFLAGS([-march=i586],[CFLAGS="$CFLAGS -march=i586"]);;
    *powerpc*)
+	is_powerpc=1
         machtype=`/usr/bin/machine 2>/dev/null || echo unknown`
         case "$machtype" in
 	  ppc740?)
@@ -284,6 +286,7 @@ test $have_hwpopcnt -eq 0 && isainfo -x -v 2>/dev/null | grep -i popc >/dev/null
 ],[
 have_hwpopcnt=0
 ])
+test $is_powerpc -eq 1 && have_hwpopcnt=0
 AC_MSG_RESULT($have_hwpopcnt)
 AC_SUBST(have_hwpopcnt)
 

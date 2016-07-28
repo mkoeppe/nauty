@@ -1,4 +1,4 @@
-/* shortg.c  version 3.0; B D McKay, Jun 20 2015. */
+/* shortg.c  version 3.1; B D McKay, July 15 2016. */
 
 #define USAGE \
   "shortg [-qvkdu] [-i# -I#:# -K#] [-fxxx] [-S|-t] [-Tdir] [infile [outfile]]"
@@ -537,7 +537,7 @@ main(int argc, char *argv[])
 #endif
             fcanonise_inv(g,m,n,h,format?fmt:NULL,
                 invarproc[inv].entrypoint,mininvarlevel,maxinvarlevel,
-                invararg, loops>0);
+                invararg, loops>0||digraph);
 	    if (outcode == DIGRAPH6 || digraph) cdstr = ntod6(h,m,n);
             else if (outcode == SPARSE6)        cdstr = ntos6(h,m,n);
             else                                cdstr = ntog6(h,m,n);

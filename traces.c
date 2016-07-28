@@ -20,6 +20,7 @@
  *       15-Feb-14 : CPUDEFS removed (already declared in gtools.h)           *
  *       01-Sep-15 : add weighted edges (not active)                          *
  *       28-Jan-16 : version ready for nauty and Traces v.2.6 distribution    *
+ *       12-Jul-16 : bug correction (reaching degree 2 vertices)              *
  *****************************************************************************/
 
 #include "traces.h"
@@ -261,6 +262,7 @@ static struct Candidate* NewCandidate(int, Candidate**, int);
 static void NewPartSpine(int, int);
 static int FreeList(Candidate*, int);
 static int FixBase(int*, struct TracesVars*, Candidate*, int, int);
+static boolean FixedBase(int*, struct TracesVars*, Candidate*, int, int);
 static void factorial(double*, int*, int);
 static void factorial2(double*, int*, int);
 static int CheckForAutomorphisms(Candidate*, Candidate*, struct TracesVars*, struct TracesInfo*, int, int, Partition*);
@@ -477,6 +479,7 @@ if (tv->options->verbosity >= 2) fprintf(outfile, "-=="); \
 CurrCand->indnum--; \
 RemoveFromLevel(tv->tolevel, tv->treedepth, tv->strategy, FALSE); \
 tv->compstage = 1; \
+TempOrbits = NULL; \
 trieroot = trie_new(n, tv); \
 trieref = trieroot; \
 tv->nextlevel = tv->maxtreelevel = tv->fromlevel; \
@@ -487,6 +490,7 @@ return 0; }
 #define EXITFROMSTAGE0EXPATH2 { PRINT_LINE_PLUS(tv->tolevel) \
 if (tv->options->verbosity >= 2) fprintf(outfile, "=-="); \
 tv->compstage = 1; \
+TempOrbits = NULL; \
 trieroot = trie_new(n, tv); \
 trieref = trieroot; \
 tv->nextlevel = tv->maxtreelevel = tv->tolevel; \
@@ -509,6 +513,7 @@ SpineTL->liststart->next = NULL; \
 CopyCand(SpineTL->liststart, NextCand, n, NULL, NULL); \
 } \
 tv->compstage = 1; \
+TempOrbits = NULL; \
 trieroot = trie_new(n, tv); \
 trieref = trieroot; \
 tv->nextlevel = tv->maxtreelevel = tv->tolevel; \
@@ -630,6 +635,9 @@ PRINTCANDBIG(CurrCand, tv->fromlevel) \
 fprintf(outfile, "| "); \
 fprintf(outfile, tv->digstring, NextCand->vertex+labelorg); \
 } }
+
+#define PRINT_INDEX(V,Verb,where) if (tv->options->verbosity >= Verb) \
+fprintf(outfile,"Set index @ %d: Name %d, index %d\n",where,V->name,V->index);
 
 #define SPECIALGENERATORS { if (tv->options->generators) addpermutation(ring, AUTPERM, n); \
 tv->stats->numgenerators++; \
@@ -1158,6 +1166,7 @@ Traces(sparsegraph *g_arg, int *lab, int *ptn,
                         TrieNode->index = 0;
                         for (i=1; i<AutomCount[0]; i++) {
                             TrieNode->index += CurrOrbSize[AutomCount[i]];
+                            PRINT_INDEX(TrieNode,4,30)
                         }
                     }
                 }
@@ -5682,9 +5691,11 @@ int CheckForAutomorphisms(Candidate *CurrCand, Candidate *NextCand,
                                     if (TrieCandFrom) {
                                         TrieCheckFrom->index += TrieCandFrom->index;
                                         TrieCandFrom->goes_to = TrieCheckFrom;
+                                        PRINT_INDEX(TrieCheckFrom,4,1)
                                     }
                                     else {
                                         TrieCheckFrom->index++;
+                                        PRINT_INDEX(TrieCheckFrom,4,2)
                                     }
                                     NextCand->do_it = FALSE;
                                 }
@@ -5695,6 +5706,7 @@ int CheckForAutomorphisms(Candidate *CurrCand, Candidate *NextCand,
                                             TrieCandFrom->index += TrieCheckFrom->index;
                                             tv->newindex = 0;
                                             TrieCheckFrom->goes_to = TrieCandFrom;
+                                            PRINT_INDEX(TrieCandFrom,4,3)
                                         }
                                         else {
                                             if (CurrCand->stnode->level > 1) {
@@ -5711,9 +5723,11 @@ int CheckForAutomorphisms(Candidate *CurrCand, Candidate *NextCand,
                                         if (TrieCandFrom) {
                                             TrieCheckFrom->index += TrieCandFrom->index;
                                             TrieCandFrom->goes_to = TrieCheckFrom;
+                                            PRINT_INDEX(TrieCheckFrom,4,4)
                                         }
                                         else {
                                             TrieCheckFrom->index++;
+                                            PRINT_INDEX(TrieCheckFrom,4,5)
                                         }
                                         NextCand->do_it = FALSE;
                                     }
@@ -5721,15 +5735,18 @@ int CheckForAutomorphisms(Candidate *CurrCand, Candidate *NextCand,
                                 break;
                             case 1:
                                 TrieCheckFrom->index ++;
+                                PRINT_INDEX(TrieCheckFrom,4,6)
                                 tv->gotonode = TrieCheckFrom;
                                 break;
                             case 2:
                                 if (TrieCandFrom) {
                                     TrieCheckFrom->index += TrieCandFrom->index;
                                     TrieCandFrom->goes_to = TrieCheckFrom;
+                                    PRINT_INDEX(TrieCheckFrom,4,7)
                                 }
                                 else {
                                     TrieCheckFrom->index++;
+                                    PRINT_INDEX(TrieCheckFrom,4,8)
                                 }
                                 if (temp == tv->maxtreelevel) {
                                     tmp1 = TempOrbits[NextCand->lab[Spine[temp].tgtpos]];
@@ -5884,9 +5901,11 @@ int CheckForSingAutomorphisms(Candidate *CurrCand, Partition *NextPart, Candidat
                                     if (TrieCandFrom) {
                                         TrieCheckFrom->index += TrieCandFrom->index;
                                         TrieCandFrom->goes_to = TrieCheckFrom;
+                                        PRINT_INDEX(TrieCheckFrom,4,9)
                                     }
                                     else {
                                         TrieCheckFrom->index++;
+                                        PRINT_INDEX(TrieCheckFrom,4,10)
                                     }
                                     NextCand->do_it = FALSE;
                                 }
@@ -5897,6 +5916,7 @@ int CheckForSingAutomorphisms(Candidate *CurrCand, Partition *NextPart, Candidat
                                             TrieCandFrom->index += TrieCheckFrom->index;
                                             tv->newindex = 0;
                                             TrieCheckFrom->goes_to = TrieCandFrom;
+                                            PRINT_INDEX(TrieCandFrom,4,11)
                                         }
                                         else {
                                             if (CurrCand->stnode->level > 1) {
@@ -5913,9 +5933,11 @@ int CheckForSingAutomorphisms(Candidate *CurrCand, Partition *NextPart, Candidat
                                         if (TrieCandFrom) {
                                             TrieCheckFrom->index += TrieCandFrom->index;
                                             TrieCandFrom->goes_to = TrieCheckFrom;
+                                            PRINT_INDEX(TrieCheckFrom,4,12)
                                         }
                                         else {
                                             TrieCheckFrom->index++;
+                                            PRINT_INDEX(TrieCheckFrom,4,13)
                                         }
                                         NextCand->do_it = FALSE;
                                     }
@@ -5923,15 +5945,18 @@ int CheckForSingAutomorphisms(Candidate *CurrCand, Partition *NextPart, Candidat
                                 break;
                             case 1:
                                 TrieCheckFrom->index++;
+                                PRINT_INDEX(TrieCheckFrom,4,14)
                                 tv->gotonode = TrieCheckFrom;
                                 break;
                             case 2:
                                 if (TrieCandFrom) {
                                     TrieCheckFrom->index += TrieCandFrom->index;
                                     TrieCandFrom->goes_to = TrieCheckFrom;
+                                    PRINT_INDEX(TrieCheckFrom,4,15)
                                 }
                                 else {
                                     TrieCheckFrom->index++;
+                                    PRINT_INDEX(TrieCheckFrom,4,16)
                                 }
                                 if (temp == tv->maxtreelevel) {
                                     tmp1 = TempOrbits[NextCand->lab[Spine[temp].tgtpos]];
@@ -6116,9 +6141,11 @@ int CheckForMatching(Candidate *CurrCand, Candidate *NextCand, Partition *Part, 
                                 if (TrieCandFrom) {
                                     TrieCheckFrom->index += TrieCandFrom->index;
                                     TrieCandFrom->goes_to = TrieCheckFrom;
+                                    PRINT_INDEX(TrieCheckFrom,4,17)
                                 }
                                 else {
                                     TrieCheckFrom->index++;
+                                    PRINT_INDEX(TrieCheckFrom,4,18)
                                 }
                                 NextCand->do_it = FALSE;
                             }
@@ -6129,6 +6156,7 @@ int CheckForMatching(Candidate *CurrCand, Candidate *NextCand, Partition *Part, 
                                         TrieCandFrom->index += TrieCheckFrom->index;
                                         tv->newindex = 0;
                                         TrieCheckFrom->goes_to = TrieCandFrom;
+                                        PRINT_INDEX(TrieCandFrom,4,19)
                                     }
                                     else {
                                         if (CurrCand->stnode->level > 1) {
@@ -6145,9 +6173,11 @@ int CheckForMatching(Candidate *CurrCand, Candidate *NextCand, Partition *Part, 
                                     if (TrieCandFrom) {
                                         TrieCheckFrom->index += TrieCandFrom->index;
                                         TrieCandFrom->goes_to = TrieCheckFrom;
+                                        PRINT_INDEX(TrieCheckFrom,4,20)
                                     }
                                     else {
                                         TrieCheckFrom->index++;
+                                        PRINT_INDEX(TrieCheckFrom,4,21)
                                     }
                                     NextCand->do_it = FALSE;
                                 }
@@ -6156,14 +6186,17 @@ int CheckForMatching(Candidate *CurrCand, Candidate *NextCand, Partition *Part, 
                         case 1:
                             TrieCheckFrom->index ++;
                             tv->gotonode = TrieCheckFrom;
+                            PRINT_INDEX(TrieCheckFrom,4,22)
                             break;
                         case 2:
                             if (TrieCandFrom) {
                                 TrieCheckFrom->index += TrieCandFrom->index;
                                 TrieCandFrom->goes_to = TrieCheckFrom;
+                                PRINT_INDEX(TrieCheckFrom,4,23)
                             }
                             else {
                                 TrieCheckFrom->index++;
+                                PRINT_INDEX(TrieCheckFrom,4,24)
                             }
                             if (temp == tv->maxtreelevel) {
                                 tmp1 = TempOrbits[NextCand->lab[Spine[temp].tgtpos]];
@@ -6264,7 +6297,7 @@ int CompStage0(Partition *CurrPart, Partition *NextPart, Candidate *CurrCand, Ca
         SpineTL->tgtpos = SpineTL->tgtend - 1;
     }
     else {
-        tv->finalnumcells = CurrPart->cells;
+        tv->finalnumcells = min(CurrPart->cells,tv->finalnumcells);    /* 160712 */
         ti->thereisnextlevel = SelectNextLevel(n, tv, ti);
         return 0;
     }
@@ -6288,7 +6321,7 @@ int CompStage0(Partition *CurrPart, Partition *NextPart, Candidate *CurrCand, Ca
         if ((tv->orbits[temp] == temp) || tv->tolevel == 1) {
             ti->minimalinorbits = TRUE;
             
-            if (tv->group_level >= tv->tolevel) {
+            if ((tv->group_level >= tv->tolevel) && (FixedBase(fix, tv, CurrCand, 0, tv->fromlevel))) {
                 tv->nfix = tv->fromlevel;
                 tv->currorbit = findcurrorbits(gpB, tv->nfix);
             } else {
@@ -6333,6 +6366,7 @@ int CompStage0(Partition *CurrPart, Partition *NextPart, Candidate *CurrCand, Ca
                                     }
                                     TreeNode1->index += TreeNode2->index;
                                     TreeNode2->goes_to = TreeNode1;
+                                    PRINT_INDEX(TreeNode1,4,25)
                                     
                                     ti->minimalinorbits = FALSE;
                                 }
@@ -6354,7 +6388,6 @@ int CompStage0(Partition *CurrPart, Partition *NextPart, Candidate *CurrCand, Ca
                     tv->currorbit = TempOrbits;
                 }
             }
-            
             if (ti->minimalinorbits) {
                 memcpy(NextCand->lab, CurrCand->lab, n*sizeof(int));
                 memcpy(NextCand->invlab, CurrCand->invlab, n*sizeof(int));
@@ -6405,310 +6438,113 @@ int CompStage0(Partition *CurrPart, Partition *NextPart, Candidate *CurrCand, Ca
                                     TreeNode = TreeNode->goes_to;
                                 }
                                 TreeNode->index++;
+                                PRINT_INDEX(TreeNode,4,26)
                                 continue;
                             }
                         }
                     }
-                    PRINT_REFINE_VERB(4,'a')
-                    
-                    memcpy(NextPart->cls, CurrPart->cls, n*sizeof(int));
-                    memcpy(NextPart->inv, CurrPart->inv, n*sizeof(int));
-                    
-                    tv->conta3++;
-                    
-                    if (NextPart->cls[tv->tcell] == 2) {
-                        num_indv = 2;
-                        NextCand->singcode = MASHCOMM(NextCand->singcode, CurrCand->lab[tv->tcell]);
-                        NextCand->singcode = MASHCOMM(NextCand->singcode, CurrCand->lab[tv->tcell+1]);
-                        if (SpineTL->singstart == SpineTL->singend) {
-                            Singletons[SpineTL->singend++] = tv->tcell;
-                            Singletons[SpineTL->singend++] = tv->tcell+1;
-                        }
-                    }
                     else {
-                        num_indv = 1;
-                        NextCand->singcode = MASHCOMM(NextCand->singcode, NextCand->vertex);
-                        if (SpineTL->singstart == SpineTL->singend) {
-                            Singletons[SpineTL->singend++] = tv->tcell + NextPart->cls[tv->tcell] - 1;
+                        PRINT_REFINE_VERB(4,'a')
+                        
+                        memcpy(NextPart->cls, CurrPart->cls, n*sizeof(int));
+                        memcpy(NextPart->inv, CurrPart->inv, n*sizeof(int));
+                        
+                        tv->conta3++;
+                        
+                        if (NextPart->cls[tv->tcell] == 2) {
+                            num_indv = 2;
+                            NextCand->singcode = MASHCOMM(NextCand->singcode, CurrCand->lab[tv->tcell]);
+                            NextCand->singcode = MASHCOMM(NextCand->singcode, CurrCand->lab[tv->tcell+1]);
+                            if (SpineTL->singstart == SpineTL->singend) {
+                                Singletons[SpineTL->singend++] = tv->tcell;
+                                Singletons[SpineTL->singend++] = tv->tcell+1;
+                            }
                         }
-                    }
-                    
-                    Individualize(NextPart, NextCand, NextCand->vertex, tv->tcell, CurrPart->cells, SpineTL->tgtpos);
-                    tv->stats->numnodes++;
-                    tv->answ = traces_refine(NextCand,
-                                             n,
-                                             NextPart, tv, ti, num_indv, TRUE);
-                    
-                    switch (tv->answ) {
-                        case 0:				/* Interrupted refinement: do not add to the list */
-                            tv->stats->interrupted++;
-                            SpineTL->levelcounter++;
-                            break;
-                        case 1 :			/* The same trace has been found once more : add to the list */
-                            SpineTL->levelcounter++;
-                            
-                            NextCand->do_it = TRUE;
-                            if (tv->options->verbosity >= 2) PRINT_CANDIDATE(NextCand, tv->tolevel);
-                            
-                            tv->tolevel_tl = tv->tolevel;
-                            NextCand->pathsingcode = NextCand->singcode;
-                            NextCand->firstsingcode = 0;
-                            
-                            if (tv->steps > 1) {
-                                if (tv->fromlevel <= tv->lev_of_lastauto) {
-                                    
-                                    closeloop = CheckForMatching(CurrCand, NextCand, NextPart, tv, ti, m, n);
-                                }
-                                if (NextCand->do_it) {
-                                    firstsing = TRUE;
-                                    
-                                    /* EXPERIMENTAL PATH */
-                                    if (tv->options->verbosity >= 2) tv->expaths -= CPUTIME;
-                                    while (NextPart->cells < n) {
-                                        if (firstsing && BreakSteps[tv->tolevel]) {
-                                            firstsing = FALSE;
-                                            NextCand->firstsingcode = NextCand->pathsingcode;
-                                            if (CheckForSingAutomorphisms(CurrCand, NextPart, NextCand, tv, ti, m, n))
-                                                if (!NextCand->do_it) {
-                                                    break;
-                                                }
-                                        }
-                                        
-                                        has_nexttcell = TargetCellExpPath(NextCand, NextPart, tv);
-                                        
-                                        if (!has_nexttcell) {
-                                            NextCand->firstsingcode = NextCand->pathsingcode;
-                                            if (tv->options->verbosity >= 2) {
-                                                if (tv->tolevel_tl-tv->tolevel >= 6) {
-                                                    PRINT_EXPPATHSTEP(NextCand, TRUE)
-                                                }
-                                                else {
-                                                    fprintf(outfile, "(%d) ", tv->tolevel_tl);
-                                                }
-                                            }
-                                            break;
-                                        }
-                                        ExperimentalStep(NextPart, NextCand, tv, ti, m, n);
-                                        if (NextPart->cells == n) {
-                                            has_nexttcell = FALSE;
-                                        }
-                                        PRINT_EXPPATHSTEP(NextCand, TRUE)
-                                    }
-                                    
-                                    if (tv->options->verbosity >= 2) tv->expaths += CPUTIME;
-                                }
-                                else {
-                                    if (closeloop < tv->tolevel) k = SpineTL->tgtend;
-                                    PRINT_RETURN
-                                    break;
-                                }
-                                if (!tv->strategy && !tv->options->getcanon && (tv->tolevel_tl == tv->tolevel + 1)) {
-                                    tv->levelfromCS0 = tv->tolevel;
-                                    tv->maxtreelevel = tv->tolevel_tl;
-                                    if (tv->tolevel == 1) {
-                                        tv->newst_stage1 = searchtrie_make(CurrCand, NextCand, n, tv);
-                                        EXITFROMSTAGE0EXPATH1
-                                    }
-                                    else {
-                                        temp = 0;
-                                        for (i=0; i<tv->tolevel; i++) {
-                                            temp += Spine[i].listcounter;
-                                        }
-                                        if (temp > 5) {
-                                            tv->newst_stage1 = searchtrie_make(CurrCand, NextCand, n, tv);
-                                            EXITFROMSTAGE0EXPATH1
-                                        }
-                                    }
-                                }
-                                
-                                /* ANY AUTOMORPHISM? */
-                                if (tv->options->verbosity >= 2) tv->autchk -= CPUTIME;
-                                tv->newindex = 0;
-                                if (NextCand->do_it) {
-                                    closeloop = CheckForAutomorphisms(CurrCand, NextCand, tv, ti, m, n, NextPart);
-                                    if (!NextCand->do_it && closeloop < tv->tolevel) k = SpineTL->tgtend;
-                                }
-                                if (tv->options->verbosity >= 2) tv->autchk += CPUTIME;
-                                
-                                if (NextCand->do_it) {
-                                    ADDTONEXTLEVEL;
-                                    SpineTL->keptcounter++;
-                                    searchtrie_make(CurrCand, SpineTL->listend, n, tv);
-                                }
+                        else {
+                            num_indv = 1;
+                            NextCand->singcode = MASHCOMM(NextCand->singcode, NextCand->vertex);
+                            if (SpineTL->singstart == SpineTL->singend) {
+                                Singletons[SpineTL->singend++] = tv->tcell + NextPart->cls[tv->tcell] - 1;
                             }
-                            else {
-                                if (BreakSteps[tv->tolevel]) {
-                                    NextCand->firstsingcode = NextCand->pathsingcode;
-                                    if (CheckForSingAutomorphisms(CurrCand, NextPart, NextCand, tv, ti, m, n))
-                                        if (!NextCand->do_it) {
-                                            PRINT_RETURN
-                                            break;
-                                        }
-                                }
-                                
-                                /* ANY AUTOMORPHISM? */
-                                if (tv->options->verbosity >= 2) tv->autchk -= CPUTIME;
-                                tv->newindex = 0;
-                                if (NextCand->do_it) {
-                                    closeloop = CheckForAutomorphisms(CurrCand, NextCand, tv, ti, m, n, NextPart);
-                                    if (!NextCand->do_it && closeloop < tv->tolevel) k = SpineTL->tgtend;
-                                }
-                                if (tv->options->verbosity >= 2) tv->autchk += CPUTIME;
-                                
-                                if (NextCand->do_it) {
-                                    ADDTONEXTLEVEL;
-                                    SpineTL->keptcounter++;
-                                    searchtrie_make(CurrCand, SpineTL->listend, n, tv);
-                                }
-                            }
-                            PRINT_RETURN
-                            break;
-                        case 2 :	/* Delete the old list and start a new one: a better trace has been found */
-                            
-                            tv->tolevel_tl = tv->tolevel;
-                            has_nexttcell = FALSE;
-                            if (NextPart->cells == n) {
-                                tv->stats->canupdates++;
-                                if (tv->options->usercanonproc != NULL)
-                                {
-                                    (*tv->options->usercanonproc)((graph*)tv->input_graph, NextCand->lab, (graph*)tv->cangraph, tv->stats->canupdates, NextCand->code, m, n);
-                                }
-                            }
-                            
-                            if (tv->tolevel > tv->treedepth) {
-                                tv->treedepth = tv->tolevel;
-                                if (tv->strategy) {
-                                    SpineTL->part = NewPartition(n);
-                                }
-                                else {
-                                    NewPartSpine(tv->tolevel,n);
-                                }
-                            }
-                            
-                            if (!tv->strategy && (tv->tolevel > 1) && !SpineTL->liststart) {
-                                /* First Candidate at current level */
-                                tv->maxtreelevel = tv->tolevel;
-                                
-                                SpineTL->liststart = NewCandidate(n, &GarbList, TRUE);
-                                SpineTL->listend = SpineTL->liststart;
-                                
-                                tv->conta0++;
-                                CopyCand(SpineTL->liststart, NextCand, n, TEMPLAB, TEMPINVLAB);
-                                if (NextPart->cells < tv->finalnumcells) SpineTL->liststart->code = auxcode;
-                                COPYPART(SpineTL->part, NextPart);
-                                tv->newindex = 0;
-                                tv->newst_stage1 = searchtrie_make(CurrCand, SpineTL->listend, n, tv);
-                                
-                                SpineTL->listcounter = 1;
-                                SpTLliststart = SpineTL->liststart;
-                                
-                                i = tv->tolevel;
-                                if (tv->brkstpcount) {
-                                    while ((i<n) && !BreakSteps[i]) {
-                                        i++;
-                                    }
-                                    if (i<n) SpineTL->liststart->firstsingcode = Spine[i].singcode;
-                                }
-                                
-                                SpineTL->updates = 1;
-                                SpineTL->levelcounter = 1;
-                                SpineTL->keptcounter = 1;
-                                
-                                PRINT_LINE_PLUS(tv->fromlevel)
-                                
-                                if (tv->options->verbosity >= 2) PRINT_CANDIDATE(SpineTL->liststart, tv->tolevel);
-                                PRINT_RETURN;
-                                
-                                if (!tv->strategy && !tv->options->getcanon && (tv->tolevel+1 == tv->firstpathlength)) {
-                                    if ((tv->tolevel == 1) && (CurrPart->cls[tv->tcell] > 5)) {
-                                        EXITFROMSTAGE0EXPATH2;
-                                    }
-                                    else {
-                                        temp = 0;
-                                        for (i=0; i<tv->tolevel; i++) {
-                                            temp += Spine[i].listcounter;
-                                        }
-                                        if (temp > 5) {
-                                            EXITFROMSTAGE0EXPATH2;
-                                        }
-                                    }
-                                }
-                            }
-                            else {
-                                memset(WorkArray, 0, n*sizeof(int));
-                                
-                                tv->lastcell = tv->lastlev = -1;
-                                has_nexttcell = TargetCellFirstPath(NextCand, NextPart, tv);
-                                
-                                if (!has_nexttcell) {
-                                    tv->stats->canupdates++;
-                                    if (tv->options->usercanonproc != NULL) {
-                                        (*tv->options->usercanonproc)((graph*)tv->input_graph, NextCand->lab, (graph*)tv->cangraph, tv->stats->canupdates, NextCand->code, m, n);
-                                    }
-                                }
-                                
-                                tv->tcellevel = tv->maxtreelevel = tv->tolevel;
+                        }
+                        
+                        Individualize(NextPart, NextCand, NextCand->vertex, tv->tcell, CurrPart->cells, SpineTL->tgtpos);
+                        tv->stats->numnodes++;
+                        tv->answ = traces_refine(NextCand,
+                                                 n,
+                                                 NextPart, tv, ti, num_indv, TRUE);
+                        
+                        switch (tv->answ) {
+                            case 0:				/* Interrupted refinement: do not add to the list */
+                                tv->stats->interrupted++;
                                 SpineTL->levelcounter++;
-                                SpineTL->updates++;
-                                SpineTL->keptcounter = 1;
+                                break;
+                            case 1 :			/* The same trace has been found once more : add to the list */
+                                SpineTL->levelcounter++;
                                 
-                                RemoveFromLevel(tv->tolevel, tv->treedepth, tv->strategy, TRUE);
-                                SpineTL->liststart = NewCandidate(n, &GarbList, TRUE);
-                                SpineTL->listend = SpineTL->liststart;
+                                NextCand->do_it = TRUE;
+                                if (tv->options->verbosity >= 2) PRINT_CANDIDATE(NextCand, tv->tolevel);
                                 
-                                tv->conta0++;
-                                CopyCand(SpineTL->liststart, NextCand, n, NULL, NULL);
-                                COPYPART(SpineTL->part, NextPart);
-                                
-                                tv->newindex = 0;
-                                
-                                tv->newst_stage1 = searchtrie_make(CurrCand, SpineTL->listend, n, tv);
-                                
-                                SpineTL->listcounter = 1;
-                                SpTLliststart = SpineTL->liststart;
-                                
-                                SpTLliststart->pathsingcode = SpineTL->singcode = SpTLliststart->singcode;
-                                SpTLliststart->firstsingcode = 0;
-                                
-                                PRINT_LINE
-                                if (tv->options->verbosity >= 2) PRINT_CANDIDATE(SpTLliststart, tv->tolevel);
-                                
-                                memset(BreakSteps, 0, n*sizeof(int));
-                                tv->brkstpcount = 0;
+                                tv->tolevel_tl = tv->tolevel;
+                                NextCand->pathsingcode = NextCand->singcode;
+                                NextCand->firstsingcode = 0;
                                 
                                 if (tv->steps > 1) {
-                                    
-                                    /* EXPERIMENTAL PATH */
-                                    if (tv->options->verbosity >= 2) tv->expaths -= CPUTIME;
-                                    PRINTF2("CStage0 2: %d\n", tv->finalnumcells);
-                                    tv->finalnumcells = n;
-                                    
-                                    while (has_nexttcell) {
-                                        ExperimentalStep(NextPart, SpTLliststart, tv, ti, m, n);
+                                    if (tv->fromlevel <= tv->lev_of_lastauto) {
                                         
-                                        Spine[tv->tolevel_tl].singcode = SpTLliststart->pathsingcode;
-                                        has_nexttcell = TargetCellFirstPath(SpTLliststart, NextPart, tv);
-                                        PRINT_EXPPATHSTEP(SpTLliststart, TRUE)
+                                        closeloop = CheckForMatching(CurrCand, NextCand, NextPart, tv, ti, m, n);
                                     }
-                                    if (NextPart->cells < n) {
-                                        PRINTF2("CStage0 3: %d\n", tv->finalnumcells);
-                                        tv->finalnumcells = NextPart->cells;
-                                        PRINTF2("CStage0 3<: %d\n", tv->finalnumcells);
+                                    if (NextCand->do_it) {
+                                        firstsing = TRUE;
+                                        
+                                        /* EXPERIMENTAL PATH */
+                                        if (NextPart->cells != tv->finalnumcells) {    /* 160712 */
+                                            if (tv->options->verbosity >= 2) tv->expaths -= CPUTIME;
+                                            while (NextPart->cells < n) {
+                                                if (firstsing && BreakSteps[tv->tolevel]) {
+                                                    firstsing = FALSE;
+                                                    NextCand->firstsingcode = NextCand->pathsingcode;
+                                                    if (CheckForSingAutomorphisms(CurrCand, NextPart, NextCand, tv, ti, m, n))
+                                                        if (!NextCand->do_it) {
+                                                            break;
+                                                        }
+                                                }
+                                                
+                                                has_nexttcell = TargetCellExpPath(NextCand, NextPart, tv);
+                                                
+                                                if (!has_nexttcell) {
+                                                    NextCand->firstsingcode = NextCand->pathsingcode;
+                                                    if (tv->options->verbosity >= 2) {
+                                                        if (tv->tolevel_tl-tv->tolevel >= 6) {
+                                                            PRINT_EXPPATHSTEP(NextCand, TRUE)
+                                                        }
+                                                        else {
+                                                            fprintf(outfile, "(%d) ", tv->tolevel_tl);
+                                                        }
+                                                    }
+                                                    break;
+                                                }
+                                                ExperimentalStep(NextPart, NextCand, tv, ti, m, n);
+                                                if (NextPart->cells == n) {
+                                                    has_nexttcell = FALSE;
+                                                }
+                                                PRINT_EXPPATHSTEP(NextCand, TRUE)
+                                            }
+                                            if (tv->options->verbosity >= 2) tv->expaths += CPUTIME;
+                                        }
+                                    }
+                                    else {
+                                        if (closeloop < tv->tolevel) k = SpineTL->tgtend;
+                                        PRINT_RETURN
+                                        break;
                                     }
                                     
-                                    PRINTF2("CS0 2?: finalnumcells: %d\n", tv->finalnumcells);
-                                    if (NextPart->cells == tv->finalnumcells) {
-                                        UPDATEMIN(tv->expathlength, tv->tolevel_tl);
-                                    }
-                                    
-                                    if (tv->options->verbosity >= 2) tv->expaths += CPUTIME;
-                                    
-                                    tv->firstpathlength = tv->tolevel_tl;
-                                    PRINT_RETURN
-                                    if (!tv->strategy && !tv->options->getcanon && (NextPart->cells == tv->finalnumcells) && (tv->tolevel_tl == tv->tolevel + 1)) {
+                                    if (!tv->strategy && !tv->options->getcanon && (tv->tolevel_tl == tv->tolevel + 1) && ((NextPart->cells != tv->finalnumcells) || (NextPart->cells == n))) {    /* 160717 */
+                                        tv->levelfromCS0 = tv->tolevel;
                                         tv->maxtreelevel = tv->tolevel_tl;
-                                        if ((tv->tolevel == 1) && (CurrPart->cls[tv->tcell] > 5)) {
-                                            EXITFROMSTAGE0EXPATH2
+                                        if (tv->tolevel == 1) {
+                                            tv->newst_stage1 = searchtrie_make(CurrCand, NextCand, n, tv);
+                                            EXITFROMSTAGE0EXPATH1
                                         }
                                         else {
                                             temp = 0;
@@ -6716,24 +6552,225 @@ int CompStage0(Partition *CurrPart, Partition *NextPart, Candidate *CurrCand, Ca
                                                 temp += Spine[i].listcounter;
                                             }
                                             if (temp > 5) {
-                                                EXITFROMSTAGE0EXPATH2
+                                                tv->newst_stage1 = searchtrie_make(CurrCand, NextCand, n, tv);
+                                                EXITFROMSTAGE0EXPATH1
                                             }
                                         }
                                     }
-                                    memcpy(TEMPLAB, SpTLliststart->lab, n*sizeof(int));
-                                    memcpy(TEMPINVLAB, SpTLliststart->invlab, n*sizeof(int));
-                                    tv->conta5++;
+                                    
+                                    /* ANY AUTOMORPHISM? */
+                                    if (tv->options->verbosity >= 2) tv->autchk -= CPUTIME;
+                                    tv->newindex = 0;
+                                    if (NextCand->do_it) {
+                                        closeloop = CheckForAutomorphisms(CurrCand, NextCand, tv, ti, m, n, NextPart);
+                                        if (!NextCand->do_it && closeloop < tv->tolevel) k = SpineTL->tgtend;
+                                    }
+                                    if (tv->options->verbosity >= 2) tv->autchk += CPUTIME;
+                                    
+                                    if (NextCand->do_it) {
+                                        ADDTONEXTLEVEL;
+                                        SpineTL->keptcounter++;
+                                        searchtrie_make(CurrCand, SpineTL->listend, n, tv);
+                                    }
                                 }
                                 else {
-                                    PRINT_RETURN
+                                    if (BreakSteps[tv->tolevel]) {
+                                        NextCand->firstsingcode = NextCand->pathsingcode;
+                                        if (CheckForSingAutomorphisms(CurrCand, NextPart, NextCand, tv, ti, m, n))
+                                            if (!NextCand->do_it) {
+                                                PRINT_RETURN
+                                                break;
+                                            }
+                                    }
+                                    
+                                    /* ANY AUTOMORPHISM? */
+                                    if (tv->options->verbosity >= 2) tv->autchk -= CPUTIME;
+                                    tv->newindex = 0;
+                                    if (NextCand->do_it) {
+                                        closeloop = CheckForAutomorphisms(CurrCand, NextCand, tv, ti, m, n, NextPart);
+                                        if (!NextCand->do_it && closeloop < tv->tolevel) k = SpineTL->tgtend;
+                                    }
+                                    if (tv->options->verbosity >= 2) tv->autchk += CPUTIME;
+                                    
+                                    if (NextCand->do_it) {
+                                        ADDTONEXTLEVEL;
+                                        SpineTL->keptcounter++;
+                                        searchtrie_make(CurrCand, SpineTL->listend, n, tv);
+                                    }
                                 }
-                            }
-                            
-                            break;
-                        default:
-                            break;
+                                PRINT_RETURN
+                                break;
+                            case 2 :	/* Delete the old list and start a new one: a better trace has been found */
+                                
+                                tv->tolevel_tl = tv->tolevel;
+                                has_nexttcell = FALSE;
+                                if (NextPart->cells == n) {
+                                    tv->stats->canupdates++;
+                                    if (tv->options->usercanonproc != NULL)
+                                    {
+                                        (*tv->options->usercanonproc)((graph*)tv->input_graph, NextCand->lab, (graph*)tv->cangraph, tv->stats->canupdates, NextCand->code, m, n);
+                                    }
+                                }
+                                
+                                if (tv->tolevel > tv->treedepth) {
+                                    tv->treedepth = tv->tolevel;
+                                    if (tv->strategy) {
+                                        SpineTL->part = NewPartition(n);
+                                    }
+                                    else {
+                                        NewPartSpine(tv->tolevel,n);
+                                    }
+                                }
+                                
+                                if (!tv->strategy && (tv->tolevel > 1) && !SpineTL->liststart) {
+                                    /* First Candidate at current level */
+                                    tv->maxtreelevel = tv->tolevel;
+                                    
+                                    SpineTL->liststart = NewCandidate(n, &GarbList, TRUE);
+                                    SpineTL->listend = SpineTL->liststart;
+                                    
+                                    tv->conta0++;
+                                    CopyCand(SpineTL->liststart, NextCand, n, TEMPLAB, TEMPINVLAB);
+                                    if (NextPart->cells < tv->finalnumcells) SpineTL->liststart->code = auxcode;
+                                    COPYPART(SpineTL->part, NextPart);
+                                    tv->newindex = 0;
+                                    tv->newst_stage1 = searchtrie_make(CurrCand, SpineTL->listend, n, tv);
+                                    
+                                    SpineTL->listcounter = 1;
+                                    SpTLliststart = SpineTL->liststart;
+                                    
+                                    i = tv->tolevel;
+                                    if (tv->brkstpcount) {
+                                        while ((i<n) && !BreakSteps[i]) {
+                                            i++;
+                                        }
+                                        if (i<n) SpineTL->liststart->firstsingcode = Spine[i].singcode;
+                                    }
+                                    
+                                    SpineTL->updates = 1;
+                                    SpineTL->levelcounter = 1;
+                                    SpineTL->keptcounter = 1;
+                                    
+                                    PRINT_LINE_PLUS(tv->fromlevel)
+                                    
+                                    if (tv->options->verbosity >= 2) PRINT_CANDIDATE(SpineTL->liststart, tv->tolevel);
+                                    PRINT_RETURN;
+                                    
+                                    if (!tv->strategy && !tv->options->getcanon && (tv->tolevel+1 == tv->firstpathlength) && ((NextPart->cells != tv->finalnumcells) || (NextPart->cells == n))) {
+                                        if ((tv->tolevel == 1) && (CurrPart->cls[tv->tcell] > 5)) {
+                                            EXITFROMSTAGE0EXPATH2;
+                                        }
+                                        else {
+                                            temp = 0;
+                                            for (i=0; i<tv->tolevel; i++) {
+                                                temp += Spine[i].listcounter;
+                                            }
+                                            if (temp > 5) {
+                                                EXITFROMSTAGE0EXPATH2;
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    memset(WorkArray, 0, n*sizeof(int));
+                                    
+                                    tv->lastcell = tv->lastlev = -1;
+                                    has_nexttcell = TargetCellFirstPath(NextCand, NextPart, tv);
+                                    
+                                    if (!has_nexttcell) {
+                                        tv->stats->canupdates++;
+                                        if (tv->options->usercanonproc != NULL) {
+                                            (*tv->options->usercanonproc)((graph*)tv->input_graph, NextCand->lab, (graph*)tv->cangraph, tv->stats->canupdates, NextCand->code, m, n);
+                                        }
+                                    }
+                                    
+                                    tv->tcellevel = tv->maxtreelevel = tv->tolevel;
+                                    SpineTL->levelcounter++;
+                                    SpineTL->updates++;
+                                    SpineTL->keptcounter = 1;
+                                    
+                                    RemoveFromLevel(tv->tolevel, tv->treedepth, tv->strategy, TRUE);
+                                    SpineTL->liststart = NewCandidate(n, &GarbList, TRUE);
+                                    SpineTL->listend = SpineTL->liststart;
+                                    
+                                    tv->conta0++;
+                                    CopyCand(SpineTL->liststart, NextCand, n, NULL, NULL);
+                                    COPYPART(SpineTL->part, NextPart);
+                                    
+                                    tv->newindex = 0;
+                                    
+                                    tv->newst_stage1 = searchtrie_make(CurrCand, SpineTL->listend, n, tv);
+                                    
+                                    SpineTL->listcounter = 1;
+                                    SpTLliststart = SpineTL->liststart;
+                                    
+                                    SpTLliststart->pathsingcode = SpineTL->singcode = SpTLliststart->singcode;
+                                    SpTLliststart->firstsingcode = 0;
+                                    
+                                    PRINT_LINE
+                                    if (tv->options->verbosity >= 2) PRINT_CANDIDATE(SpTLliststart, tv->tolevel);
+                                    
+                                    memset(BreakSteps, 0, n*sizeof(int));
+                                    tv->brkstpcount = 0;
+                                    
+                                    if (tv->steps > 1) {
+                                        
+                                        /* EXPERIMENTAL PATH */
+                                        if (tv->options->verbosity >= 2) tv->expaths -= CPUTIME;
+                                        PRINTF2("CStage0 2: %d\n", tv->finalnumcells);
+                                        tv->finalnumcells = n;
+                                        
+                                        while (has_nexttcell) {
+                                            ExperimentalStep(NextPart, SpTLliststart, tv, ti, m, n);
+                                            
+                                            Spine[tv->tolevel_tl].singcode = SpTLliststart->pathsingcode;
+                                            has_nexttcell = TargetCellFirstPath(SpTLliststart, NextPart, tv);
+                                            PRINT_EXPPATHSTEP(SpTLliststart, TRUE)
+                                        }
+                                        if (NextPart->cells < n) {
+                                            PRINTF2("CStage0 3: %d\n", tv->finalnumcells);
+                                            tv->finalnumcells = min(NextPart->cells,tv->finalnumcells);    /* 160712 */
+                                            PRINTF2("CStage0 3<: %d\n", tv->finalnumcells);
+                                        }
+                                        
+                                        PRINTF2("CS0 2?: finalnumcells: %d\n", tv->finalnumcells);
+                                        if (NextPart->cells == tv->finalnumcells) {
+                                            UPDATEMIN(tv->expathlength, tv->tolevel_tl);
+                                        }
+                                        
+                                        if (tv->options->verbosity >= 2) tv->expaths += CPUTIME;
+                                        
+                                        tv->firstpathlength = tv->tolevel_tl;
+                                        PRINT_RETURN
+                                        if (!tv->strategy && !tv->options->getcanon && (NextPart->cells == tv->finalnumcells) && (tv->tolevel_tl == tv->tolevel + 1) && ((NextPart->cells != tv->finalnumcells) || (NextPart->cells == n))) {
+                                            tv->maxtreelevel = tv->tolevel_tl;
+                                            if ((tv->tolevel == 1) && (CurrPart->cls[tv->tcell] > 5)) {
+                                                EXITFROMSTAGE0EXPATH2
+                                            }
+                                            else {
+                                                temp = 0;
+                                                for (i=0; i<tv->tolevel; i++) {
+                                                    temp += Spine[i].listcounter;
+                                                }
+                                                if (temp > 5) {
+                                                    EXITFROMSTAGE0EXPATH2
+                                                }
+                                            }
+                                        }
+                                        memcpy(TEMPLAB, SpTLliststart->lab, n*sizeof(int));
+                                        memcpy(TEMPINVLAB, SpTLliststart->invlab, n*sizeof(int));
+                                        tv->conta5++;
+                                    }
+                                    else {
+                                        PRINT_RETURN
+                                    }
+                                }
+                                
+                                break;
+                            default:
+                                break;
+                        }
                     }
-                    
                 } /* end for */
             }
         }
@@ -6843,6 +6880,7 @@ int CompStage1(Partition *CurrPart, Partition *NextPart, Candidate *CurrCand, Ca
                         TreeNode = TreeNode->goes_to;
                     }
                     TreeNode->index++;
+                    PRINT_INDEX(TreeNode,4,27)
                 }
             }
             continue;
@@ -7012,7 +7050,7 @@ int CompStage2(Partition *CurrPart, Partition *NextPart, Candidate *CurrCand, Ca
             }
             else {
                 PRINTF2("CStage2 1: %d\n", tv->finalnumcells);
-                tv->finalnumcells = CurrPart->cells;
+                tv->finalnumcells = min(CurrPart->cells,tv->finalnumcells);    /* 160712 */
                 return 0;
             }
             
@@ -7170,7 +7208,7 @@ int CompStage2(Partition *CurrPart, Partition *NextPart, Candidate *CurrCand, Ca
                 }
                 else {
                     PRINTF2("CStage2 2: %d\n", tv->finalnumcells);
-                    tv->finalnumcells = CurrPart->cells;
+                    tv->finalnumcells = min(CurrPart->cells,tv->finalnumcells);    /* 160712 */
                     PRINTF2("CStage2 2<: %d\n", tv->finalnumcells);
                     return 0;
                 }
@@ -7230,7 +7268,8 @@ int CompStage2(Partition *CurrPart, Partition *NextPart, Candidate *CurrCand, Ca
                                         
                                         TreeNode1->index += TreeNode2->index;
                                         TreeNode2->goes_to = TreeNode1;
-                                        
+                                        PRINT_INDEX(TreeNode1,4,28)
+                                        PRINT_INDEX(TreeNode2,4,29)
                                         ti->minimalinorbits = FALSE;
                                     }
                                     else {
@@ -7259,7 +7298,7 @@ int CompStage2(Partition *CurrPart, Partition *NextPart, Candidate *CurrCand, Ca
                         tv->indivend = SpineTL->tgtend;
                     }
                     memset(CurrRefCells, 0, n*sizeof(int));
-                    if (!ti->identitygroup) ti->thegrouphaschanged = TRUE;
+                    ti->thegrouphaschanged = TRUE;
                     
                     if (!CurrCand->sortedlab) {
                         quickSort(CurrCand->lab+tv->tcell, CurrPart->cls[tv->tcell]);
@@ -7679,6 +7718,20 @@ int FixBase(int *fix, struct TracesVars *tv, Candidate *Cand, int from, int to) 
     }
     tv->nfix = nfix;
     return j;
+}
+
+boolean FixedBase(int *fix, struct TracesVars *tv, Candidate *Cand, int from, int to) {
+    int i, k, nfix;
+    
+    nfix = 0;
+    for (i = from; i < to; i++) {
+        k = Cand->lab[Spine[i+1].tgtpos];
+        if (fix[nfix] != k) {
+            return FALSE;
+        }
+        nfix++;
+    }
+    return TRUE;
 }
 
 int FreeList(Candidate *List, int cond) {
@@ -9812,11 +9865,15 @@ int spinelementorbsize(int *orbits, int *lab, int size, int elem) {
 boolean TargetCell(Candidate *TargCand, Partition *Part, int n, struct TracesVars* tv, int Lv) {
     int TCell = -1, TCSize = 1;
     int i;
-
+    
+    if (Part->cells == n) {
+        tv->finalnumcells = n;
+        return FALSE;
+    }
     if (tv->maxdeg <=2) {
         return FALSE;
     }
-
+    
     if (Lv < tv->tcellevel) {
         tv->tcell = Spine[Lv+1].tgtcell;
         return TRUE;
@@ -9945,14 +10002,14 @@ boolean TargetCellFirstPath(Candidate *TargCand, Partition *Part, struct TracesV
         
         if (TCell < 0) {
             if (Lv == 0) {
-                tv->finalnumcells = Part->cells;
+                tv->finalnumcells = min(Part->cells,tv->finalnumcells);    /* 160712 */
                 return FALSE;
             } else {
                 Lv = Spine[Lv].tgtfrom;
             }
         }
     }
-
+    
     tv->tcellexpath = tv->lastcell = TCell;
     tv->tolevel_tl++;
     
@@ -10052,6 +10109,8 @@ boolean TreeFyTwo(int From, Candidate *Cand1, Candidate *Cand2, Partition *Part,
             SETPAIRSAUT(val, arg)
             Markers[arg] = tv->mark;
             Markers[val] = tv->mark;
+        } else {
+            return FALSE;    /*  160715  */
         }
     }
     
@@ -10398,7 +10457,7 @@ boolean TargetCellSmall(Candidate *TargCand, Partition *Part, int n, struct Trac
     if (tv->maxdeg <=2) {
         return FALSE;
     }
-
+    
     if (Lv < tv->tcellevel) {
         tv->tcell = Spine[Lv+1].tgtcell;
         return TRUE;
@@ -10520,7 +10579,7 @@ boolean TargetCellFirstPathSmall(Candidate *TargCand, Partition *Part, struct Tr
         
         if (TCell < 0) {
             if (Lv == 0) {
-                tv->finalnumcells = Part->cells;
+                tv->finalnumcells = min(Part->cells,tv->finalnumcells);    /* 160712 */
                 return FALSE;
             } else {
                 Lv = Spine[Lv].tgtfrom;
