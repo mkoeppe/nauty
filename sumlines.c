@@ -1,5 +1,5 @@
 /* sumlines.c - total the numbers appearing in various input lines. */
-/* B. D. McKay.  Version of Jan 5, 2014. */
+/* B. D. McKay.  Version of June 18, 2016. */
 
 #ifndef GMP
 #define GMP 1  /* Non-zero if gmp multi-precise integers are allowed.
@@ -162,7 +162,7 @@ static integer maxint;   /* set by find_maxint() */
 
 
 #define INCR(x,inc) \
-     {if ((x) > 0 && maxint-(x) < (inc) || (x) < 0 && (maxint)+(x) < -(inc)) \
+     {if (((x) > 0 && maxint-(x) < (inc)) || ((x) < 0 && (maxint)+(x) < -(inc))) \
            {fprintf(stderr,">E overflow with %%d or %%p format\n"); exit(1);} \
       x += (inc);}    /*  x += inc   with safety check */
 
@@ -264,7 +264,6 @@ numstrcmp(char *s1, char *s2)
    numbers are considered part of the numbers.  A number in one string
    is considered less than a non-number in the other string. */
 {
-    int c1,c2;
     char *a1,*a2;
 
     while (1)
@@ -509,7 +508,7 @@ splay(countnode *p)
 /* Splay the node p.  It becomes the new root. */
 {
     countnode *q,*r,*s;
-    countnode *a,*b,*c,*d;
+    countnode *a,*b,*c;
     int code;
 
 #define LCHILD(x,y) {(x)->left = y; if (y) (y)->parent = x;}
@@ -574,7 +573,7 @@ add_one(countnode **to_root, char *fmt, integer pmod, int nval,
 /* Add one match to the node with the given format, creating it if it is new.
    The tree is then splayed to ensure good efficiency. */
 {
-    int i,j,cmp,len;
+    int i,j,cmp;
     countnode *p,*ppar,*new_node;
     integer w;
 
@@ -736,8 +735,8 @@ scanline(char *s, char *f, number *val, int *valtype,
 */
 {
     int n;                   /* Number of values assigned */
-    int fracdigits,digit;
-    boolean doass,neednonsp,neg,oflow,badgmp;
+    int digit;
+    boolean doass,neg,oflow,badgmp;
     integer ival;
     double dval,digval,comval;
     char ends,*saves;
@@ -1315,16 +1314,20 @@ read_global_formats(int *numformatsp)
 /* Read formats from sumlines.fmt in home directory */
 {
     struct passwd *pwd;
-    char filename[257+12];
+    char *homedir;
+    char filename[4097];
 
-    if ((pwd = getpwuid(getuid())) < 0)
+    homedir = getenv("HOME");
+    if (homedir == NULL && (pwd = getpwuid(getuid())) != NULL)
+        homedir = pwd->pw_dir;
+
+    if (homedir == NULL)
     {
-        fprintf(stderr,">E Can't find home directory\n");
-        exit(1);
+        fprintf(stderr,">W Can't find home directory\n");
+        return;
     }
 
-    sprintf(filename,"%s/sumlines.fmt",pwd->pw_dir);
-
+    sprintf(filename,"%s/sumlines.fmt",homedir);
     read_formats(filename,numformatsp,FALSE);
 }
 

@@ -20,7 +20,8 @@
  *       15-Feb-14 : CPUDEFS removed (already declared in gtools.h)           *
  *       01-Sep-15 : add weighted edges (not active)                          *
  *       28-Jan-16 : version ready for nauty and Traces v.2.6 distribution    *
- *****************************************************************************/
+ *       12-Jul-16 : bug correction (reaching degree 2 vertices)              *
+*****************************************************************************/
 
 #include "gtools.h"
 #include "schreier.h" 

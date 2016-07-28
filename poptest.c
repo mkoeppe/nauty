@@ -1,7 +1,7 @@
 /* Compare times for popcount instructions */
 /* Usage:  poptest K N
    - measures the time for 1000*N popcount operations on words
-     with K one bits.
+     with K one bits, comparing with the macro POPCOUNTMAC.
      Compile with values for WORDSIZE and POPC with POPC values:
      0 = loop, 1 = popcount, 2 = popcountl, 3 = popcountll,
                     4 = _mm_popcnt_u32, 5 = _mm_popcnt_u32 */
@@ -210,11 +210,12 @@ main(int argc, char *argv[])
 	int summac,sumold,sumnew,sumnull;
 
 	printf("WORDSIZE=%d POPC=%s  ",WORDSIZE,
-          POPC==0 ? "popcount" : 
-          POPC==1 ? "popcountl" : 
-          POPC==2 ? "popcountll" : 
-          POPC==3 ? "popcnt_u32" : 
-          POPC==4 ? "popcnt_u64" : "undefined");
+          POPC==0 ? "loop" :
+          POPC==1 ? "popcount" : 
+          POPC==2 ? "popcountl" : 
+          POPC==3 ? "popcountll" : 
+          POPC==4 ? "popcnt_u32" : 
+          POPC==5 ? "popcnt_u64" : "undefined");
 #ifdef SETWORD_INT
         printf(" setword=unsigned int ");
 #endif
