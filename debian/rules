@@ -16,10 +16,27 @@ default:
 	@uscan --no-conf --dehs --report || true
 
 %:
-	dh $@ --with autoreconf
+	dh $@ --with autoreconf --parallel
 
-override_dh_auto_configure:
+override_dh_auto_configure-arch:
 	dh_auto_configure -- --enable-clz $(DEB_DH_AUTO_CONFIGURE_OPTS__ENABLE_TLS) --disable-ansicontrols
+
+override_dh_auto_configure-indep:
+	@true
+
+override_dh_auto_build-indep:
+	@true
+
+override_dh_auto_test-indep:
+	@true
+
+override_dh_auto_install-indep:
+	@true
+
+override_dh_installdocs:
+	dh_installdocs -pnauty --link-doc=libnauty2
+	dh_installdocs -plibnauty2-dev --link-doc=libnauty2
+	dh_installdocs --remaining-packages
 
 override_dh_installchangelogs:
 	dh_installchangelogs --keep changes24-26.txt

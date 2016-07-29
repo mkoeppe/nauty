@@ -1,3 +1,16 @@
+nauty (2.6r6+ds-1) unstable; urgency=medium
+
+  * New upstream version.
+  * Debianization:
+    - debian/control:
+      - Standards Version, bump to 3.9.8;
+    - debian/rules:
+      - parallelization, introduce;
+      - symlink policy for documentation directories, set;
+      - build-arch/build-indep scheme, introduce.
+
+ -- Jerome Benoit <calculus@rezozer.net>  Fri, 29 Jul 2016 02:14:44 +0000
+
 nauty (2.6r5+ds-1) unstable; urgency=medium
 
   * New upstream version.

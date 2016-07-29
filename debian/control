@@ -6,7 +6,8 @@ Uploaders: Jerome Benoit <calculus@rezozer.net>
 Build-Depends:
  debhelper (>= 9), autotools-dev, libtool, dh-autoreconf, pkg-config, help2man,
  zlib1g-dev, libgmp-dev
-Standards-Version: 3.9.7
+Build-Depends-Indep:
+Standards-Version: 3.9.8
 Homepage: http://pallini.di.uniroma1.it
 Vcs-Git: https://anonscm.debian.org/git/debian-science/packages/nauty.git
 Vcs-Browser: https://anonscm.debian.org/cgit/debian-science/packages/nauty.git
@@ -38,6 +39,7 @@ Description: library for graph automorphisms -- library package
 
 Package: nauty
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: libnauty2 (=${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Suggests: graphviz, nauty-doc
 Description: library for graph automorphisms -- interface and tools
@@ -59,6 +61,7 @@ Package: libnauty2-dev
 Provides: libnauty-dev
 Section: libdevel
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
 Depends: libnauty2 (= ${binary:Version}), ${misc:Depends}
 Conflicts: libnauty-dev
 Suggests: nauty-doc, pkg-config
@@ -82,7 +85,8 @@ Package: nauty-doc
 Section: doc
 Architecture: all
 Depends: ${misc:Depends}
-Suggests: libnauty2 (=${binary:Version}), nauty (=${binary:Version}), libnauty2-dev (=${binary:Version}), pdf-viewer
+Enhances: libnauty2 (=${binary:Version}), nauty (=${binary:Version}), libnauty2-dev (=${binary:Version})
+Suggests: pdf-viewer
 Multi-Arch: foreign
 Description: library for graph automorphisms -- user guide
  nauty (No AUTomorphisms, Yes?) is a set of procedures for computing
