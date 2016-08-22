@@ -1,4 +1,4 @@
-/* listg.c  version 2.1; B D McKay, Jun 2015 */
+/* listg.c  version 2.2; B D McKay, Aug 2016 */
 
 #define USAGE \
  "listg [-fp#:#l#o#Ftq] [-a|-A|-c|-d|-e|-H|-M|-s|-b|-G|-y|-Yxxx]" \
@@ -585,7 +585,8 @@ main(int argc, char *argv[])
             else
             {
                 fprintf(outfile,"\n!Graph %lu.\n",pval1+nin-1);
-                fprintf(outfile,"n=%d $=%d g\n",n,labelorg);
+                fprintf(outfile,"n=%d $=%d %sg\n",
+                                n,labelorg,(digraph?"d":""));
             }
             putgraphx(outfile,g,linelength,tswitch,m,n);
             if (!qswitch) fprintf(outfile,"$$\n");
