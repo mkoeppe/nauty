@@ -10,7 +10,7 @@
 \n\
     -l  Canonically label outputs\n\
     -d# -d#:# Only remove vertices with original degree in the given range\n\
-	For digraphs, the out-degree is used.\n\
+        For digraphs, the out-degree is used.\n\
     -n# The number of vertices to delete (default 1).\n\
         Inputs that are too small are ignored; no empty graphs are output.\n\
     -q  Suppress auxiliary information\n"
