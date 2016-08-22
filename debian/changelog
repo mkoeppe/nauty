@@ -1,3 +1,13 @@
+nauty (2.6r7+ds-1) unstable; urgency=medium
+
+  * New upstream version.
+  * Debianization:
+    - debian/patches/*:
+      - d/p/upstream-lintian-spelling-error.patch, introduce (and submit);
+      - d/p/upstream-autotoolization.patch, update.
+
+ -- Jerome Benoit <calculus@rezozer.net>  Mon, 22 Aug 2016 23:20:11 +0000
+
 nauty (2.6r6+ds-1) unstable; urgency=medium
 
   * New upstream version.
