@@ -1,3 +1,9 @@
+nauty (2.6r7+ds-1~bpo8+1) jessie-backports; urgency=medium
+
+  * Rebuild for jessie-backports.
+
+ -- Andreas Tille <tille@debian.org>  Mon, 06 Mar 2017 15:23:35 +0100
+
 nauty (2.6r7+ds-1) unstable; urgency=medium
 
   * New upstream version.
