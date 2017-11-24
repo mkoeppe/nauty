@@ -2,7 +2,7 @@ Description: debianization
 	Meant to maintain a minimal debian/rules, to fix warnings,
 	to address Debian specific stuff in general.
 Author: Jerome Benoit <calculus@rezozer.net>
-Last-Update: 2013-11-24
+Last-Update: 2017-11-24
 
 --- a/dreadnaut.c
 +++ b/dreadnaut.c
@@ -53,7 +53,7 @@ Last-Update: 2013-11-24
  sumlines_DESCRIPTION =      "sum lines matching specified graph formats"
  
 -dreadnaut_CPPFLAGS =
-+dreadnaut_CPPFLAGS =     -DDEBPKGVERSION=$(DEB_PKG_VERSION)
++dreadnaut_CPPFLAGS =     -DDEBPKGVERSION=\"$(DEB_VERSION)\"
  addedgeg_CPPFLAGS =
  amtog_CPPFLAGS =
  biplabg_CPPFLAGS =

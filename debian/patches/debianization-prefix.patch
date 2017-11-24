@@ -1,7 +1,7 @@
 Description: debianization: nauty tools suite prefix
  Prepend nauty- to the names of the nauty tools, named gtools.
 Author: Jerome Benoit <calculus@rezozer.net>
-Last-Update: 2016-03-19
+Last-Update: 2017-11-24
 
 --- a/Makefile.am
 +++ b/Makefile.am
@@ -240,7 +240,7 @@ Last-Update: 2016-03-19
 -checks6_DESCRIPTION =       "check a file of graphs and optionally perform corrections"
 -sumlines_DESCRIPTION =      "sum lines matching specified graph formats"
 -
--dreadnaut_CPPFLAGS =     -DDEBPKGVERSION=$(DEB_PKG_VERSION)
+-dreadnaut_CPPFLAGS =     -DDEBPKGVERSION=\"$(DEB_VERSION)\"
 -addedgeg_CPPFLAGS =
 -amtog_CPPFLAGS =
 -biplabg_CPPFLAGS =
@@ -325,7 +325,7 @@ Last-Update: 2016-03-19
 +nauty_checks6_DESCRIPTION =       "check a file of graphs and optionally perform corrections"
 +nauty_sumlines_DESCRIPTION =      "sum lines matching specified graph formats"
 +
-+dreadnaut_CPPFLAGS =           -DDEBPKGVERSION=$(DEB_PKG_VERSION)
++dreadnaut_CPPFLAGS =           -DDEBPKGVERSION=\"$(DEB_VERSION)\"
 +nauty_addedgeg_CPPFLAGS =
 +nauty_amtog_CPPFLAGS =
 +nauty_biplabg_CPPFLAGS =

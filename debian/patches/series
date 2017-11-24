@@ -1,4 +1,3 @@
-upstream-lintian-spelling-error.patch
 upstream-fix-gt_numorbits.patch
 upstream-fix-include-extern.patch
 upstream-zlib-blisstog_c.patch

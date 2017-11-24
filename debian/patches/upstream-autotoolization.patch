@@ -2,14 +2,14 @@ Description: upstream autotoolization
  Attempt to autotoolize nauty source.
 Origin: debian
 Author: Jerome Benoit <calculus@rezozer.net>
-Last-Update: 2016-08-23
+Last-Update: 2017-11-24
 
 --- a/configure.ac
 +++ b/configure.ac
 @@ -1,5 +1,22 @@
  dnl Process this file with autoconf to produce a configure script.
 -AC_INIT(nauty-h.in)
-+AC_INIT([nauty],[2.6.7],[bdm@cs.anu.edu.au],[nauty],[http://pallini.di.uniroma1.it/])
++AC_INIT([nauty],[2.6.10],[bdm@cs.anu.edu.au],[nauty],[http://pallini.di.uniroma1.it/])
 +AC_CONFIG_MACRO_DIR([m4])
 +AC_CONFIG_AUX_DIR([autotool])
 +AC_CONFIG_SRCDIR([dreadnaut.c])
@@ -30,9 +30,9 @@ Last-Update: 2016-08-23
  
  AC_DEFUN([AX_TLS], [
    AC_MSG_CHECKING(for thread local storage (TLS) class)
-@@ -58,84 +75,91 @@
- dnl Checks for system features
- AC_CANONICAL_HOST
+@@ -78,30 +95,37 @@
+      gccver=0.0.0 ;;
+ esac
  
 -dnl Checks for C compiler and sets CFLAGS if not set by user
 -user_cflags="$CFLAGS"
@@ -51,150 +51,43 @@ Last-Update: 2016-08-23
  MORECFLAGS=""
  dnl  we need  AC_SYS_LARGEFILE and AC_FUNC_FSEEKO
  AC_SYS_LARGEFILE
- AS_IF([test x"$ac_cv_sys_file_offset_bits" = xno],[ac_cv_sys_file_offset_bits=0],[])
+ AS_IF([test "x$ac_cv_sys_file_offset_bits" = xno],[ac_cv_sys_file_offset_bits=0])
  AC_SUBST(ac_cv_sys_file_offset_bits)
  
--if test x"$user_cflags" = x"" -o x"$user_cflags" = x-m32 ; then
--  if test "$CC" = "icc" ; then
--    AC_TRY_CFLAGS([-O3],[CFLAGS="$CFLAGS -O3"]);
--    if test x"$ac_cv_try_cflags_ok" = x"no"; then
--        AC_TRY_CFLAGS([-O2],[CFLAGS="$CFLAGS -O2"],[CFLAGS="$CFLAGS -O"]);
--    fi
--  else
--    AC_TRY_CFLAGS([-O4 -Werror],[CFLAGS="$CFLAGS -O4"]);
--    if test x"$ac_cv_try_cflags_ok" = x"no"; then
--       AC_TRY_CFLAGS([-O3],[CFLAGS="$CFLAGS -O3"]);
--       if test x"$ac_cv_try_cflags_ok" = x"no"; then
--          AC_TRY_CFLAGS([-O2],[CFLAGS="$CFLAGS -O2"],[CFLAGS="$CFLAGS -O"]);
--       fi
--    fi
--  fi
-- 
--  if test "$CC" = "gcc" ; then
--      gccver=`gcc --version 2>/dev/null || echo 0.0.0`
--  else
--      gccver=0.0.0
--  fi
--
-+dnl if test x"$user_cflags" = x"" -o x"$user_cflags" = x-m32 ; then
-+dnl   if test "$CC" = "icc" ; then
-+dnl     AC_TRY_CFLAGS([-O3],[CFLAGS="$CFLAGS -O3"]);
-+dnl     if test x"$ac_cv_try_cflags_ok" = x"no"; then
-+dnl         AC_TRY_CFLAGS([-O2],[CFLAGS="$CFLAGS -O2"],[CFLAGS="$CFLAGS -O"]);
-+dnl     fi
-+dnl   else
-+dnl     AC_TRY_CFLAGS([-O4 -Werror],[CFLAGS="$CFLAGS -O4"]);
-+dnl     if test x"$ac_cv_try_cflags_ok" = x"no"; then
-+dnl        AC_TRY_CFLAGS([-O3],[CFLAGS="$CFLAGS -O3"]);
-+dnl        if test x"$ac_cv_try_cflags_ok" = x"no"; then
-+dnl           AC_TRY_CFLAGS([-O2],[CFLAGS="$CFLAGS -O2"],[CFLAGS="$CFLAGS -O"]);
-+dnl        fi
-+dnl     fi
-+dnl   fi
-+dnl
-+dnl   if test "$CC" = "gcc" ; then
-+dnl       gccver=`gcc --version 2>/dev/null || echo 0.0.0`
-+dnl   else
-+dnl       gccver=0.0.0
-+dnl   fi
-+dnl
-   is_powerpc=0
--  case "$host" in
--   *i686-apple-darwin*)
--	AC_TRY_CFLAGS([-fast],[CFLAGS="$MORECFLAGS -fast"]);;
--   *pentium*solaris*)
--	;;
--   *pentium4*)
--	AC_TRY_CFLAGS([-march=pentium4],[CFLAGS="$CFLAGS -march=pentium4"]);;
--   *pentium3*|*i686*|*athlon*)
--	AC_TRY_CFLAGS([-march=i686],[CFLAGS="$CFLAGS -march=i686"]);;
--   *pentium2*|*i586*)
--	AC_TRY_CFLAGS([-march=i586],[CFLAGS="$CFLAGS -march=i586"]);;
--   *powerpc*)
--	is_powerpc=1
--        machtype=`/usr/bin/machine 2>/dev/null || echo unknown`
--        case "$machtype" in
--	  ppc740?)
--	     AC_TRY_CFLAGS([-mcpu=7400],[CFLAGS="$CFLAGS -mcpu=7400"])
--	     AC_TRY_CFLAGS([-mtune=7400],[CFLAGS="$CFLAGS -mtune=7400"]);;
--	  ppc745?)
--	     AC_TRY_CFLAGS([-mcpu=7450],[CFLAGS="$CFLAGS -mcpu=7450"])
--	     AC_TRY_CFLAGS([-mtune=7450],[CFLAGS="$CFLAGS -mtune=7450"])
--             case "$gccver" in
--               *\ 4.[[0-9]].[[0-9]]\ *)
--	           AC_TRY_CFLAGS([$CFLAGS -fast],
--			[MORECFLAGS="$MORECFLAGS -fast"]);;
--             esac;;
--	  ppc970)
--	     AC_TRY_CFLAGS([-mcpu=g5],[CFLAGS="$CFLAGS -mcpu=g5"])
--	     AC_TRY_CFLAGS([-mtune=g5],[CFLAGS="$CFLAGS -mtune=g5"])
--	     AC_TRY_CFLAGS([-fast],[CFLAGS="$MORECFLAGS -fast"]);;
--          *)
--	     AC_TRY_CFLAGS([-mpowerpc],[CFLAGS="$CFLAGS -mpowerpc"]);;
--        esac;;
--   *osf*)
--	AC_TRY_CFLAGS([-fast],[CFLAGS="$CFLAGS -fast"]);;
--   *sparcv8*|*sparcv9*)
--	AC_TRY_CFLAGS([-msupersparc],[CFLAGS="$CFLAGS -msupersparc"])
--	if test x"$ac_cv_try_cflags_ok" = x"no"; then
--	    AC_TRY_CFLAGS([-cg92],[CFLAGS="$CFLAGS -cg92"])
--	    if test x"$ac_cv_try_cflags_ok" = x"no"; then
--		AC_TRY_CFLAGS([-xcg92],[CFLAGS="$CFLAGS -xcg92"])
--	    fi
--	fi;;
--  esac
--fi
-+dnl   case "$host" in
-+dnl    *i686-apple-darwin*)
-+dnl 	AC_TRY_CFLAGS([-fast],[CFLAGS="$MORECFLAGS -fast"]);;
-+dnl    *pentium*solaris*)
-+dnl 	;;
-+dnl    *pentium4*)
-+dnl 	AC_TRY_CFLAGS([-march=pentium4],[CFLAGS="$CFLAGS -march=pentium4"]);;
-+dnl    *pentium3*|*i686*|*athlon*)
-+dnl 	AC_TRY_CFLAGS([-march=i686],[CFLAGS="$CFLAGS -march=i686"]);;
-+dnl    *pentium2*|*i586*)
-+dnl 	AC_TRY_CFLAGS([-march=i586],[CFLAGS="$CFLAGS -march=i586"]);;
-+dnl    *powerpc*)
-+dnl 	is_powerpc=1
-+dnl         machtype=`/usr/bin/machine 2>/dev/null || echo unknown`
-+dnl         case "$machtype" in
-+dnl 	  ppc740?)
-+dnl 	     AC_TRY_CFLAGS([-mcpu=7400],[CFLAGS="$CFLAGS -mcpu=7400"])
-+dnl 	     AC_TRY_CFLAGS([-mtune=7400],[CFLAGS="$CFLAGS -mtune=7400"]);;
-+dnl 	  ppc745?)
-+dnl 	     AC_TRY_CFLAGS([-mcpu=7450],[CFLAGS="$CFLAGS -mcpu=7450"])
-+dnl 	     AC_TRY_CFLAGS([-mtune=7450],[CFLAGS="$CFLAGS -mtune=7450"])
-+dnl              case "$gccver" in
-+dnl                *\ 4.[[0-9]].[[0-9]]\ *)
-+dnl 	           AC_TRY_CFLAGS([$CFLAGS -fast],
-+dnl 			[MORECFLAGS="$MORECFLAGS -fast"]);;
-+dnl              esac;;
-+dnl 	  ppc970)
-+dnl 	     AC_TRY_CFLAGS([-mcpu=g5],[CFLAGS="$CFLAGS -mcpu=g5"])
-+dnl 	     AC_TRY_CFLAGS([-mtune=g5],[CFLAGS="$CFLAGS -mtune=g5"])
-+dnl 	     AC_TRY_CFLAGS([-fast],[CFLAGS="$MORECFLAGS -fast"]);;
-+dnl           *)
-+dnl 	     AC_TRY_CFLAGS([-mpowerpc],[CFLAGS="$CFLAGS -mpowerpc"]);;
-+dnl         esac;;
-+dnl    *osf*)
-+dnl 	AC_TRY_CFLAGS([-fast],[CFLAGS="$CFLAGS -fast"]);;
-+dnl    *sparcv8*|*sparcv9*)
-+dnl 	AC_TRY_CFLAGS([-msupersparc],[CFLAGS="$CFLAGS -msupersparc"])
-+dnl 	if test x"$ac_cv_try_cflags_ok" = x"no"; then
-+dnl 	    AC_TRY_CFLAGS([-cg92],[CFLAGS="$CFLAGS -cg92"])
-+dnl 	    if test x"$ac_cv_try_cflags_ok" = x"no"; then
-+dnl 		AC_TRY_CFLAGS([-xcg92],[CFLAGS="$CFLAGS -xcg92"])
-+dnl 	    fi
-+dnl 	fi;;
-+dnl   esac
-+dnl fi
+-AS_IF([test "x$user_cflags" = x || test "x$user_cflags" = x-m32],
+-[
+-  AS_IF([test "$CC" = "icc"],
+-    [AC_TRY_CFLAGS([-O3],[CFLAGS="$CFLAGS -O3"]);
+-     AS_IF([test "x$ac_cv_try_cflags_ok" = xno],
+-        [AC_TRY_CFLAGS([-O2],[CFLAGS="$CFLAGS -O2"],[CFLAGS="$CFLAGS -O"])])],
+-    [AC_TRY_CFLAGS([-O4 -Werror],[CFLAGS="$CFLAGS -O4"]);
+-     AS_IF([test "x$ac_cv_try_cflags_ok" = xno],
+-       [AC_TRY_CFLAGS([-O3],[CFLAGS="$CFLAGS -O3"])
+-        AS_IF([test "x$ac_cv_try_cflags_ok" = xno],
+-          [AC_TRY_CFLAGS([-O2],[CFLAGS="$CFLAGS -O2"],[CFLAGS="$CFLAGS -O"])])
+-       ])
+-    ])
+-])
++dnl AS_IF([test "x$user_cflags" = x || test "x$user_cflags" = x-m32],
++dnl [
++dnl   AS_IF([test "$CC" = "icc"],
++dnl     [AC_TRY_CFLAGS([-O3],[CFLAGS="$CFLAGS -O3"]);
++dnl      AS_IF([test "x$ac_cv_try_cflags_ok" = xno],
++dnl         [AC_TRY_CFLAGS([-O2],[CFLAGS="$CFLAGS -O2"],[CFLAGS="$CFLAGS -O"])])],
++dnl     [AC_TRY_CFLAGS([-O4 -Werror],[CFLAGS="$CFLAGS -O4"]);
++dnl      AS_IF([test "x$ac_cv_try_cflags_ok" = xno],
++dnl        [AC_TRY_CFLAGS([-O3],[CFLAGS="$CFLAGS -O3"])
++dnl         AS_IF([test "x$ac_cv_try_cflags_ok" = xno],
++dnl           [AC_TRY_CFLAGS([-O2],[CFLAGS="$CFLAGS -O2"],[CFLAGS="$CFLAGS -O"])])
++dnl        ])
++dnl     ])
++dnl ])
  
+ dnl Checks relevant to Cygwin and other Windows things
+ AC_EXEEXT
+@@ -400,6 +424,26 @@
  echo CFLAGS=$CFLAGS
  echo MORECFLAGS=$MORECFLAGS
-@@ -434,6 +458,26 @@
- edit_msg="++++++ This file is automatically generated, don't edit it by hand! ++++++"
- AC_SUBST(edit_msg)
  
 -AC_OUTPUT(makefile:makefile.in nauty.h:nauty-h.in
 -    naututil.h:naututil-h.in gtools.h:gtools-h.in)
@@ -207,9 +100,9 @@ Last-Update: 2016-08-23
 +## math library
 +LT_LIB_M
 +## zlib Library (zlib)
-+AM_PATH_ZLIB(1.2.7,[],[AC_MSG_WARN([could not find required version of zlib])])
++AM_PATH_ZLIB(1.2.8,[],[AC_MSG_WARN([could not find required version of zlib])])
 +## GNU MultiPrecision arithmetic library (GMP)
-+AM_PATH_GMP(5.1.2,[],[AC_MSG_WARN([could not find required version of GMP])])
++AM_PATH_GMP(6.1.2,[],[AC_MSG_WARN([could not find required version of GMP])])
 +
 +AC_CONFIG_FILES([
 +	nauty.pc

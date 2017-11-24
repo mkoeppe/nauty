@@ -19,27 +19,27 @@ Files-Excluded:
 
 Files: *
 Copyright:
- 1984-2016 Brendan McKay (Australian National University) <brendan.mckay@anu.edu.au>
+ 1984-2017 Brendan McKay (Australian National University) <brendan.mckay@anu.edu.au>
 License: Apache-2.0
 
 Files: traces.h traces.c dretodot.c
 Copyright:
- 2008-2016 Adolfo Piperno (University of Rome "Sapienza") <piperno@di.uniroma1.it>
+ 2008-2017 Adolfo Piperno (University of Rome "Sapienza") <piperno@di.uniroma1.it>
 License: Apache-2.0
 
 Files: watercluster2.c
 Copyright:
- 2009-2016 Gunnar Brinkmann (University of Ghent) <gunnar.brinkmann@ugent.be>
+ 2009-2017 Gunnar Brinkmann (University of Ghent) <gunnar.brinkmann@ugent.be>
 License: Apache-2.0
 
 Files: planarity.h planarity.c
 Copyright:
- 2001-2016 Magna project (University of Sydney) <admin@maths.usyd.edu.au>
+ 2001-2017 Magna project (University of Sydney) <admin@maths.usyd.edu.au>
 License: Apache-2.0
 
 Files: debian/*
 Copyright:
- 2013-2016 Jerome Benoit <calculus@rezozer.net>
+ 2013-2017 Jerome Benoit <calculus@rezozer.net>
  2009-2012 David Bremner <bremner@unb.ca>
 License: Apache-2.0
 

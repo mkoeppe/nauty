@@ -1,3 +1,21 @@
+nauty (2.6r10+ds-1) unstable; urgency=medium
+
+  * New upstream version.
+  * Debianization:
+    - debian/copyright, refresh;
+    - debian/control:
+      - debhelper, bump to 10;
+      - Standards Version, bump to 4.1.1 (extra -> optional);
+      - empty Build-Depends-Indep field, remove;
+    - debian/rules:
+      - debhelper, bump to 10;
+      - refresh;
+    - debian/patches/*:
+      - d/p/upstream-lintian-spelling-error.patch, integrated;
+      - refresh;
+
+ -- Jerome Benoit <calculus@rezozer.net>  Fri, 24 Nov 2017 19:42:44 +0000
+
 nauty (2.6r7+ds-1) unstable; urgency=medium
 
   * New upstream version.

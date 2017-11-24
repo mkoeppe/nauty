@@ -1,13 +1,12 @@
 Source: nauty
 Section: math
-Priority: extra
+Priority: optional
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: Jerome Benoit <calculus@rezozer.net>
 Build-Depends:
- debhelper (>= 9), autotools-dev, libtool, dh-autoreconf, pkg-config, help2man,
+ debhelper (>= 10), libtool, pkg-config, help2man,
  zlib1g-dev, libgmp-dev
-Build-Depends-Indep:
-Standards-Version: 3.9.8
+Standards-Version: 4.1.1
 Homepage: http://pallini.di.uniroma1.it
 Vcs-Git: https://anonscm.debian.org/git/debian-science/packages/nauty.git
 Vcs-Browser: https://anonscm.debian.org/cgit/debian-science/packages/nauty.git

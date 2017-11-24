@@ -1,8 +1,9 @@
 #!/usr/bin/make -f
+include /usr/share/dpkg/pkg-info.mk
+export DEB_VERSION
 
 export DEB_BUILD_MAINT_OPTIONS=hardening=+all
 
-export DEB_PKG_VERSION = "\"$(shell dpkg-parsechangelog -S Version)\""
 export DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
@@ -16,7 +17,7 @@ default:
 	@uscan --no-conf --dehs --report || true
 
 %:
-	dh $@ --with autoreconf --parallel
+	dh $@
 
 override_dh_auto_configure-arch:
 	dh_auto_configure -- --enable-clz $(DEB_DH_AUTO_CONFIGURE_OPTS__ENABLE_TLS) --disable-ansicontrols
