@@ -40,7 +40,7 @@ override_dh_installdocs:
 	dh_installdocs --remaining-packages
 
 override_dh_installchangelogs:
-	dh_installchangelogs --keep changes24-26.txt
+	dh_installchangelogs --keep changes24-27.txt
 
 override_dh_compress-indep:
 	dh_compress -X.pdf -Xexamples
