@@ -1,5 +1,4 @@
 Tests: make-check
-Restrictions: needs-recommends
 Depends: nauty, tcc
 
 Tests: build-examples
