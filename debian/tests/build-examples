@@ -1,7 +1,7 @@
 #!/bin/sh
 # autopkgtest check: build [and launch] program examples
 set -ue
-cd $ADTTMP
+cd $AUTOPKGTEST_TMP
 
 cp -prd /usr/share/doc/nauty-doc/examples .
 cd examples

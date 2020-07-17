@@ -2,11 +2,11 @@
 # autopkgtest check based on upstream check script runalltests
 set -ue
 
-tcc naucompare.c -o $ADTTMP/naucompare
+tcc naucompare.c -o $AUTOPKGTEST_TMP/naucompare
 
-cp -p nautest[abcdefg].ans $ADTTMP
+cp -p nautest[abcdefg].ans $AUTOPKGTEST_TMP
 
-cd $ADTTMP
+cd $AUTOPKGTEST_TMP
 
 tdx=0
 
