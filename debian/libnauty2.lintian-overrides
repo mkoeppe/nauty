@@ -1,1 +1,1 @@
-libnauty2 binary: shlib-calls-exit
+libnauty2 binary: exit-in-shared-library
