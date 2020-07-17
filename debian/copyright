@@ -1,9 +1,9 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0
 Upstream-Name: nauty
 Upstream-Contact:
  Brendan McKay <brendan.mckay@anu.edu.au>
  Adolfo Piperno <piperno@di.uniroma1.it>
-Source: http://pallini.di.uniroma1.it/
+Source: https://pallini.di.uniroma1.it/
 Comment:
  The upstream source tarball is repacked to drop off some weight
  by cleaning up material either generated or upgraded by autotools.
