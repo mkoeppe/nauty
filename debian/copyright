@@ -19,12 +19,12 @@ Files-Excluded:
 
 Files: *
 Copyright:
- 1984-2017 Brendan McKay (Australian National University) <brendan.mckay@anu.edu.au>
+ 1984-2019 Brendan McKay (Australian National University) <brendan.mckay@anu.edu.au>
 License: Apache-2.0
 
 Files: traces.h traces.c dretodot.c
 Copyright:
- 2008-2017 Adolfo Piperno (University of Rome "Sapienza") <piperno@di.uniroma1.it>
+ 2008-2018 Adolfo Piperno (University of Rome "Sapienza") <piperno@di.uniroma1.it>
 License: Apache-2.0
 
 Files: watercluster2.c
