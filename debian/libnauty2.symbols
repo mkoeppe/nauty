@@ -1,5 +1,6 @@
 libnauty.so.2 libnauty2 #MINVER#
  LIBNAUTY_2.5@LIBNAUTY_2.5 2.5r6
+ LIBNAUTY_2.7@LIBNAUTY_2.7 2.7r1
  Traces@LIBNAUTY_2.5 2.5r6
  addgenerator@LIBNAUTY_2.5 2.5r6
  addpermutation@LIBNAUTY_2.5 2.5r6
@@ -17,6 +18,7 @@ libnauty.so.2 libnauty2 #MINVER#
  arg_long@LIBNAUTY_2.5 2.5r6
  arg_range@LIBNAUTY_2.5 2.5r6
  arg_sequence@LIBNAUTY_2.5 2.6r2
+ arg_sequence_min@LIBNAUTY_2.7 2.7r1
  bipartiteside@LIBNAUTY_2.5 2.6r2
  breakout@LIBNAUTY_2.5 2.5r6
  cellcliq@LIBNAUTY_2.5 2.5r6
@@ -46,6 +48,7 @@ libnauty.so.2 libnauty2 #MINVER#
  cyclecount1@LIBNAUTY_2.5 2.5r6
  cyclecount@LIBNAUTY_2.5 2.5r6
  degstats2@LIBNAUTY_2.5 2.6r2
+ degstats3@LIBNAUTY_2.7 2.7r1
  degstats@LIBNAUTY_2.5 2.5r6
  delete1@LIBNAUTY_2.5 2.5r6
  deleteunmarked@LIBNAUTY_2.5 2.5r6
@@ -68,8 +71,10 @@ libnauty.so.2 libnauty2 #MINVER#
  fcanonise_inv_sg@LIBNAUTY_2.5 2.5r6
  fgroup@LIBNAUTY_2.5 2.5r6
  fgroup_inv@LIBNAUTY_2.5 2.5r6
+ find_clique@LIBNAUTY_2.7 2.7r1
  find_dist2@LIBNAUTY_2.5 2.5r6
  find_dist@LIBNAUTY_2.5 2.5r6
+ find_indset@LIBNAUTY_2.7 2.7r1
  findpermutation@LIBNAUTY_2.5 2.5r6
  fixit@LIBNAUTY_2.5 2.5r6
  flushline@LIBNAUTY_2.5 2.5r6
@@ -123,6 +128,8 @@ libnauty.so.2 libnauty2 #MINVER#
  mathon@LIBNAUTY_2.5 2.5r6
  mathon_sg@LIBNAUTY_2.5 2.5r6
  maxcliques@LIBNAUTY_2.5 2.5r6
+ maxcliquesize@LIBNAUTY_2.7 2.7r1
+ maxindsetsize@LIBNAUTY_2.7 2.7r1
  naugraph_check@LIBNAUTY_2.5 2.5r6
  naugraph_freedyn@LIBNAUTY_2.5 2.5r6
  nausparse_check@LIBNAUTY_2.5 2.5r6
@@ -263,6 +270,7 @@ libnauty.so.2 libnauty2 #MINVER#
  writes6_sg@LIBNAUTY_2.5 2.5r6
 libnautyA1.so.2 libnauty2 #MINVER#
  LIBNAUTYA1_2.5@LIBNAUTYA1_2.5 2.5r6
+ LIBNAUTYA1_2.7@LIBNAUTYA1_2.7 2.7r1
  Traces@LIBNAUTYA1_2.5 2.5r6
  addgenerator@LIBNAUTYA1_2.5 2.5r6
  addpermutation@LIBNAUTYA1_2.5 2.5r6
@@ -280,6 +288,7 @@ libnautyA1.so.2 libnauty2 #MINVER#
  arg_long@LIBNAUTYA1_2.5 2.5r6
  arg_range@LIBNAUTYA1_2.5 2.5r6
  arg_sequence@LIBNAUTYA1_2.5 2.6r2
+ arg_sequence_min@LIBNAUTYA1_2.7 2.7r1
  bipartiteside@LIBNAUTYA1_2.5 2.6r2
  breakout@LIBNAUTYA1_2.5 2.5r6
  cellcliq@LIBNAUTYA1_2.5 2.5r6
@@ -309,6 +318,7 @@ libnautyA1.so.2 libnauty2 #MINVER#
  cyclecount1@LIBNAUTYA1_2.5 2.5r6
  cyclecount@LIBNAUTYA1_2.5 2.5r6
  degstats2@LIBNAUTYA1_2.5 2.6r2
+ degstats3@LIBNAUTYA1_2.7 2.7r1
  degstats@LIBNAUTYA1_2.5 2.5r6
  delete1@LIBNAUTYA1_2.5 2.5r6
  deleteunmarked@LIBNAUTYA1_2.5 2.5r6
@@ -331,8 +341,10 @@ libnautyA1.so.2 libnauty2 #MINVER#
  fcanonise_inv_sg@LIBNAUTYA1_2.5 2.5r6
  fgroup@LIBNAUTYA1_2.5 2.5r6
  fgroup_inv@LIBNAUTYA1_2.5 2.5r6
+ find_clique@LIBNAUTYA1_2.7 2.7r1
  find_dist2@LIBNAUTYA1_2.5 2.5r6
  find_dist@LIBNAUTYA1_2.5 2.5r6
+ find_indset@LIBNAUTYA1_2.7 2.7r1
  findpermutation@LIBNAUTYA1_2.5 2.5r6
  fixit@LIBNAUTYA1_2.5 2.5r6
  flushline@LIBNAUTYA1_2.5 2.5r6
@@ -386,6 +398,8 @@ libnautyA1.so.2 libnauty2 #MINVER#
  mathon@LIBNAUTYA1_2.5 2.5r6
  mathon_sg@LIBNAUTYA1_2.5 2.5r6
  maxcliques@LIBNAUTYA1_2.5 2.5r6
+ maxcliquesize@LIBNAUTYA1_2.7 2.7r1
+ maxindsetsize@LIBNAUTYA1_2.7 2.7r1
  naugraph_check@LIBNAUTYA1_2.5 2.5r6
  naugraph_freedyn@LIBNAUTYA1_2.5 2.5r6
  nausparse_check@LIBNAUTYA1_2.5 2.5r6
@@ -526,6 +540,7 @@ libnautyA1.so.2 libnauty2 #MINVER#
  writes6_sg@LIBNAUTYA1_2.5 2.5r6
 libnautyL0.so.2 libnauty2 #MINVER#
  LIBNAUTYL0_2.5@LIBNAUTYL0_2.5 2.5r6
+ LIBNAUTYL0_2.7@LIBNAUTYL0_2.7 2.7r1
  Traces@LIBNAUTYL0_2.5 2.5r6
  addgenerator@LIBNAUTYL0_2.5 2.5r6
  addpermutation@LIBNAUTYL0_2.5 2.5r6
@@ -543,6 +558,7 @@ libnautyL0.so.2 libnauty2 #MINVER#
  arg_long@LIBNAUTYL0_2.5 2.5r6
  arg_range@LIBNAUTYL0_2.5 2.5r6
  arg_sequence@LIBNAUTYL0_2.5 2.6r2
+ arg_sequence_min@LIBNAUTYL0_2.7 2.7r1
  bipartiteside@LIBNAUTYL0_2.5 2.6r2
  breakout@LIBNAUTYL0_2.5 2.5r6
  cellcliq@LIBNAUTYL0_2.5 2.5r6
@@ -572,6 +588,7 @@ libnautyL0.so.2 libnauty2 #MINVER#
  cyclecount1@LIBNAUTYL0_2.5 2.5r6
  cyclecount@LIBNAUTYL0_2.5 2.5r6
  degstats2@LIBNAUTYL0_2.5 2.6r2
+ degstats3@LIBNAUTYL0_2.7 2.7r1
  degstats@LIBNAUTYL0_2.5 2.5r6
  delete1@LIBNAUTYL0_2.5 2.5r6
  deleteunmarked@LIBNAUTYL0_2.5 2.5r6
@@ -594,8 +611,10 @@ libnautyL0.so.2 libnauty2 #MINVER#
  fcanonise_inv_sg@LIBNAUTYL0_2.5 2.5r6
  fgroup@LIBNAUTYL0_2.5 2.5r6
  fgroup_inv@LIBNAUTYL0_2.5 2.5r6
+ find_clique@LIBNAUTYL0_2.7 2.7r1
  find_dist2@LIBNAUTYL0_2.5 2.5r6
  find_dist@LIBNAUTYL0_2.5 2.5r6
+ find_indset@LIBNAUTYL0_2.7 2.7r1
  findpermutation@LIBNAUTYL0_2.5 2.5r6
  fixit@LIBNAUTYL0_2.5 2.5r6
  flushline@LIBNAUTYL0_2.5 2.5r6
@@ -649,6 +668,8 @@ libnautyL0.so.2 libnauty2 #MINVER#
  mathon@LIBNAUTYL0_2.5 2.5r6
  mathon_sg@LIBNAUTYL0_2.5 2.5r6
  maxcliques@LIBNAUTYL0_2.5 2.5r6
+ maxcliquesize@LIBNAUTYL0_2.7 2.7r1
+ maxindsetsize@LIBNAUTYL0_2.7 2.7r1
  naugraph_check@LIBNAUTYL0_2.5 2.5r6
  naugraph_freedyn@LIBNAUTYL0_2.5 2.5r6
  nausparse_check@LIBNAUTYL0_2.5 2.5r6
@@ -789,6 +810,7 @@ libnautyL0.so.2 libnauty2 #MINVER#
  writes6_sg@LIBNAUTYL0_2.5 2.5r6
 libnautyL1.so.2 libnauty2 #MINVER#
  LIBNAUTYL1_2.5@LIBNAUTYL1_2.5 2.5r6
+ LIBNAUTYL1_2.7@LIBNAUTYL1_2.7 2.7r1
  Traces@LIBNAUTYL1_2.5 2.5r6
  addgenerator@LIBNAUTYL1_2.5 2.5r6
  addpermutation@LIBNAUTYL1_2.5 2.5r6
@@ -806,6 +828,7 @@ libnautyL1.so.2 libnauty2 #MINVER#
  arg_long@LIBNAUTYL1_2.5 2.5r6
  arg_range@LIBNAUTYL1_2.5 2.5r6
  arg_sequence@LIBNAUTYL1_2.5 2.6r2
+ arg_sequence_min@LIBNAUTYL1_2.7 2.7r1
  bipartiteside@LIBNAUTYL1_2.5 2.6r2
  breakout@LIBNAUTYL1_2.5 2.5r6
  cellcliq@LIBNAUTYL1_2.5 2.5r6
@@ -835,6 +858,7 @@ libnautyL1.so.2 libnauty2 #MINVER#
  cyclecount1@LIBNAUTYL1_2.5 2.5r6
  cyclecount@LIBNAUTYL1_2.5 2.5r6
  degstats2@LIBNAUTYL1_2.5 2.6r2
+ degstats3@LIBNAUTYL1_2.7 2.7r1
  degstats@LIBNAUTYL1_2.5 2.5r6
  delete1@LIBNAUTYL1_2.5 2.5r6
  deleteunmarked@LIBNAUTYL1_2.5 2.5r6
@@ -857,8 +881,10 @@ libnautyL1.so.2 libnauty2 #MINVER#
  fcanonise_inv_sg@LIBNAUTYL1_2.5 2.5r6
  fgroup@LIBNAUTYL1_2.5 2.5r6
  fgroup_inv@LIBNAUTYL1_2.5 2.5r6
+ find_clique@LIBNAUTYL1_2.7 2.7r1
  find_dist2@LIBNAUTYL1_2.5 2.5r6
  find_dist@LIBNAUTYL1_2.5 2.5r6
+ find_indset@LIBNAUTYL1_2.7 2.7r1
  findpermutation@LIBNAUTYL1_2.5 2.5r6
  fixit@LIBNAUTYL1_2.5 2.5r6
  flushline@LIBNAUTYL1_2.5 2.5r6
@@ -912,6 +938,8 @@ libnautyL1.so.2 libnauty2 #MINVER#
  mathon@LIBNAUTYL1_2.5 2.5r6
  mathon_sg@LIBNAUTYL1_2.5 2.5r6
  maxcliques@LIBNAUTYL1_2.5 2.5r6
+ maxcliquesize@LIBNAUTYL1_2.7 2.7r1
+ maxindsetsize@LIBNAUTYL1_2.7 2.7r1
  naugraph_check@LIBNAUTYL1_2.5 2.5r6
  naugraph_freedyn@LIBNAUTYL1_2.5 2.5r6
  nausparse_check@LIBNAUTYL1_2.5 2.5r6
@@ -1052,6 +1080,7 @@ libnautyL1.so.2 libnauty2 #MINVER#
  writes6_sg@LIBNAUTYL1_2.5 2.5r6
 libnautyS0.so.2 libnauty2 #MINVER#
  LIBNAUTYS0_2.5@LIBNAUTYS0_2.5 2.5r6
+ LIBNAUTYS0_2.7@LIBNAUTYS0_2.7 2.7r1
  Traces@LIBNAUTYS0_2.5 2.5r6
  addgenerator@LIBNAUTYS0_2.5 2.5r6
  addpermutation@LIBNAUTYS0_2.5 2.5r6
@@ -1069,6 +1098,7 @@ libnautyS0.so.2 libnauty2 #MINVER#
  arg_long@LIBNAUTYS0_2.5 2.5r6
  arg_range@LIBNAUTYS0_2.5 2.5r6
  arg_sequence@LIBNAUTYS0_2.5 2.6r2
+ arg_sequence_min@LIBNAUTYS0_2.7 2.7r1
  bipartiteside@LIBNAUTYS0_2.5 2.6r2
  breakout@LIBNAUTYS0_2.5 2.5r6
  cellcliq@LIBNAUTYS0_2.5 2.5r6
@@ -1098,6 +1128,7 @@ libnautyS0.so.2 libnauty2 #MINVER#
  cyclecount1@LIBNAUTYS0_2.5 2.5r6
  cyclecount@LIBNAUTYS0_2.5 2.5r6
  degstats2@LIBNAUTYS0_2.5 2.6r2
+ degstats3@LIBNAUTYS0_2.7 2.7r1
  degstats@LIBNAUTYS0_2.5 2.5r6
  delete1@LIBNAUTYS0_2.5 2.5r6
  deleteunmarked@LIBNAUTYS0_2.5 2.5r6
@@ -1120,8 +1151,10 @@ libnautyS0.so.2 libnauty2 #MINVER#
  fcanonise_inv_sg@LIBNAUTYS0_2.5 2.5r6
  fgroup@LIBNAUTYS0_2.5 2.5r6
  fgroup_inv@LIBNAUTYS0_2.5 2.5r6
+ find_clique@LIBNAUTYS0_2.7 2.7r1
  find_dist2@LIBNAUTYS0_2.5 2.5r6
  find_dist@LIBNAUTYS0_2.5 2.5r6
+ find_indset@LIBNAUTYS0_2.7 2.7r1
  findpermutation@LIBNAUTYS0_2.5 2.5r6
  fixit@LIBNAUTYS0_2.5 2.5r6
  flushline@LIBNAUTYS0_2.5 2.5r6
@@ -1175,6 +1208,8 @@ libnautyS0.so.2 libnauty2 #MINVER#
  mathon@LIBNAUTYS0_2.5 2.5r6
  mathon_sg@LIBNAUTYS0_2.5 2.5r6
  maxcliques@LIBNAUTYS0_2.5 2.5r6
+ maxcliquesize@LIBNAUTYS0_2.7 2.7r1
+ maxindsetsize@LIBNAUTYS0_2.7 2.7r1
  naugraph_check@LIBNAUTYS0_2.5 2.5r6
  naugraph_freedyn@LIBNAUTYS0_2.5 2.5r6
  nausparse_check@LIBNAUTYS0_2.5 2.5r6
@@ -1315,6 +1350,7 @@ libnautyS0.so.2 libnauty2 #MINVER#
  writes6_sg@LIBNAUTYS0_2.5 2.5r6
 libnautyS1.so.2 libnauty2 #MINVER#
  LIBNAUTYS1_2.5@LIBNAUTYS1_2.5 2.5r6
+ LIBNAUTYS1_2.7@LIBNAUTYS1_2.7 2.7r1
  Traces@LIBNAUTYS1_2.5 2.5r6
  addgenerator@LIBNAUTYS1_2.5 2.5r6
  addpermutation@LIBNAUTYS1_2.5 2.5r6
@@ -1332,6 +1368,7 @@ libnautyS1.so.2 libnauty2 #MINVER#
  arg_long@LIBNAUTYS1_2.5 2.5r6
  arg_range@LIBNAUTYS1_2.5 2.5r6
  arg_sequence@LIBNAUTYS1_2.5 2.6r2
+ arg_sequence_min@LIBNAUTYS1_2.7 2.7r1
  bipartiteside@LIBNAUTYS1_2.5 2.6r2
  breakout@LIBNAUTYS1_2.5 2.5r6
  cellcliq@LIBNAUTYS1_2.5 2.5r6
@@ -1361,6 +1398,7 @@ libnautyS1.so.2 libnauty2 #MINVER#
  cyclecount1@LIBNAUTYS1_2.5 2.5r6
  cyclecount@LIBNAUTYS1_2.5 2.5r6
  degstats2@LIBNAUTYS1_2.5 2.6r2
+ degstats3@LIBNAUTYS1_2.7 2.7r1
  degstats@LIBNAUTYS1_2.5 2.5r6
  delete1@LIBNAUTYS1_2.5 2.5r6
  deleteunmarked@LIBNAUTYS1_2.5 2.5r6
@@ -1383,8 +1421,10 @@ libnautyS1.so.2 libnauty2 #MINVER#
  fcanonise_inv_sg@LIBNAUTYS1_2.5 2.5r6
  fgroup@LIBNAUTYS1_2.5 2.5r6
  fgroup_inv@LIBNAUTYS1_2.5 2.5r6
+ find_clique@LIBNAUTYS1_2.7 2.7r1
  find_dist2@LIBNAUTYS1_2.5 2.5r6
  find_dist@LIBNAUTYS1_2.5 2.5r6
+ find_indset@LIBNAUTYS1_2.7 2.7r1
  findpermutation@LIBNAUTYS1_2.5 2.5r6
  fixit@LIBNAUTYS1_2.5 2.5r6
  flushline@LIBNAUTYS1_2.5 2.5r6
@@ -1438,6 +1478,8 @@ libnautyS1.so.2 libnauty2 #MINVER#
  mathon@LIBNAUTYS1_2.5 2.5r6
  mathon_sg@LIBNAUTYS1_2.5 2.5r6
  maxcliques@LIBNAUTYS1_2.5 2.5r6
+ maxcliquesize@LIBNAUTYS1_2.7 2.7r1
+ maxindsetsize@LIBNAUTYS1_2.7 2.7r1
  naugraph_check@LIBNAUTYS1_2.5 2.5r6
  naugraph_freedyn@LIBNAUTYS1_2.5 2.5r6
  nausparse_check@LIBNAUTYS1_2.5 2.5r6
@@ -1578,6 +1620,7 @@ libnautyS1.so.2 libnauty2 #MINVER#
  writes6_sg@LIBNAUTYS1_2.5 2.5r6
 libnautyW0.so.2 libnauty2 #MINVER#
  LIBNAUTYW0_2.5@LIBNAUTYW0_2.5 2.5r6
+ LIBNAUTYW0_2.7@LIBNAUTYW0_2.7 2.7r1
  Traces@LIBNAUTYW0_2.5 2.5r6
  addgenerator@LIBNAUTYW0_2.5 2.5r6
  addpermutation@LIBNAUTYW0_2.5 2.5r6
@@ -1595,6 +1638,7 @@ libnautyW0.so.2 libnauty2 #MINVER#
  arg_long@LIBNAUTYW0_2.5 2.5r6
  arg_range@LIBNAUTYW0_2.5 2.5r6
  arg_sequence@LIBNAUTYW0_2.5 2.6r2
+ arg_sequence_min@LIBNAUTYW0_2.7 2.7r1
  bipartiteside@LIBNAUTYW0_2.5 2.6r2
  breakout@LIBNAUTYW0_2.5 2.5r6
  cellcliq@LIBNAUTYW0_2.5 2.5r6
@@ -1624,6 +1668,7 @@ libnautyW0.so.2 libnauty2 #MINVER#
  cyclecount1@LIBNAUTYW0_2.5 2.5r6
  cyclecount@LIBNAUTYW0_2.5 2.5r6
  degstats2@LIBNAUTYW0_2.5 2.6r2
+ degstats3@LIBNAUTYW0_2.7 2.7r1
  degstats@LIBNAUTYW0_2.5 2.5r6
  delete1@LIBNAUTYW0_2.5 2.5r6
  deleteunmarked@LIBNAUTYW0_2.5 2.5r6
@@ -1646,8 +1691,10 @@ libnautyW0.so.2 libnauty2 #MINVER#
  fcanonise_inv_sg@LIBNAUTYW0_2.5 2.5r6
  fgroup@LIBNAUTYW0_2.5 2.5r6
  fgroup_inv@LIBNAUTYW0_2.5 2.5r6
+ find_clique@LIBNAUTYW0_2.7 2.7r1
  find_dist2@LIBNAUTYW0_2.5 2.5r6
  find_dist@LIBNAUTYW0_2.5 2.5r6
+ find_indset@LIBNAUTYW0_2.7 2.7r1
  findpermutation@LIBNAUTYW0_2.5 2.5r6
  fixit@LIBNAUTYW0_2.5 2.5r6
  flushline@LIBNAUTYW0_2.5 2.5r6
@@ -1701,6 +1748,8 @@ libnautyW0.so.2 libnauty2 #MINVER#
  mathon@LIBNAUTYW0_2.5 2.5r6
  mathon_sg@LIBNAUTYW0_2.5 2.5r6
  maxcliques@LIBNAUTYW0_2.5 2.5r6
+ maxcliquesize@LIBNAUTYW0_2.7 2.7r1
+ maxindsetsize@LIBNAUTYW0_2.7 2.7r1
  naugraph_check@LIBNAUTYW0_2.5 2.5r6
  naugraph_freedyn@LIBNAUTYW0_2.5 2.5r6
  nausparse_check@LIBNAUTYW0_2.5 2.5r6
@@ -1841,6 +1890,7 @@ libnautyW0.so.2 libnauty2 #MINVER#
  writes6_sg@LIBNAUTYW0_2.5 2.5r6
 libnautyW1.so.2 libnauty2 #MINVER#
  LIBNAUTYW1_2.5@LIBNAUTYW1_2.5 2.5r6
+ LIBNAUTYW1_2.7@LIBNAUTYW1_2.7 2.7r1
  Traces@LIBNAUTYW1_2.5 2.5r6
  addgenerator@LIBNAUTYW1_2.5 2.5r6
  addpermutation@LIBNAUTYW1_2.5 2.5r6
@@ -1858,6 +1908,7 @@ libnautyW1.so.2 libnauty2 #MINVER#
  arg_long@LIBNAUTYW1_2.5 2.5r6
  arg_range@LIBNAUTYW1_2.5 2.5r6
  arg_sequence@LIBNAUTYW1_2.5 2.6r2
+ arg_sequence_min@LIBNAUTYW1_2.7 2.7r1
  bipartiteside@LIBNAUTYW1_2.5 2.6r2
  breakout@LIBNAUTYW1_2.5 2.5r6
  cellcliq@LIBNAUTYW1_2.5 2.5r6
@@ -1887,6 +1938,7 @@ libnautyW1.so.2 libnauty2 #MINVER#
  cyclecount1@LIBNAUTYW1_2.5 2.5r6
  cyclecount@LIBNAUTYW1_2.5 2.5r6
  degstats2@LIBNAUTYW1_2.5 2.6r2
+ degstats3@LIBNAUTYW1_2.7 2.7r1
  degstats@LIBNAUTYW1_2.5 2.5r6
  delete1@LIBNAUTYW1_2.5 2.5r6
  deleteunmarked@LIBNAUTYW1_2.5 2.5r6
@@ -1909,8 +1961,10 @@ libnautyW1.so.2 libnauty2 #MINVER#
  fcanonise_inv_sg@LIBNAUTYW1_2.5 2.5r6
  fgroup@LIBNAUTYW1_2.5 2.5r6
  fgroup_inv@LIBNAUTYW1_2.5 2.5r6
+ find_clique@LIBNAUTYW1_2.7 2.7r1
  find_dist2@LIBNAUTYW1_2.5 2.5r6
  find_dist@LIBNAUTYW1_2.5 2.5r6
+ find_indset@LIBNAUTYW1_2.7 2.7r1
  findpermutation@LIBNAUTYW1_2.5 2.5r6
  fixit@LIBNAUTYW1_2.5 2.5r6
  flushline@LIBNAUTYW1_2.5 2.5r6
@@ -1964,6 +2018,8 @@ libnautyW1.so.2 libnauty2 #MINVER#
  mathon@LIBNAUTYW1_2.5 2.5r6
  mathon_sg@LIBNAUTYW1_2.5 2.5r6
  maxcliques@LIBNAUTYW1_2.5 2.5r6
+ maxcliquesize@LIBNAUTYW1_2.7 2.7r1
+ maxindsetsize@LIBNAUTYW1_2.7 2.7r1
  naugraph_check@LIBNAUTYW1_2.5 2.5r6
  naugraph_freedyn@LIBNAUTYW1_2.5 2.5r6
  nausparse_check@LIBNAUTYW1_2.5 2.5r6
