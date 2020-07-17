@@ -49,6 +49,3 @@ override_dh_installchangelogs:
 
 override_dh_compress-indep:
 	dh_compress -X.pdf -Xexamples
-
-get-orig-source:
-	uscan --no-conf --download-current-version --compression xz --verbose
