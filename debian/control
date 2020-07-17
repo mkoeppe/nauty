@@ -11,7 +11,7 @@ Build-Depends: debhelper-compat (= 13),
                pkg-config,
                zlib1g-dev
 Standards-Version: 4.5.0
-Homepage: http://pallini.di.uniroma1.it
+Homepage: https://pallini.di.uniroma1.it
 Vcs-Git: https://salsa.debian.org/science-team/nauty.git
 Vcs-Browser: https://salsa.debian.org/science-team/nauty
 
