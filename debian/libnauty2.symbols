@@ -1,4 +1,5 @@
 libnauty.so.2 libnauty2 #MINVER#
+* Build-Depends-Package: libnauty-dev
  LIBNAUTY_2.5@LIBNAUTY_2.5 2.5r6
  LIBNAUTY_2.7@LIBNAUTY_2.7 2.7r1
  Traces@LIBNAUTY_2.5 2.5r6
