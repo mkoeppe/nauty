@@ -1,3 +1,69 @@
+nauty (2.7r1+ds-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+  * debian/compat
+    - Remove file; we will use debhelper-compat instead.
+  * debian/control
+    - Add myself to Uploaders.
+    - Add debhelper-compat to Build-Depends and bump to compatibility
+      level 13.
+    - Bump to Standards-Version 4.5.0.
+    - Switch to Salsa in Vcs-*.
+    - Use https for Homepage.
+    - Add Rules-Requires-Root field.
+  * debian/copyright
+    - Use https in Format and Source.
+    - Update copyright years.
+  * debian/libnauty2.symbols
+    - Add new symbols.
+    - Add Build-Depends-Package field.
+  * debian{,/source}/*lintian-overrides
+    - Replace renamed tags.
+  * debian/nauty-doc.doc
+    - Use wildcard for User's Guide filename so the version number
+      isn't hardcoded.
+  * debian/nauty-doc.doc-base
+    - Update location of User's Guide. After debhelper 11, the
+      documentation is installed in /usr/share/doc/nauty instead of
+      /usr/share/doc/nauty-doc.  We also use a wildcard in the
+      filename so the version number isn't hardcoded.
+  * debian/nauty-doc.maintscript
+    - Add file; remove /usr/share/doc/nauty symlink when upgrading.
+  * debian/nauty.maintscript
+    - Remove file; the symlink it involved is no longer created.
+  * debian/not-installed
+    - New file; tell dh_missing that we're not installing the libtool
+      .la files.
+  * debian/patches
+    - Refresh patches for new upstream version.  Special thanks to
+      Jerry James, who already did most of the work for the Fedora
+      package.
+  * debian/rules
+    - Update override_dh_installchangelogs target with new filename
+      of changelog.
+    - New override_dh_autoreconf target to inject upstream version
+      number into configure.ac after quilt patches it.
+    - Remove unnecessary get-orig-source target.
+    - Drop dh_installdocs command creating /usr/share/doc/nauty symlink
+      since it is now a directory used for the documentation from
+      nauty-doc after debhelper 11.
+  * debian/salsa-ci.yml
+    - Add Salsa pipelines config file.
+  * debian/source/options
+    - Remove file; was setting custom compression options that are
+      discouraged by Lintian.
+  * debian/tests/{build-examples,make-check}
+    - Replace deprecated ADTTMP variable with AUTOPKGTEST_TMP.
+  * debian/tests/build-examples
+    - Update path to examples.
+  * debian/tests/control
+    - Remove Restrictions field; only value was needs-recommends, which
+      has been deprecated.
+  * debian/upstream/metadata
+    - Add DEP-12 metadata file.
+
+ -- Doug Torrance <dtorrance@piedmont.edu>  Fri, 17 Jul 2020 22:31:52 -0400
+
 nauty (2.6r10+ds-1) unstable; urgency=medium
 
   * New upstream version.
@@ -198,4 +264,3 @@ nauty (2.4~b7-1) unstable; urgency=low
   * Initial release (Closes: #529094)
 
  -- David Bremner <bremner@unb.ca>  Wed, 05 Aug 2009 22:40:14 -0300
-
