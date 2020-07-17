@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 include /usr/share/dpkg/pkg-info.mk
 export DEB_VERSION
+VERSION := $(shell echo $(DEB_VERSION_UPSTREAM) | sed -e 's/+ds//' -e 's/r/\./')
 
 export DEB_BUILD_MAINT_OPTIONS=hardening=+all
 
@@ -18,6 +19,10 @@ default:
 
 %:
 	dh $@
+
+override_dh_autoreconf:
+	sed -i 's/@INJECTVER@/$(VERSION)/' configure.ac
+	dh_autoreconf
 
 override_dh_auto_configure-arch:
 	dh_auto_configure -- --enable-clz $(DEB_DH_AUTO_CONFIGURE_OPTS__ENABLE_TLS) --disable-ansicontrols
