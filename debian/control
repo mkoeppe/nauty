@@ -4,9 +4,12 @@ Priority: optional
 Maintainer: Debian Science Maintainers <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: Jerome Benoit <calculus@rezozer.net>,
            Doug Torrance <dtorrance@piedmont.edu>
-Build-Depends:
- debhelper (>= 10), libtool, pkg-config, help2man,
- zlib1g-dev, libgmp-dev
+Build-Depends: debhelper-compat (= 13),
+               help2man,
+               libgmp-dev,
+               libtool,
+               pkg-config,
+               zlib1g-dev
 Standards-Version: 4.1.1
 Homepage: http://pallini.di.uniroma1.it
 Vcs-Git: https://anonscm.debian.org/git/debian-science/packages/nauty.git
