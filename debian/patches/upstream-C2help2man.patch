@@ -7,7 +7,7 @@ Last-Update: 2016-03-19
 
 --- a/watercluster2.c
 +++ b/watercluster2.c
-@@ -1,54 +1,58 @@
+@@ -1,53 +1,65 @@
  // cc -O4 -o water2 -DWORDSIZE=32 -DMAXN=WORDSIZE nauty.c naugraph.c nautil.c gtools.c schreier.c naurng.c watercluster2.c
  
 -/*
@@ -35,6 +35,8 @@ Last-Update: 2016-03-19
 -     ended by a 0. Then the list of outgoing neighbours of 2 follows -- again ended with a 0, etc.
 -     The code is complete with the 0 ending the list of outgoing neighbours of nv.
 -
+-  Z  means: Output the directed graphs in digraph6 code. See formats.txt for a complete definition.
+-
 -  C  means: Do really construct all the directed graphs in memory, but don't output them. This is not
 -     a big difference in case of restricted in- and outdegrees, because all that is done extra is that 
 -     edges are directed instead of just keeping track of in- and out-degrees. This option is intended only
@@ -50,70 +52,74 @@ Last-Update: 2016-03-19
 -     for other cases shall be determined, one should think about adding the multiplication routines.
 -
 -   m read multicode
--
++#define GTOOL_USAGEHELP_COMPATIBILITY
+ 
 -This program uses different labelling routines -- all based on the ideas of 
 -
 -G. Brinkmann, Generating water clusters and other directed graphs,
 -Journal of Mathematical Chemistry 46, 1112--1121 (2009)
-+#define GTOOL_USAGEHELP_COMPATIBILITY
++#define USAGE "watercluster2 [ix] [oy] [S] [T] [B] [Z] [C] [m]"
  
--October 10, 2011: corrected error caused by overflow of 32bit int used as hashvalue.
-+#define USAGE "watercluster2 [ix] [oy] [S] [T] [B] [C] [m]"
- 
--Sep, 2012: PROCESS feature added by BDM.
 +#define HELPTEXT \
 +" Reads graphs in g6 code or multicode (optional) from stdin and directs them\n\
 +\n\
-+  ix : the indegree of every vertex may be at most x.\n\
-+	     The default maximum indegree is unlimited.\n\
++  ix: the indegree of every vertex may be at most x.\n\
++      The default maximum indegree is unlimited.\n\
 +\n\
-+  oy : the outdegree of every vertex may be at most y.\n\
-+	     The default maximum outdegree is unlimited.\n\
++  oy: the outdegree of every vertex may be at most y.\n\
++      The default maximum outdegree is unlimited.\n\
 +\n\
-+   S : allow that for every pair of vertices x,y at most one of the edges x-->y\n\
-+       and y-->x may be present. By default both of them may be present in the same graph.\n\
++  S : allow that for every pair of vertices x,y at most one of the edges x-->y\n\
++      and y-->x may be present. By default both of them may be present in the\n\
++      same graph.\n\
 +\n\
++  T : Output directed graphs in T-code. This is a simple ASCII output format.\n\
++      Every line contains one graph. First the number of vertices, then the\n\
++      number of directed edges and then the list of directed edges with the\n\
++      start first and the end then. E.g.: 3 2 0 1 2 1 means 3 vertices, 2\n\
++      directed edges:\n\
++      0-->1 and 2-->1\n\
 +\n\
-+   T : Output directed graphs in T-code. This is a simple ASCII output format. Every line\n\
-+       contains one graph. First the number of vertices, then the number of\n\
-+       directed edges and then the list of directed edges with the start first\n\
-+       and the end then. E.g.: 3 2 0 1 2 1 means 3 vertices, 2 directed edges:\n\
-+       0-->1 and 2-->1\n\
++  B : Output the directed graphs in a binary code. Every item of the code is an\n\
++      unsigned char. The first unsigned char is the number nv of vertices. The\n\
++      vertices are numbered 1..nv. Then the list of vertices x for which there\n\
++      is a directed edge 1->x follow. This list is ended by a 0. Then the list\n\
++      of outgoing neighbours of 2 follows -- again ended with a 0, etc.\n\
++      The code is complete with the 0 ending the list of outgoing neighbours of\n\
++      nv.\n\
 +\n\
-+   B : Output the directed graphs in a binary code. Every item of the code is an unsigned\n\
-+       char. The first unsigned char is the number nv of vertices. The vertices are numbered 1..nv\n\
-+       Then the list of vertices x for which there is a directed edge 1->x follow. This list is\n\
-+       ended by a 0. Then the list of outgoing neighbours of 2 follows -- again ended with a 0, etc.\n\
-+       The code is complete with the 0 ending the list of outgoing neighbours of nv.\n\
++  Z : Output the directed graphs in digraph6 code. See formats.txt for a\n\
++      complete definition.\n\
 +\n\
-+   C : Do really construct all the directed graphs in memory, but don't output them. This is not\n\
-+       a big difference in case of restricted in- and outdegrees, because all that is done extra is that\n\
-+       edges are directed instead of just keeping track of in- and out-degrees. This option is intended only\n\
-+       for testing purposes to test also routines that are normally not used when counting. Things that would\n\
-+       speed up the counting also in some cases of restricted in- and out-degrees -- like multiplying the\n\
-+       possibilities of assigning directions to edges that can be assigned directions independent\n\
-+       of each other (depending on the degrees of the endvertices and overlaps) -- are not included.\n\
-+       In case of not restrictive bounds on the in- and out-degree it not really constructing the graphs\n\
-+       can be considerably faster. In cases of restricted in- and out-degrees the only difference is that\n\
-+       the graph isn't modified...\n\
-+       The fact that in case of no output the graph is not modified is mainly to save time for the one\n\
-+       case of waterclusters, where large numbers were determined. If large numbers (without output)\n\
-+       for other cases shall be determined, one should think about adding the multiplication routines.\n\
++  C : Do really construct all the directed graphs in memory, but don't output\n\
++      them. This is not a big difference in case of restricted in- and\n\
++      outdegrees, because all that is done extra is that edges are directed\n\
++      instead of just keeping track of in- and out-degrees. This option is\n\
++      intended only for testing purposes to test also routines that are normally\n\
++      not used when counting. Things that would speed up the counting also in\n\
++      some cases of restricted in- and out-degrees -- like multiplying the\n\
++      possibilities of assigning directions to edges that can be assigned\n\
++      directions independent of each other (depending on the degrees of the\n\
++      endvertices and overlaps) -- are not included.\n\
++      In case of not restrictive bounds on the in- and out-degree it not really\n\
++      constructing the graphs can be considerably faster. In cases of restricted\n\
++      in- and out-degrees the only difference is that the graph isn't modified.\n\
++      The fact that in case of no output the graph is not modified is mainly to\n\
++      save time for the one case of waterclusters, where large numbers were\n\
++      determined. If large numbers (without output) for other cases shall be\n\
++      determined, one should think about adding the multiplication routines.\n\
 +\n\
-+   m : read multicode instead of g6 code\n\
++  m : read multicode instead of g6 code\n\
 +\n\
 +This program uses different labelling routines -- all based on the ideas of\n\
 +\n\
-+G. Brinkmann, Generating water clusters and other directed graphs,\n\
++G. Brinkmann, Generating water clusters and other directed graphs,\m\
 +Journal of Mathematical Chemistry 46, 1112--1121 (2009)\n"
 +/*
-+ * October 10, 2011: corrected error caused by overflow of 32bit int used as hashvalue.
-+ *
-+ * Sep, 2012: PROCESS feature added by BDM.
- */
+ October 10, 2011: corrected error caused by overflow of 32bit int used as hashvalue.
  
- /* PROCESS feature
-@@ -67,7 +71,7 @@
+ Sep, 2012: PROCESS feature added by BDM.
+@@ -71,7 +83,7 @@
   *
   * If SUMMARY is defined, it must expand as the name of a procedure
   * with prototype  void SUMMARY(void).  It is called at the end after
@@ -122,7 +128,7 @@ Last-Update: 2016-03-19
   */
  
  //#include<stdio.h>
-@@ -500,7 +504,7 @@
+@@ -526,7 +538,7 @@
  return 1;
  }
  
@@ -131,7 +137,7 @@ Last-Update: 2016-03-19
  void usage(char name[])
  {
  
-@@ -518,6 +522,7 @@
+@@ -546,6 +558,7 @@
    exit(1);
  
  }
@@ -139,7 +145,7 @@ Last-Update: 2016-03-19
  
  /**********DECODE_TO_NAUTY****************************************************/
  
-@@ -4013,6 +4018,15 @@
+@@ -4041,6 +4054,15 @@
    int multicode=0, g6code=1;
    long long int last=0LL;
  
@@ -154,21 +160,21 @@ Last-Update: 2016-03-19
 +
    if (sizeof(long long int)<8) 
      { 
-       fprintf(stderr,"This may cause problems with the hashing function for large degree -- exit().\n");
-@@ -4028,7 +4042,15 @@
- 	  else  if (argv[i][0]=='B') direct_output=3;
- 	    else  if (argv[i][0]=='S') double_allowed=0;
- 	      else  if (argv[i][0]=='m') { g6code=0; multicode=1; }
+       fprintf(stderr,">E long long too short; This may cause problems with the hashing function for large degree -- exit().\n");
+@@ -4059,7 +4081,15 @@
+ 	    else  if (argv[i][0]=='Z') direct_output=4;    /* BDM */
+ 	      else  if (argv[i][0]=='S') double_allowed=0;
+ 	        else  if (argv[i][0]=='m') { g6code=0; multicode=1; }
 -      else usage(argv[0]);
 +      else {
 +#ifdef GTOOL_USAGEHELP_COMPATIBILITY
-+        fprintf(stderr,">E Usage: %s\n",USAGE);
-+        fprintf(stderr,"Use watercluster2 -help to see a list of the options.\n");
-+        exit(1);
++	fprintf(stderr, ">E Usage: %s\n", USAGE);
++	fprintf(stderr, "Use watercluster2 -help to see a list of the options.\n");
++	exit(1);
 +#else
-+        usage(argv[0]);
++	usage(argv[0]);
 +#endif
-+				}
++      }
      }
  
  #ifdef PROCESS
@@ -187,7 +193,7 @@ Last-Update: 2016-03-19
 --- a/geng.c
 +++ b/geng.c
 @@ -6,8 +6,7 @@
- /* geng.c  version 2.9; B D McKay, Jan 2016. */
+ /* geng.c  version 3.1; B D McKay, Jan 2019. */
  
  #define USAGE \
 -"geng [-cCmtfbd#D#] [-uygsnh] [-lvq] \n\
@@ -208,30 +214,18 @@ Last-Update: 2016-03-19
  
  #define HELPTEXT \
  " Generate random graphs.\n\
---- a/vcolg.c
-+++ b/vcolg.c
-@@ -1,8 +1,7 @@
- /* vcolg.c version 1.0; B D McKay, Aug 31, 2013 */
- 
- #define USAGE \
--"vcolg [-q] [-u|-T|-G|-A|-B] [-e#|-e#:#] \n" \
--"       [-m#] [-f#] [-D#|-r#|-l#] [infile [outfile]]"
-+"vcolg [-q] [-u|-T|-G|-A|-B] [-e#|-e#:#] [-m#] [-f#] [-D#|-r#|-l#] [infile [outfile]]"
- 
- #define HELPTEXT \
- " Read undirected loop-free graphs and colour their vertices in\n\
 --- a/genspecialg.c
 +++ b/genspecialg.c
-@@ -1,20 +1,22 @@
- /* genspecialg.c  version 1.1; B D McKay, Feb 12, 2016 */
+@@ -1,13 +1,12 @@
+ /* genspecialg.c  version 1.3; B D McKay, Mar 19, 2018 */
  
--#define USAGE "genspecialg \n\
--[-s|-g|-z|-d] [-q] \
--[-p#|-c#|-e#|-k#|-b#,#|-Q#|-f#|-J#,#|-P#,#|C#,#...|G#,#...|T#,#...] [outfile]"
-+#define USAGE "genspecialg [-s|-g|-z|-d] [-q] [-p#|-c#|-e#|-k#|-b#,#|-Q#|-f#|-J#,#|-P#,#|C#[,#]|G#[,#]|T#[,#]] [outfile]"
+-#define USAGE "genspecialg [-s|-g|-z|-d|-v] [-q]\n\
+-     [-p#|-c#|-e#|-k#|-b#,#[,#]|-Q#|-f#|-J#,#\n\
+-         |-P#,#|C#,#...|G#,#...|T#,#...]* [outfile]"
++#define USAGE "genspecialg [-s|-g|-z|-d|-v] [-q] [-p#|-c#|-e#|-k#|-b#,#[,#]| -Q#|-f#|-J#,#|-P#,#|C#,#...|G#,#...|T#,#...]* [outfile]"
  
  #define HELPTEXT \
- " Generate one particular graph.\n\
+ " Generate special graphs.\n\
 -     #  : size parameter called n in the descriptions\n\
  \n\
 +Options:\n\
@@ -239,7 +233,8 @@ Last-Update: 2016-03-19
      -s : Write in sparse6 format (default)\n\
      -g : Write in graph6 format\n\
      -z : Make digraph versions and write in digraph6 format\n\
-     -d : Write in dreadnaut format (can be used with -z)\n\
+@@ -15,7 +14,10 @@
+     -v : For each graph, report the size to stderr\n\
      -q : Suppress summary\n\
  \n\
 -    If defined, the digraph version is shown in parentheses:\n\
@@ -250,18 +245,18 @@ Last-Update: 2016-03-19
      -p#   : path (directed path) on n vertices.\n\
      -c#   : cycle (directed cycle) on n vertices.\n\
      -e#   : empty graph (digraph with loops only) on n vertices.\n\
-@@ -24,9 +26,9 @@
+@@ -26,9 +28,9 @@
      -P#,# : generalized Petersen graph; usual one is -P5,2\n\
      -Q#   : hypercube on 2^n vertices and degree n.\n\
      -J#,# : Johnson graph J(n,k), args are n and k.\n\
 -    -C#,#... : circulant (di)graph.\n\
 -    -T#,#... : theta (di)graph Theta(#,#,...), give path lengths.\n\
--    -G#,#... : (directed) grid, use negative values for open directions\n"
+-    -G#,#... : (directed) grid, use negative values for open directions\n\
 +    -C#[,#] : circulant (di)graph.\n\
-+    -T#[,#] : theta (di)graph Theta(#[,#]), give path lengths.\n\
-+    -G#[,#] : (directed) grid, use negative values for open directions\n"
- 
- /* Ideas: multipartite, knesser, full trees */
++    -T#[,#] : theta (di)graph Theta(#,#,...), give path lengths.\n\
++    -G#[,#] : (directed) grid, use negative values for open directions\n\
+ \n\
+     Any number of graphs can be generated at once.\n"
  
 --- a/cubhamg.c
 +++ b/cubhamg.c

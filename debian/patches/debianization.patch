@@ -28,7 +28,7 @@ Last-Update: 2017-11-24
  	nautinv.h \
  	naurng.h \
  	nausparse.h \
-@@ -15,6 +14,10 @@
+@@ -19,6 +18,10 @@
  	gtools.h \
  	gutils.h
  
@@ -39,8 +39,8 @@ Last-Update: 2017-11-24
  pkgconfigdir = $(libdir)/pkgconfig
  pkgconfig_DATA= nauty.pc
  
-@@ -153,7 +156,7 @@
- 	$(HELP2MAN) \
+@@ -166,7 +169,7 @@
+ 	LD_LIBRARY_PATH=$(top_builddir)/.libs $(HELP2MAN) \
  			-s 1 \
  			$(AM_H2MFLAGS) \
 -			-I $(top_srcdir)/man/$*.h2m \
@@ -48,7 +48,7 @@ Last-Update: 2017-11-24
  			-n $(if $($*_DESCRIPTION), $($*_DESCRIPTION), "manual page for $*") \
  			-o $@ \
  		$(top_builddir)/$<
-@@ -217,7 +220,7 @@
+@@ -233,7 +236,7 @@
  checks6_DESCRIPTION =       "check a file of graphs and optionally perform corrections"
  sumlines_DESCRIPTION =      "sum lines matching specified graph formats"
  
@@ -56,4 +56,4 @@ Last-Update: 2017-11-24
 +dreadnaut_CPPFLAGS =     -DDEBPKGVERSION=\"$(DEB_VERSION)\"
  addedgeg_CPPFLAGS =
  amtog_CPPFLAGS =
- biplabg_CPPFLAGS =
+ assembleg_CPPFLAGS =
