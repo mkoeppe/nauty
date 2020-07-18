@@ -14,6 +14,8 @@ else
 	DEB_DH_AUTO_CONFIGURE_OPTS__ENABLE_TLS := --enable-tls
 endif
 
+export DEB_CPPFLAGS_MAINT_APPEND = -I/usr/include/cliquer
+
 default:
 	@uscan --no-conf --dehs --report || true
 
