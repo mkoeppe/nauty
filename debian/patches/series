@@ -5,3 +5,4 @@ upstream-autotoolization.patch
 system-preprocessing-examples.patch
 debianization.patch
 debianization-prefix.patch
+unbundle-cliquer.patch
