@@ -6,6 +6,7 @@ Uploaders: Jerome Benoit <calculus@rezozer.net>,
            Doug Torrance <dtorrance@piedmont.edu>
 Build-Depends: debhelper-compat (= 13),
                help2man,
+               libcliquer-dev,
                libgmp-dev,
                libtool,
                pkg-config,
