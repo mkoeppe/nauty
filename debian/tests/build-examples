@@ -3,7 +3,7 @@
 set -ue
 cd $AUTOPKGTEST_TMP
 
-cp -prd /usr/share/doc/nauty-doc/examples .
+cp -prd /usr/share/doc/nauty/examples .
 cd examples
 
 make check
