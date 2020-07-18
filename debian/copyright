@@ -37,6 +37,11 @@ Copyright:
  2001-2017 Magna project (University of Sydney) <admin@maths.usyd.edu.au>
 License: Apache-2.0
 
+Files: nautycliquer.c nautycliquer.h
+Copyright:
+ 2002 Sampo Niskanen, Patric Östergård
+License: Apache-2.0
+
 Files: debian/*
 Copyright:
  2013-2017 Jerome Benoit <calculus@rezozer.net>
