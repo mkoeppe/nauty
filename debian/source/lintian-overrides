@@ -1,2 +1,4 @@
 debian-watch-uses-insecure-uri
 debian-watch-does-not-check-gpg-signature
+# national encoding is in upstream source that is being patched out
+national-encoding debian/patches/unbundle-cliquer.patch
