@@ -1,5 +1,5 @@
 Tests: make-check
-Depends: nauty, tcc
+Depends: nauty, tcc, libc6-dev
 
 Tests: build-examples
 Depends: nauty-doc, libnauty2-dev, build-essential, pkg-config
