@@ -40,7 +40,6 @@ override_dh_auto_install-indep:
 	@true
 
 override_dh_installdocs:
-	dh_installdocs -pnauty --link-doc=libnauty2
 	dh_installdocs -plibnauty2-dev --link-doc=libnauty2
 	dh_installdocs --remaining-packages
 
