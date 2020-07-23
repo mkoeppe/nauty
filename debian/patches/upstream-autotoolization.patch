@@ -1344,7 +1344,7 @@ Last-Update: 2017-11-24
 +prefix=@prefix@
 +exec_prefix=@exec_prefix@
 +libdir=@libdir@
-+includedir=@includedir@
++pkgincludedir=@includedir@/@PACKAGE@
 +
 +Name: nauty
 +Description: nauty graph automorphism library
@@ -1352,7 +1352,7 @@ Last-Update: 2017-11-24
 +URL: @PACKAGE_URL@
 +Libs: -L${libdir} -l@PACKAGE@
 +Libs.private: @threadlib@
-+Cflags: -I${includedir}
++Cflags: -I${pkgincludedir}
 --- /dev/null
 +++ b/m4/zlib.m4
 @@ -0,0 +1,28 @@

@@ -57,3 +57,30 @@ Last-Update: 2017-11-24
  addedgeg_CPPFLAGS =
  amtog_CPPFLAGS =
  assembleg_CPPFLAGS =
+--- a/nauty.pc.in
++++ b/nauty.pc.in
+@@ -2,6 +2,7 @@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@
+ pkgincludedir=@includedir@/@PACKAGE@
++pkgmultiarchincludedir=@includedir@/@DEB_HOST_MULTIARCH@/@PACKAGE@
+ 
+ Name: nauty
+ Description: nauty graph automorphism library
+@@ -9,4 +10,4 @@
+ URL: @PACKAGE_URL@
+ Libs: -L${libdir} -l@PACKAGE@
+ Libs.private: @threadlib@
+-Cflags: -I${pkgincludedir}
++Cflags: -I${pkgincludedir} -I${pkgmultiarchincludedir}
+--- a/configure.ac
++++ b/configure.ac
+@@ -485,6 +485,8 @@
+ ## GNU MultiPrecision arithmetic library (GMP)
+ AM_PATH_GMP(6.1.2,[],[AC_MSG_WARN([could not find required version of GMP])])
+ 
++AC_SUBST(DEB_HOST_MULTIARCH)
++
+ AC_CONFIG_FILES([
+ 	nauty.pc
+ 	Makefile
