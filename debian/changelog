@@ -1,12 +1,15 @@
 nauty (2.7r1+ds-1) UNRELEASED; urgency=medium
 
   * New upstream release.
+  * debian/adhoc/examples/Makefile
+    - Add rule for new callgeng example.
   * debian/compat
     - Remove file; we will use debhelper-compat instead.
   * debian/control
     - Add myself to Uploaders.
     - Add debhelper-compat to Build-Depends and bump to compatibility
       level 13.
+    - Add libcliquer-dev to Build-Depends.
     - Bump to Standards-Version 4.5.0.
     - Switch to Salsa in Vcs-*.
     - Use https for Homepage.
@@ -14,6 +17,11 @@ nauty (2.7r1+ds-1) UNRELEASED; urgency=medium
   * debian/copyright
     - Use https in Format and Source.
     - Update copyright years.
+    - Add section for cliquer files.
+  * debian/{libnauty2-dev.install,nauty-doc.examples}
+    - Install source for programs which can be called from other
+      programs in /usr/share/nauty and include an example
+      (Closes: #860782).
   * debian/libnauty2.symbols
     - Add new symbols.
     - Add Build-Depends-Package field.
@@ -27,10 +35,8 @@ nauty (2.7r1+ds-1) UNRELEASED; urgency=medium
       documentation is installed in /usr/share/doc/nauty instead of
       /usr/share/doc/nauty-doc.  We also use a wildcard in the
       filename so the version number isn't hardcoded.
-  * debian/nauty-doc.maintscript
-    - Add file; remove /usr/share/doc/nauty symlink when upgrading.
-  * debian/nauty.maintscript
-    - Remove file; the symlink it involved is no longer created.
+  * debian/nauty{,-doc}.maintscript
+    - Remove /usr/share/doc/nauty symlinks when upgrading.
   * debian/not-installed
     - New file; tell dh_missing that we're not installing the libtool
       .la files.
@@ -38,6 +44,13 @@ nauty (2.7r1+ds-1) UNRELEASED; urgency=medium
     - Refresh patches for new upstream version.  Special thanks to
       Jerry James, who already did most of the work for the Fedora
       package.
+  * debian/patches/{debianization,upstream-autotoolization}.patch
+    - Include correct paths to header files in pkg-config output.
+  * debian/patches/system-preprocessing-examples.patch
+    - Remove patch; no longer necessary now that we can use pkg-config
+      to find the headers.
+  * debian/patches/unbundle-cliquer.patch
+    - Add patch from Fedora to unbundle cliquer library.
   * debian/rules
     - Update override_dh_installchangelogs target with new filename
       of changelog.
@@ -47,8 +60,12 @@ nauty (2.7r1+ds-1) UNRELEASED; urgency=medium
     - Drop dh_installdocs command creating /usr/share/doc/nauty symlink
       since it is now a directory used for the documentation from
       nauty-doc after debhelper 11.
+    - Append path to cliquer headers to CPPFLAGS.
   * debian/salsa-ci.yml
     - Add Salsa pipelines config file.
+  * debian/source/lintian-overrides
+    - Add national-encoding override for a patch that is applied to
+      an ISO-8859-1 upstream source file.
   * debian/source/options
     - Remove file; was setting custom compression options that are
       discouraged by Lintian.
@@ -59,10 +76,11 @@ nauty (2.7r1+ds-1) UNRELEASED; urgency=medium
   * debian/tests/control
     - Remove Restrictions field; only value was needs-recommends, which
       has been deprecated.
+    - Add libc6-dev to make-check Depends.
   * debian/upstream/metadata
     - Add DEP-12 metadata file.
 
- -- Doug Torrance <dtorrance@piedmont.edu>  Fri, 17 Jul 2020 22:31:52 -0400
+ -- Doug Torrance <dtorrance@piedmont.edu>  Thu, 23 Jul 2020 17:10:33 -0400
 
 nauty (2.6r10+ds-1) unstable; urgency=medium
 
