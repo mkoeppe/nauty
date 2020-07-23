@@ -29,6 +29,10 @@ LDLIBS = $(shell pkg-config nauty --libs)
 
 all: build
 
+callgeng: callgeng.c /usr/share/nauty/geng.c
+	$(CC) $(CFLAGS) -DOUTPROC=myoutproc -DGENG_MAIN=geng_main \
+		-Wno-implicit-function-declaration $^ $(LDLIBS) -o $@
+
 build: $(PROGRAMS)
 
 check: build
