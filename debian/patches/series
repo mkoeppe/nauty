@@ -2,7 +2,6 @@ upstream-fix-gt_numorbits.patch
 upstream-zlib-blisstog_c.patch
 upstream-C2help2man.patch
 upstream-autotoolization.patch
-system-preprocessing-examples.patch
 debianization.patch
 debianization-prefix.patch
 unbundle-cliquer.patch
