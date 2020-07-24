@@ -1,4 +1,5 @@
-gen{,tourn}g.c usr/share/nauty
+geng.c usr/share/nauty
+gentourng.c usr/share/nauty
 usr/lib/*/libnauty*.so
 usr/lib/*/libnauty*.a
 usr/lib/*/pkgconfig/*
