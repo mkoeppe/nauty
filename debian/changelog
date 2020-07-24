@@ -1,4 +1,4 @@
-nauty (2.7r1+ds-1) UNRELEASED; urgency=medium
+nauty (2.7r1+ds-1) unstable; urgency=medium
 
   * New upstream release.
   * debian/adhoc/examples/Makefile
@@ -63,9 +63,6 @@ nauty (2.7r1+ds-1) UNRELEASED; urgency=medium
     - Append path to cliquer headers to CPPFLAGS.
   * debian/salsa-ci.yml
     - Add Salsa pipelines config file.
-  * debian/source/lintian-overrides
-    - Add national-encoding override for a patch that is applied to
-      an ISO-8859-1 upstream source file.
   * debian/source/options
     - Remove file; was setting custom compression options that are
       discouraged by Lintian.
@@ -80,7 +77,7 @@ nauty (2.7r1+ds-1) UNRELEASED; urgency=medium
   * debian/upstream/metadata
     - Add DEP-12 metadata file.
 
- -- Doug Torrance <dtorrance@piedmont.edu>  Thu, 23 Jul 2020 17:10:33 -0400
+ -- Doug Torrance <dtorrance@piedmont.edu>  Fri, 24 Jul 2020 11:53:49 -0400
 
 nauty (2.6r10+ds-1) unstable; urgency=medium
 
