@@ -1,13 +1,17 @@
 #!/bin/sh
 # Run all nauty checks
 
+top_workingdir=$(pwd)
+
+tdx=0
+
 # runonetest command input output
 runonetest() {
 cmd="$1"
 in="$2"
 ok="$3"
 printf "%s %s %s  " "$cmd" "$in" "$ok"
- 
+
 if [ "X$in" = "X" ] ; then
    in=/dev/null
 elif [ ! -r "$in" ] ; then
@@ -20,10 +24,16 @@ if [ ! -r "$ok" ] ; then
    exit 1
 fi
 
-out1=`mktemp runtest.XXXXXX`
-out2=`mktemp runtest.XXXXXX`
+tdx=`expr $tdx + 1`
+out1=`printf "runtest-%02d.data" $tdx`
+out2=`printf "runtest-%02d.atad" $tdx`
 
 eval $cmd <"$in" 2>$out2 >$out1
+
+if [ -d $top_workingdir/.libs ]; then
+   sed -i 's@'$top_workingdir'/.libs/lt-@./@' $out2
+fi
+
 LC_LANG=C sort $out2 >>$out1
 if ./naucompare "$out1" "$ok" ; then
    rm $out1 $out2

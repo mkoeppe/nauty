@@ -23,6 +23,8 @@
  *       12-Jul-16 : bug correction (reaching degree 2 vertices)              *
 *****************************************************************************/
 
+#pragma once
+
 #include "gtools.h"
 #include "schreier.h" 
 

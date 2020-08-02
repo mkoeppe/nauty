@@ -11,8 +11,10 @@
          random number 0..k-1.
 */
 
-#ifndef NAURNG_H
-#include "nauty.h"
+#ifndef _NAURNG_H_     /* only process this file once */
+#define _NAURNG_H_
+
+#include <nauty/nauty.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,5 +38,4 @@ extern long ran_nextran(void);
     var = __getkran % (k);}
 #define INITRANBYTIME ran_init((long)time(NULL))
 
-#define NAURNG_H
-#endif
+#endif /* _NAURNG_H_ */

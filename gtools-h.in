@@ -60,8 +60,8 @@ used, it is necessary to check they are correct.
      This twisted expression works up to n=160529 in 32-bit arithmetic
      and for larger n if size_t has 64 bits.  */
 
-#include "naututil.h"      /* which includes stdio.h */
-#include "nausparse.h"
+#include <nauty/naututil.h>      /* which includes stdio.h */
+#include <nauty/nausparse.h>
 
 #if HAVE_ERRNO_H
 #include <errno.h>

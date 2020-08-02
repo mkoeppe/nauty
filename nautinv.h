@@ -10,7 +10,9 @@
 *                                                                            *
 *****************************************************************************/
 
-#include "nauty.h"              /* which includes stdio.h */
+#pragma once
+
+#include <nauty/nauty.h>              /* which includes stdio.h */
 
 #ifdef __cplusplus
 extern "C" {

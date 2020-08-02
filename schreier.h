@@ -3,8 +3,8 @@
 #ifndef  _SCHREIER_H_    /* only process this file once */
 #define  _SCHREIER_H_
 
-#include "nauty.h"
-#include "naurng.h"
+#include <nauty/nauty.h>
+#include <nauty/naurng.h>
 
 typedef struct permnodestruct
 {

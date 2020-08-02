@@ -1,5 +1,7 @@
 /* gutils.h - procedure declarations for gutil1.c and gutil2.c */
 
+#pragma once
+
 #ifdef __cplusplus
 extern "C" {
 #endif

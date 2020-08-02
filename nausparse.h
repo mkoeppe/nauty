@@ -23,7 +23,7 @@
 #ifndef  _NAUSPARSE_H_    /* only process this file once */
 #define  _NAUSPARSE_H_
 
-#include "nauty.h"
+#include <nauty/nauty.h>
 
 #ifndef SG_WEIGHT
 #define SG_WEIGHT int
@@ -127,4 +127,4 @@ extern void
 }
 #endif
 
-#endif
+#endif /* _NAUSPARSE_H_ */

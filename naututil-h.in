@@ -116,9 +116,12 @@ used, it is necessary to check they are correct.
 *                                                                            *
 *****************************************************************************/
 
-#include "nauty.h"              /* which includes stdio.h */
-#include "nausparse.h"
-#include "naurng.h"
+#pragma once
+
+#include <nauty/nauty.h>              /* which includes stdio.h */
+#include <nauty/nausparse.h>
+#include <nauty/naurng.h>
+
 /* At this point we can assume that <sys/types.h>, <unistd.h>, <stddef.h>,
    <stdlib.h>, <string.h> or <strings.h> and <malloc.h> if necessary have
    been included if they exist. */
