@@ -545,4 +545,5 @@ EXTRA_DIST =					\
 	nautestd.ans				\
 	nauteste.ans				\
 	nautestf.ans				\
-	nautestg.ans
+	nautestg.ans				\
+	nauty.map

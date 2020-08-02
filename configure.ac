@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([nauty],[2.7.1+ds+sage-2020-08-01],[bdm@cs.anu.edu.au],[nauty],[http://pallini.di.uniroma1.it/])
+AC_INIT([nauty],[2.7.1+ds+sage-2020-08-02],[bdm@cs.anu.edu.au],[nauty],[http://pallini.di.uniroma1.it/])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([autotool])
 AC_CONFIG_SRCDIR([dreadnaut.c])
