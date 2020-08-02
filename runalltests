@@ -2,14 +2,17 @@
 # Run all nauty checks
 
 top_workingdir=$(pwd)
+if [ -z "top_srcdir" ]; then
+   top_srcdir=.
+fi
 
 tdx=0
 
 # runonetest command input output
 runonetest() {
 cmd="$1"
-in="$2"
-ok="$3"
+in="$top_srcdir/$2"
+ok="$top_srcdir/$3"
 printf "%s %s %s  " "$cmd" "$in" "$ok"
 
 if [ "X$in" = "X" ] ; then

@@ -150,6 +150,7 @@ check_PROGRAMS = \
 	naucompare
 
 TESTS = runalltests
+AM_TESTS_ENVIRONMENT = top_srcdir=$(top_srcdir); export top_srcdir;
 
 AM_CPPFLAGS =
 AM_CFLAGS =
