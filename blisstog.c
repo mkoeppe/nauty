@@ -9,45 +9,39 @@
   -n#:#  Specify a range of n values for output\n\
   Input files with name *.gz are ungzipped\n"
 
-#define ZCAT "gunzip -c"  /* name of zcat command (might be "gunzip -c") */
-
 /*************************************************************************/
 
-#include "gtools.h" 
+#include <zlib.h>
 
-typedef struct 
+#include "gtools.h"
+
+#define BUFSIZE 256
+
+typedef struct
 {
    int v,w;
 } vpair;
 
-static int
-nextchar(FILE *f)
-{
-    char s[2];
-
-    if (fscanf(f,"%1s",s) != 1) return EOF;
-    else                        return s[0];
-}
-
 static boolean
-readblissgraph(FILE *f, sparsegraph *g)
+readblissgraph(gzFile f, sparsegraph *g)
 /* Reads a graph from Bliss format into a sparse graph */
 {
-    int n,c;
+    int n;
     unsigned long ne,j;
     int haven;
     int i,v,w;
-    int haveptn;
     DYNALLSTAT(vpair,elist,elist_sz);
+		char buffer[BUFSIZE];
+
+		memset(buffer,'\0',BUFSIZE);
 
     haven = 0;
     j = 0;
-    while ((c = nextchar(f)) >= 0)
+		while (((gzgets(f,buffer,BUFSIZE)) != NULL) && (strlen(buffer) < (BUFSIZE-1)))
     {
-	switch (c)
+	switch (*buffer)
 	{
 	case 'c':
-	    while ((c = getc(f)) != '\n' && c != EOF) {}
 	    break;
 
 	case 'p':
@@ -56,7 +50,7 @@ readblissgraph(FILE *f, sparsegraph *g)
 		fprintf(stderr,"Duplicate p line\n");
 		exit(1);
 	    }
-	    if (fscanf(f," edge %d %lu",&n,&ne) != 2)
+	    if (sscanf(buffer,"p edge %d %lu",&n,&ne) != 2)
 	    {
 		fprintf(stderr,"Bad p line\n");
 		return FALSE;
@@ -70,8 +64,8 @@ readblissgraph(FILE *f, sparsegraph *g)
 	    {
                 fprintf(stderr,"Missing p line\n");
                 return FALSE;
-            }  
-            if (fscanf(f,"%d%d",&w,&v) != 2 || w < 1 || w > n)
+            }
+            if (sscanf(buffer,"n %d%d",&w,&v) != 2 || w < 1 || w > n)
             {
                 fprintf(stderr,"Bad n line\n");
                 return FALSE;
@@ -84,7 +78,7 @@ readblissgraph(FILE *f, sparsegraph *g)
 		fprintf(stderr,"Missing p line or too many e lines\n");
 		return FALSE;
 	    }
-	    if (fscanf(f,"%d%d",&v,&w) != 2 || v < 1 || w < 1 || v > n || w > n)
+	    if (sscanf(buffer,"e %d%d",&v,&w) != 2 || v < 1 || w < 1 || v > n || w > n)
 	    {
 		fprintf(stderr,"Bad e line\n");
 		return FALSE;
@@ -94,10 +88,20 @@ readblissgraph(FILE *f, sparsegraph *g)
 	    break;
 
 	default:
-	    fprintf(stderr,"Unknown line %c\n",c);
+	    fprintf(stderr,"Unknown line\n");
 	    return FALSE;
 	}
     }
+	if (errno)
+	{
+  	fprintf(stderr,"Corrupted data file\n");
+    return FALSE;
+	}
+	else if (strlen(buffer) == (BUFSIZE-1))
+	{
+  	fprintf(stderr,"Corrupted data line\n");
+    return FALSE;
+	}
 
     if (j != ne)
     {
@@ -110,7 +114,7 @@ readblissgraph(FILE *f, sparsegraph *g)
     g->nde = 2*ne;
 
     for (i = 0; i < n; ++i) g->d[i] = 0;
-    for (j = 0; j < ne; ++j) 
+    for (j = 0; j < ne; ++j)
     {
 	++(g->d[elist[j].v]);
 	++(g->d[elist[j].w]);
@@ -119,7 +123,7 @@ readblissgraph(FILE *f, sparsegraph *g)
     for (i = 1; i < n; ++i) g->v[i] = g->v[i-1] + g->d[i-1];
     for (i = 0; i < n; ++i) g->d[i] = 0;
 
-    for (j = 0; j < ne; ++j) 
+    for (j = 0; j < ne; ++j)
     {
 	v = elist[j].v;
 	w = elist[j].w;
@@ -135,80 +139,69 @@ readblissgraph(FILE *f, sparsegraph *g)
 int
 main(int argc, char *argv[])
 {
-    FILE *infile;
+		gzFile infile;
     int j,firstarg;
     SG_DECL(g);
-    size_t flen;
-    boolean ispipe;
     int nmin,nmax;
-    char zcmd[515];
 
     HELP; PUTVERSION;
 
     nmax = -1;
     if (argc >= 2 && argv[1][0] == '-' && argv[1][1] == 'n')
     {
-	if (sscanf(argv[1]+2,"%d:%d",&nmin,&nmax) == 2) {}
+				if (sscanf(argv[1]+2,"%d:%d",&nmin,&nmax) == 2) {}
         else if (sscanf(argv[1]+2,":%d",&nmax) == 1) { nmin = 1; }
         else if (sscanf(argv[1]+2,"%d:",&nmin) == 1) { nmax = NAUTY_INFINITY; }
         else  gt_abort(">E blisstog: bad -n switch\n");
-        
-	firstarg = 2;
+				firstarg = 2;
     }
     else
-	firstarg = 1;
+			firstarg = 1;
 
-    if (argc == firstarg)
-    {
-	if (!readblissgraph(stdin,&g))
+	if (argc == firstarg)
 	{
-	    fprintf(stderr,">E Bliss error in file %s\n","stdin");
-	    gt_abort(NULL);
+		if ((infile = gzdopen(STDIN_FILENO,"r")) == NULL)
+		{
+			fprintf(stderr,">E Can't open stdin\n");
+			gt_abort(NULL);
+		}
+		else
+		{
+			if (!readblissgraph(infile,&g))
+			{
+				fprintf(stderr,">E Bliss error in stdin\n");
+				gt_abort(NULL);
+			}
+			else
+				writes6_sg(stdout,&g);
+		gzclose(infile);
+		}
 	}
 	else
-	    writes6_sg(stdout,&g);
-    }
-    else
-    {
-        for (j = firstarg; j < argc; ++j)
 	{
-	    flen = strlen(argv[j]);
-            if (flen >= 3 && strcmp(argv[j]+flen-3,".gz") == 0)
-            {
-                sprintf(zcmd,"%s \"%s\"",ZCAT,argv[j]);
-                if ((infile = popen(zcmd,"r")) == NULL)
-                {
-                    fprintf(stderr,
-                         ">E blisstog: cannot open zcat pipe for \"%s\"\n",
-                         argv[j]);
-                    gt_abort(NULL);
-                }
-		ispipe = TRUE;
-            }
-            else
-            {
-	        if ((infile = fopen(argv[j],"r")) == NULL)
-	        {
-	            fprintf(stderr,">E Can't open file %s\n",argv[j]);
-		    gt_abort(NULL);
-	        }
-		ispipe = FALSE;
-	    }
+		for (j = firstarg; j < argc; ++j)
+		{
+			if ((infile = gzopen(argv[j],"r")) == NULL)
+			{
+				fprintf(stderr,">E Can't open file %s\n",argv[j]);
+				gt_abort(NULL);
+			}
+			else
+			{
+				if (!readblissgraph(infile,&g))
+				{
+					fprintf(stderr,">E Bliss error in file %s\n",argv[j]);
+					gt_abort(NULL);
+				}
+				else if (nmax < 0 || (g.nv >= nmin && g.nv <= nmax))
+				{
+					sortlists_sg(&g);
+					writes6_sg(stdout,&g);
+				}
+			gzclose(infile);
+			}
+		}
+	}
 
-	    if (!readblissgraph(infile,&g))
-	    {
-	        fprintf(stderr,">E Bliss error in file %s\n",argv[j]);
-		gt_abort(NULL);
-	    }
-	    else if (nmax < 0 || (g.nv >= nmin && g.nv <= nmax))
-            {
-		sortlists_sg(&g);
-	        writes6_sg(stdout,&g);
-	    }
-
-	    if (ispipe) pclose(infile); else fclose(infile);
-        }
-    }
-
-    exit(0);
-}    
+	exit(0);
+}
