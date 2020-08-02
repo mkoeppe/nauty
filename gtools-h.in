@@ -296,6 +296,7 @@ extern TLS_ATTR int readg_code;
 extern TLS_ATTR char *readg_line;
 extern TLS_ATTR size_t ogf_linelen;
 extern TLS_ATTR boolean is_pipe;
+extern TLS_ATTR int gt_numorbits;
 
 #ifdef __cplusplus
 }

@@ -19,7 +19,7 @@ static int gm;
 static int fuzz2[] = {006532,070236,035523,062437};
 #define FUZZ2(x) ((x) ^ fuzz2[(x)&3])
 
-int gt_numorbits;
+TLS_ATTR int gt_numorbits;
 
 #ifdef REFINE
 void REFINE(graph*,int*,int*,int,int*,int*,set*,int*,int,int);

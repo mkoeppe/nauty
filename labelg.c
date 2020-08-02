@@ -89,7 +89,6 @@ static struct invarrec
 
 static nauty_counter orbtotal;
 static double unorbtotal;
-extern int gt_numorbits;
 
 /**************************************************************************/
 
