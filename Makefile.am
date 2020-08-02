@@ -517,3 +517,6 @@ CLEANFILES = \
 	$(libnautyL1_la_MAP) \
 	runtest-*.data \
 	runtest-*.atad
+
+EXTRA_DIST = \
+	sorttemplates.c
