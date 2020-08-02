@@ -523,5 +523,26 @@ CLEANFILES = \
 	runtest-*.data \
 	runtest-*.atad
 
-EXTRA_DIST = \
-	sorttemplates.c
+EXTRA_DIST =					\
+	sorttemplates.c				\
+	splay.c					\
+	quarticirred28.h			\
+	runalltests				\
+	nautest1.dre				\
+	nautest1a.dre				\
+	nautest1b.dre				\
+	nautest1c.dre				\
+	nautest2.dre				\
+	nautest1a.ans				\
+	nautest1b.ans				\
+	nautest1c.ans				\
+	nautest2a.ans				\
+	nautest2b.ans				\
+	nautest2c.ans				\
+	nautesta.ans				\
+	nautestb.ans				\
+	nautestc.ans				\
+	nautestd.ans				\
+	nauteste.ans				\
+	nautestf.ans				\
+	nautestg.ans
