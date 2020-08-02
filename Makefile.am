@@ -71,7 +71,10 @@ bin_PROGRAMS = \
 	checks6 \
 	sumlines
 
-man_MANS = \
+man_MANS =
+
+if HAVE_HELP2MAN
+man_MANS += \
 	dreadnaut.1 \
 	\
 	addedgeg.1 \
@@ -119,6 +122,7 @@ man_MANS = \
 	blisstog.1 \
 	checks6.1 \
 	sumlines.1
+endif
 
 lib_LTLIBRARIES = \
 	libnauty.la \
