@@ -1,54 +1,53 @@
-/* cubhamg.c : pick those inputs that are nonhamiltonian and
-                have max degree <= 3.
+/* cubhamg.c : pick those inputs that are nonhamiltonian and have max degree <= 3. */
 
- Usage:
-cubhamg [-#] [-v|-V] [-n#-#|-y#-#|-i|-I|-o|-x|-e|-E] [-b|-t] [infile [outfile]]
+#define USAGE "cubhamg [-#] [-v|-V] [-n#-#|-y#-#|-i|-I|-o|-x|-e|-E] [-b|-t] [infile [outfile]]"
 
-        infile is the name of the input file in graph6/sparse6 format
-        outfile is the name of the output file in the same format
+#define HELPTEXT \
+" Pick those inputs that are nonhamiltonian and have max degree <= 3.\n\
+\n\
+ infile is the name of the input file in graph6/sparse6 format (default: stdin)\n\
+\n\
+ outfile is the name of the output file in the same format (default: stdout)\n\
+\n\
+ The output file will have a header >>graph6<< or >>sparse6<< if the input file does.\n\
+\n\
+Options:\n\
+	-#  A parameter useful for tuning (default 100)\n\
+	-v  Report nonhamiltonian graphs and noncubic graphs\n\
+	-V  .. in addition give a cycle for the hamiltonian ones\n\
+	-n#-#  If the two numbers are v and i, then the i-th edge\n\
+	       out of vertex v is required to be not in the cycle.\n\
+	       It must be that i=1..3 and v=0..n-1.\n\
+	-y#-#  If the two numbers are v and i, then the i-th edge\n\
+	       out of vertex v is required to be in the cycle.\n\
+	       It must be that i=1..3 and v=0..n-1.\n\
+	       You can use any number of -n/-y switches to force\n\
+	       edges.  Out of range first arguments are ignored.\n\
+	       If -y and -n give same edge, -y wins.\n\
+	-i  Test + property: for each edge e, there is a hamiltonian cycle using e.\n\
+	-I  Test ++ property: for each pair of edges e,e', there is\n\
+	    a hamiltonian cycle which uses both e and e'.\n\
+	-o  Test - property: for each edge e, there is a hamiltonian cycle avoiding e.\n\
+	-x  Test +- property: for each pair of edges e,e', there is\n\
+	    a hamiltonian cycle which uses e but avoids e'.\n\
+	-e  Test 3/4 property: for each edge e, at least 3 of the 4\n\
+	    paths of length 3 passing through e lie on hamiltonian cycles.\n\
+	-E  Test 3/4+ property: for each edge e failing the 3/4 property,\n\
+	    all three ways of joining e to the rest of the graph are\n\
+	    hamiltonian avoiding e.\n\
+	-T#  Specify a timeout, being a limit on how many search tree\n\
+	     nodes are made.  If the timeout occurs, the graph is\n\
+	     written to the output as if it is nonhamiltonian.\n\
+	-R#  Specify the number of repeat attempts for each stage.\n\
+	-F  Analyze covering paths from 2 or 4 vertices of degree 2.\n\
+\n\
+	-b  Require biconnectivity\n\
+	-t  Require triconnectivity  (note: quadratic algorithm)\n\
+\n\
+Comments:\n\
+	-y, -n, -#, -R and -T are ignored for -i, -I, -x, -o, -e, -E, -F\n"
 
-	stdin and stdout are the defaults for infile and outfile
-
-	The output file will have a header >>graph6<< or >>sparse6<<
-        if and only if the input file does.
-
-        Optional switches:
-
-        -#  A parameter useful for tuning (default 100)
-	-v  Report nonhamiltonian graphs and noncubic graphs
-	-V  .. in addition give a cycle for the hamiltonian ones
-	-n#-#  If the two numbers are v and i, then the i-th edge
-	    out of vertex v is required to be not in the cycle.
-	    It must be that i=1..3 and v=0..n-1.
-	-y#-#  If the two numbers are v and i, then the i-th edge
-	    out of vertex v is required to be in the cycle.
-	    It must be that i=1..3 and v=0..n-1.
-            You can use any number of -n/-y switches to force
-            edges.  Out of range first arguments are ignored.
-            If -y and -n give same edge, -y wins.
-        -i  Test + property: for each edge e, there is a hamiltonian
-            cycle using e.
-	-I  Test ++ property: for each pair of edges e,e', there is
-            a hamiltonian cycle which uses both e and e'.
-        -o  Test - property: for each edge e, there is a hamiltonian 
-            cycle avoiding e.
-        -x  Test +- property: for each pair of edges e,e', there is
-            a hamiltonian cycle which uses e but avoids e'.
-        -e  Test 3/4 property: for each edge e, at least 3 of the 4
-            paths of length 3 passing through e lie on hamiltonian cycles.
-        -E  Test 3/4+ property: for each edge e failing the 3/4 property,
-            all three ways of joining e to the rest of the graph are
-            hamiltonian avoiding e.
-        -T# Specify a timeout, being a limit on how many search tree
-            nodes are made.  If the timeout occurs, the graph is 
-            written to the output as if it is nonhamiltonian.
-        -R# Specify the number of repeat attempts for each stage.
-        -F  Analyze covering paths from 2 or 4 vertices of degree 2.
-
-	-b  Require biconnectivity
-        -t  Require triconnectivity  (note: quadratic algorithm)
-
-        -y, -n, -#, -R and -T are ignored for -i, -I, -x, -o, -e, -E, -F
+/**************************************************************************
 
 	B. D. McKay, Nov 1995 + Aug 1996 + Feb 2002 + Jul 2008 + Nov 2015
 
@@ -1611,6 +1610,8 @@ main(int argc, char *argv[])
         char *arg;
 	int codetype;
 
+	HELP;
+
         infilename = outfilename = NULL;
         badargs = FALSE;
 	e34plus = e34 = in = out = inin = inout = FALSE;
@@ -1729,8 +1730,8 @@ main(int argc, char *argv[])
 
 	if (badargs)
 	{
-	    fprintf(stderr,
-         ">E Usage: cubhamg [-#] [-v | -V] [-n#-#] [-y#-#] [infile [outfile]]\n");
+	    fprintf(stderr, ">E Usage: " USAGE "\n" );
+			GETHELP;
 	    exit(1);
 	}
 

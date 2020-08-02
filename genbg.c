@@ -3,8 +3,7 @@
 /* TODO: consider colour swaps */
 
 #define USAGE \
-"genbg [-c -ugs -vq -lzF] [-Z#] [-D#] [-A] [-d#|-d#:#] [-D#|-D#:#] n1 n2 \n\
-                [mine[:maxe]] [res/mod] [file]"
+"genbg [-c -ugs -vq -lzF] [-Z#] [-D#] [-A] [-d#|-d#:#] [-D#|-D#:#] n1 n2 [mine[:maxe]] [res/mod] [file]"
 
 #define HELPTEXT \
 " Find all bicoloured graphs of a specified class.\n\

@@ -2,8 +2,7 @@
 /* TODO:  Check allocs for no edges */
 
 #define USAGE \
-"genrang [-P#|-P#/#|-e#|-r#|-R#|-d#] [-l#] [-m#] [-t] [-T] [-a] \n" \
-"         [-s|-g|-z] [-S#] [-q] n|n1,n2 num [outfile]"
+"genrang [-P#|-P#/#|-e#|-r#|-R#|-d#] [-l#] [-m#] [-t] [-T] [-a] [-s|-g|-z] [-S#] [-q] n|n1,n2 num [outfile]"
 
 #define HELPTEXT \
 " Generate random graphs.\n\

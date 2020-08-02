@@ -1,13 +1,12 @@
 /* genspecialg.c  version 1.3; B D McKay, Mar 19, 2018 */
 
-#define USAGE "genspecialg [-s|-g|-z|-d|-v] [-q]\n\
-     [-p#|-c#|-e#|-k#|-b#,#[,#]|-Q#|-f#|-J#,#\n\
-         |-P#,#|C#,#...|G#,#...|T#,#...]* [outfile]"
+#define USAGE "genspecialg [-s|-g|-z|-d|-v] [-q] [-p#|-c#|-e#|-k#|-b#,#[,#]| -Q#|-f#|-J#,#|-P#,#|C#,#...|G#,#...|T#,#...]* [outfile]"
 
 #define HELPTEXT \
 " Generate special graphs.\n\
-     #  : size parameter called n in the descriptions\n\
 \n\
+Options:\n\
+General Options:\n\
     -s : Write in sparse6 format (default)\n\
     -g : Write in graph6 format\n\
     -z : Make digraph versions and write in digraph6 format\n\
@@ -15,7 +14,10 @@
     -v : For each graph, report the size to stderr\n\
     -q : Suppress summary\n\
 \n\
-    If defined, the digraph version is shown in parentheses:\n\
+Special Options:\n\
+ If defined, the digraph version is shown in parentheses;\n\
+ # size parameter called n in the descriptions.\n\
+\n\
     -p#   : path (directed path) on n vertices.\n\
     -c#   : cycle (directed cycle) on n vertices.\n\
     -e#   : empty graph (digraph with loops only) on n vertices.\n\
@@ -26,9 +28,9 @@
     -P#,# : generalized Petersen graph; usual one is -P5,2\n\
     -Q#   : hypercube on 2^n vertices and degree n.\n\
     -J#,# : Johnson graph J(n,k), args are n and k.\n\
-    -C#,#... : circulant (di)graph.\n\
-    -T#,#... : theta (di)graph Theta(#,#,...), give path lengths.\n\
-    -G#,#... : (directed) grid, use negative values for open directions\n\
+    -C#[,#] : circulant (di)graph.\n\
+    -T#[,#] : theta (di)graph Theta(#,#,...), give path lengths.\n\
+    -G#[,#] : (directed) grid, use negative values for open directions\n\
 \n\
     Any number of graphs can be generated at once.\n"
 

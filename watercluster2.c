@@ -1,53 +1,65 @@
 // cc -O4 -o water2 -DWORDSIZE=32 -DMAXN=WORDSIZE nauty.c naugraph.c nautil.c gtools.c schreier.c naurng.c watercluster2.c
 
+#define GTOOL_USAGEHELP_COMPATIBILITY
+
+#define USAGE "watercluster2 [ix] [oy] [S] [T] [B] [Z] [C] [m]"
+
+#define HELPTEXT \
+" Reads graphs in g6 code or multicode (optional) from stdin and directs them\n\
+\n\
+  ix: the indegree of every vertex may be at most x.\n\
+      The default maximum indegree is unlimited.\n\
+\n\
+  oy: the outdegree of every vertex may be at most y.\n\
+      The default maximum outdegree is unlimited.\n\
+\n\
+  S : allow that for every pair of vertices x,y at most one of the edges x-->y\n\
+      and y-->x may be present. By default both of them may be present in the\n\
+      same graph.\n\
+\n\
+  T : Output directed graphs in T-code. This is a simple ASCII output format.\n\
+      Every line contains one graph. First the number of vertices, then the\n\
+      number of directed edges and then the list of directed edges with the\n\
+      start first and the end then. E.g.: 3 2 0 1 2 1 means 3 vertices, 2\n\
+      directed edges:\n\
+      0-->1 and 2-->1\n\
+\n\
+  B : Output the directed graphs in a binary code. Every item of the code is an\n\
+      unsigned char. The first unsigned char is the number nv of vertices. The\n\
+      vertices are numbered 1..nv. Then the list of vertices x for which there\n\
+      is a directed edge 1->x follow. This list is ended by a 0. Then the list\n\
+      of outgoing neighbours of 2 follows -- again ended with a 0, etc.\n\
+      The code is complete with the 0 ending the list of outgoing neighbours of\n\
+      nv.\n\
+\n\
+  Z : Output the directed graphs in digraph6 code. See formats.txt for a\n\
+      complete definition.\n\
+\n\
+  C : Do really construct all the directed graphs in memory, but don't output\n\
+      them. This is not a big difference in case of restricted in- and\n\
+      outdegrees, because all that is done extra is that edges are directed\n\
+      instead of just keeping track of in- and out-degrees. This option is\n\
+      intended only for testing purposes to test also routines that are normally\n\
+      not used when counting. Things that would speed up the counting also in\n\
+      some cases of restricted in- and out-degrees -- like multiplying the\n\
+      possibilities of assigning directions to edges that can be assigned\n\
+      directions independent of each other (depending on the degrees of the\n\
+      endvertices and overlaps) -- are not included.\n\
+      In case of not restrictive bounds on the in- and out-degree it not really\n\
+      constructing the graphs can be considerably faster. In cases of restricted\n\
+      in- and out-degrees the only difference is that the graph isn't modified.\n\
+      The fact that in case of no output the graph is not modified is mainly to\n\
+      save time for the one case of waterclusters, where large numbers were\n\
+      determined. If large numbers (without output) for other cases shall be\n\
+      determined, one should think about adding the multiplication routines.\n\
+\n\
+  m : read multicode instead of g6 code\n\
+\n\
+This program uses different labelling routines -- all based on the ideas of\n\
+\n\
+G. Brinkmann, Generating water clusters and other directed graphs,\m\
+Journal of Mathematical Chemistry 46, 1112--1121 (2009)\n"
 /*
-Reads graphs in g6 code or multicode (optional) from stdin and directs them 
-
-options: 
-
-ix  means: the indegree of every vertex may be at most x.
-
-oy  means: the outdegree of every vertex may be at most y.
-
-  S  means: allow that for every pair of vertices x,y at most one of the edges x-->y 
-     and y-->x may be present. By default both of them may be present in the same graph.
-
-
-  T  means: Output directed graphs in T-code. This is a simple ASCII output format. Every line
-     contains one graph. First the number of vertices, then the number of 
-     directed edges and then the list of directed edges with the start first 
-     and the end then. E.g.: 3 2 0 1 2 1 means 3 vertices, 2 directed edges:
-     0-->1 and 2-->1
-
-  B  means: Output the directed graphs in a binary code. Every item of the code is an unsigned
-     char. The first unsigned char is the number nv of vertices. The vertices are numbered 1..nv
-     Then the list of vertices x for which there is a directed edge 1->x follow. This list is
-     ended by a 0. Then the list of outgoing neighbours of 2 follows -- again ended with a 0, etc.
-     The code is complete with the 0 ending the list of outgoing neighbours of nv.
-
-  Z  means: Output the directed graphs in digraph6 code. See formats.txt for a complete definition.
-
-  C  means: Do really construct all the directed graphs in memory, but don't output them. This is not
-     a big difference in case of restricted in- and outdegrees, because all that is done extra is that 
-     edges are directed instead of just keeping track of in- and out-degrees. This option is intended only
-     for testing purposes to test also routines that are normally not used when counting. Things that would 
-     speed up the counting also in some cases of restricted in- and out-degrees -- like multiplying the 
-     possibilities of assigning directions to edges that can be assigned directions independent 
-     of each other (depending on the degrees of the endvertices and overlaps) -- are not included. 
-     In case of not restrictive bounds on the in- and out-degree it not really constructing the graphs
-     can be considerably faster. In cases of restricted in- and out-degrees the only difference is that
-     the graph isn't modified...
-     The fact that in case of no output the graph is not modified is mainly to save time for the one 
-     case of waterclusters, where large numbers were determined. If large numbers (without output)
-     for other cases shall be determined, one should think about adding the multiplication routines.
-
-   m read multicode
-
-This program uses different labelling routines -- all based on the ideas of 
-
-G. Brinkmann, Generating water clusters and other directed graphs,
-Journal of Mathematical Chemistry 46, 1112--1121 (2009)
-
 October 10, 2011: corrected error caused by overflow of 32bit int used as hashvalue.
 
 Sep, 2012: PROCESS feature added by BDM.
@@ -71,7 +83,7 @@ Oct, 2017: digraph6 output added by BDM.
  *
  * If SUMMARY is defined, it must expand as the name of a procedure
  * with prototype  void SUMMARY(void).  It is called at the end after
- * the normal summary. 
+ * the normal summary.
  */
 
 //#include<stdio.h>
@@ -526,7 +538,7 @@ while (nuller<knotenzahl-1)
 return 1;
 }
 
-
+#ifndef GTOOL_USAGEHELP_COMPATIBILITY
 void usage(char name[])
 {
 
@@ -546,6 +558,7 @@ void usage(char name[])
   exit(1);
 
 }
+#endif
 
 /**********DECODE_TO_NAUTY****************************************************/
 
@@ -4041,6 +4054,15 @@ int main(int argc, char *argv[])
   int multicode=0, g6code=1;
   long long int last=0LL;
 
+#ifdef GTOOL_USAGEHELP_COMPATIBILITY
+	if (argc > 1 && (strcmp(argv[1],"-help") == 0
+                       || (strcmp(argv[1],"--help") == 0)))
+	{
+	    printf("Usage: %s\n\n%s",USAGE,HELPTEXT);
+	    exit(0);
+	}
+#endif
+
   if (sizeof(long long int)<8) 
     { 
       fprintf(stderr,">E long long too short; This may cause problems with the hashing function for large degree -- exit().\n");
@@ -4059,7 +4081,15 @@ int main(int argc, char *argv[])
 	    else  if (argv[i][0]=='Z') direct_output=4;    /* BDM */
 	      else  if (argv[i][0]=='S') double_allowed=0;
 	        else  if (argv[i][0]=='m') { g6code=0; multicode=1; }
-      else usage(argv[0]);
+      else {
+#ifdef GTOOL_USAGEHELP_COMPATIBILITY
+	fprintf(stderr, ">E Usage: %s\n", USAGE);
+	fprintf(stderr, "Use watercluster2 -help to see a list of the options.\n");
+	exit(1);
+#else
+	usage(argv[0]);
+#endif
+      }
     }
 
 #ifdef PROCESS

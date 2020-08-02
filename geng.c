@@ -6,8 +6,7 @@
 /* geng.c  version 3.1; B D McKay, Jan 2019. */
 
 #define USAGE \
-"geng [-cCmtfbd#D#] [-uygsnh] [-lvq] \n\
-              [-x#X#] n [mine[:maxe]] [res/mod] [file]"
+"geng [-cCmtfbd#D#] [-uygsnh] [-lvq] [-x#X#] n [mine[:maxe]] [res/mod] [file]"
 
 #define HELPTEXT \
 " Generate all graphs of a specified class.\n\
